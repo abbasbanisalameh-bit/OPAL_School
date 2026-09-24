@@ -123,35 +123,37 @@
     </article>
   </section>
 
-  <section class="opal-dashboard-two-col" aria-label="حالات الغياب">
-    <article class="opal-dashboard-mini-panel">
-      <header><h2>غياب الطلبة اليوم</h2><a href="{% url 'dashboard:attendance_detail' %}">التفاصيل</a></header>
-      <div class="opal-mini-horizontal-metrics"><b>{{ absent_today }} <small>غائب</small></b><b>{{ present_today }} <small>حاضر</small></b><b>{{ departed_today }} <small>مغادر</small></b></div>
-    </article>
-    <article class="opal-dashboard-mini-panel">
-      <header><h2>غياب المعلمين اليوم</h2><a href="{% url 'teachers:dashboard' %}">التفاصيل</a></header>
-      <div class="opal-mini-horizontal-metrics"><b>{{ absent_teachers_today|length }} <small>غائب</small></b><b>{{ teachers_count }} <small>إجمالي نشط</small></b></div>
-    </article>
-  </section>
-
-  <section class="opal-dashboard-two-col" aria-label="حالة المعلمين">
-    <article class="opal-dashboard-mini-panel">
-      <header><h2>المعلمون المشغولون الآن</h2></header>
-      <div class="opal-mini-status-card busy"><strong>{{ opal_live_schedule.busy_teachers|default:0 }}</strong><span>معلم مشغول</span></div>
-    </article>
-    <article class="opal-dashboard-mini-panel">
-      <header><h2>المعلمون المتفرغون الآن</h2></header>
-      <div class="opal-mini-status-card free"><strong>{{ opal_live_schedule.free_teachers_count|default:0 }}</strong><span>معلم متفرغ</span></div>
-    </article>
-  </section>
-
-  <details class="opal-dashboard-more">
-    <summary><span><i class="bi bi-grid-3x3-gap-fill"></i> التفاصيل التشغيلية</span><i class="bi bi-chevron-down"></i></summary>
+  <details class="opal-dashboard-more" open aria-label="الانتظام وحالة المعلمين الآن">
+    <summary><span><i class="bi bi-activity"></i> الانتظام وحالة المعلمين الآن</span><i class="bi bi-chevron-down"></i></summary>
     <div class="opal-dashboard-more-grid">
-      <article class="opal-dashboard-mini-panel"><h3>تفاصيل غياب الطلبة</h3>{% if attendance_data_available %}<div class="opal-mini-list">{% for row in absent_students_today|slice:":8" %}<div><strong>{{ row.student.full_name }}</strong><small>{{ row.grade|default:"-" }}{% if row.section %} — {{ row.section.name }}{% endif %}</small></div>{% empty %}<p>لا يوجد غياب ضمن السجلات المعتمدة اليوم.</p>{% endfor %}</div>{% else %}<p>سجلات الحضور غير معتمدة بعد.</p>{% endif %}</article>
-      <article class="opal-dashboard-mini-panel"><h3>تفاصيل غياب المعلمين</h3><div class="opal-mini-list">{% for row in absent_teachers_today|slice:":8" %}<div><strong>{{ row.teacher.full_name }}</strong><small>{{ row.reason|default:"دون سبب مسجل" }}</small></div>{% empty %}<p>لا يوجد غياب معلمين مسجل اليوم.</p>{% endfor %}</div></article>
-      <article class="opal-dashboard-mini-panel"><h3>المعلمون المشغولون</h3><div class="opal-mini-list">{% for row in opal_live_schedule.busy_rows|slice:":8" %}<div><strong>{{ row.teacher.full_name }}</strong><small>{{ row.entry.section.grade.name }} — {{ row.entry.section.name }} · {{ row.entry.time_slot.name }}</small></div>{% empty %}<p>لا يوجد معلم مشغول بحصة الآن.</p>{% endfor %}</div></article>
-      <article class="opal-dashboard-mini-panel"><h3>المعلمون المتفرغون</h3><div class="opal-mini-list">{% for teacher in opal_live_schedule.free_teachers|slice:":8" %}<div><strong>{{ teacher.full_name }}</strong><small>{{ teacher.specialization|default:"معلم" }}</small></div>{% empty %}<p>لا توجد قائمة متفرغين الآن.</p>{% endfor %}</div></article>
+      <article class="opal-dashboard-mini-panel">
+        <header><h3>غياب الطلبة اليوم</h3><a href="{% url 'dashboard:attendance_detail' %}">التفاصيل</a></header>
+        <div class="opal-mini-metrics">
+          <b>{{ absent_today }}<small>غائب</small></b>
+          <b>{{ present_today }}<small>حاضر</small></b>
+          <b>{{ departed_today }}<small>مغادر</small></b>
+        </div>
+        {% if attendance_data_available %}<div class="opal-mini-list">{% for row in absent_students_today|slice:":8" %}<div><strong>{{ row.student.full_name }}</strong><small>{{ row.grade|default:"-" }}{% if row.section %} — {{ row.section.name }}{% endif %}</small></div>{% empty %}<p>لا يوجد غياب ضمن السجلات المعتمدة اليوم.</p>{% endfor %}</div>{% else %}<p>سجلات الحضور غير معتمدة بعد.</p>{% endif %}
+      </article>
+
+      <article class="opal-dashboard-mini-panel">
+        <header><h3>غياب المعلمين اليوم</h3><a href="{% url 'teachers:dashboard' %}">التفاصيل</a></header>
+        <div class="opal-mini-metrics">
+          <b>{{ absent_teachers_today|length }}<small>غائب</small></b>
+          <b>{{ teachers_count }}<small>إجمالي نشط</small></b>
+        </div>
+        <div class="opal-mini-list">{% for row in absent_teachers_today|slice:":8" %}<div><strong>{{ row.teacher.full_name }}</strong><small>{{ row.reason|default:"دون سبب مسجل" }}</small></div>{% empty %}<p>لا يوجد غياب معلمين مسجل اليوم.</p>{% endfor %}</div>
+      </article>
+
+      <article class="opal-dashboard-mini-panel">
+        <header><h3>المعلمون المشغولون الآن</h3><span>{{ opal_live_schedule.busy_teachers|default:0 }} معلم</span></header>
+        <div class="opal-mini-list">{% for row in opal_live_schedule.busy_rows|slice:":8" %}<div><strong>{{ row.teacher.full_name }}</strong><small>{{ row.entry.section.grade.name }} — {{ row.entry.section.name }} · {{ row.entry.time_slot.name }}</small></div>{% empty %}<p>لا يوجد معلم مشغول بحصة الآن.</p>{% endfor %}</div>
+      </article>
+
+      <article class="opal-dashboard-mini-panel">
+        <header><h3>المعلمون المتفرغون الآن</h3><span>{{ opal_live_schedule.free_teachers_count|default:0 }} معلم</span></header>
+        <div class="opal-mini-list">{% for teacher in opal_live_schedule.free_teachers|slice:":8" %}<div><strong>{{ teacher.full_name }}</strong><small>{{ teacher.specialization|default:"معلم" }}</small></div>{% empty %}<p>لا توجد قائمة متفرغين الآن.</p>{% endfor %}</div>
+      </article>
     </div>
   </details>
 </div>
