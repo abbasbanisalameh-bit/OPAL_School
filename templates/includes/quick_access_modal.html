@@ -1,0 +1,23 @@
+<div class="modal fade opal-quick-access-modal" id="opal-quick-access-modal" tabindex="-1" aria-labelledby="opal-quick-access-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div><h2 class="modal-title" id="opal-quick-access-title">الوصول السريع</h2><small>جميع بوابات النظام في مكان واحد</small></div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <div class="modal-body">
+        <div class="opal-global-quick-grid">
+          {% for section in opal_navigation_sections %}
+            {% for item in section.items %}
+              {% if item.key != "system-settings" and item.key != "profile" %}
+              <a class="opal-global-quick-item {% if item.active %}is-active{% endif %}" href="{{ item.url }}">
+                <i class="bi bi-{{ item.icon }}" aria-hidden="true"></i><span>{{ item.label|default:section.label }}</span>
+              </a>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

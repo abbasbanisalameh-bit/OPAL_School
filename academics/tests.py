@@ -1,0 +1,263 @@
+from datetime import date
+
+from django.core.exceptions import ValidationError
+from django.test import TestCase
+from django.urls import reverse
+from django.utils import timezone
+from django.contrib.auth.models import User
+
+from admissions.models import GradeFee
+from core.models import AcademicYear, Branch, School
+from students.models import Student
+from teachers.models import Teacher
+
+from .lifecycle import perform_lifecycle_action
+from .year_transition import annual_transition_report, execute_annual_transition
+from parent_portal.models import Family, FamilyStudent
+
+from .models import Enrollment, Grade, Section, StudentDocument, StudentLifecycleEvent, Subject
+
+
+class AcademicsModelsTest(TestCase):
+    def setUp(self):
+        self.school = School.objects.create(name="مدرسة اختبار")
+        self.branch = Branch.objects.create(school=self.school, name="الفرع الرئيسي")
+        self.year = AcademicYear.objects.create(
+            school=self.school, name="2026/2027", start_date=date(2026, 9, 1), end_date=date(2027, 6, 30), is_current=True
+        )
+        self.next_year = AcademicYear.objects.create(
+            school=self.school, name="2027/2028", start_date=date(2027, 9, 1), end_date=date(2028, 6, 30)
+        )
+        self.grade = Grade.objects.create(school=self.school, name="الصف الأول", order=1)
+        self.next_grade = Grade.objects.create(school=self.school, name="الصف الثاني", order=2)
+        self.section = Section.objects.create(academic_year=self.year, branch=self.branch, grade=self.grade, name="أ", capacity=30)
+        self.next_section = Section.objects.create(academic_year=self.next_year, branch=self.branch, grade=self.next_grade, name="أ", capacity=1)
+        self.student = Student.objects.create(student_number="ST-001", full_name="طالب اختبار", grade=self.grade.name, section=self.section.name)
+
+    def test_create_grade_section_subject_and_enrollment(self):
+        subject = Subject.objects.create(academic_year=self.year, name="الرياضيات", code="MATH1", grade=self.grade)
+        enrollment = Enrollment.objects.create(student=self.student, academic_year=self.year, grade=self.grade, section=self.section)
+        self.assertEqual(str(self.section), "الصف الأول شعبة أ")
+        self.assertIn("الرياضيات", str(subject))
+        self.assertEqual(enrollment.student, self.student)
+        self.assertEqual(self.section.available_seats, 29)
+
+    def test_guardian_and_document_use_official_student(self):
+        family = Family.objects.create(school=self.school, guardian_name="ولي أمر اختبار", relation="الأب", phone="0790000000")
+        link = FamilyStudent.objects.create(student=self.student, family=family, relation="الأب", is_active=True)
+        document = StudentDocument.objects.create(student=self.student, document_type="photo", title="صورة شخصية")
+        self.assertTrue(link.is_active)
+        self.assertEqual(document.student, self.student)
+
+    def test_promote_closes_old_enrollment_and_creates_event(self):
+        old = Enrollment.objects.create(student=self.student, academic_year=self.year, grade=self.grade, section=self.section)
+        AcademicYear.objects.filter(pk=self.year.pk).update(is_closed=True, is_current=False)
+        self.year.refresh_from_db()
+        event = perform_lifecycle_action(
+            student=self.student,
+            action="promote",
+            target_year=self.next_year,
+            target_grade=self.next_grade,
+            target_section=self.next_section,
+            effective_date=date(2027, 9, 1),
+        )
+        old.refresh_from_db()
+        self.student.refresh_from_db()
+        self.assertEqual(old.status, "completed")
+        self.assertEqual(event.action, "promote")
+        self.assertEqual(self.student.grade, self.next_grade.name)
+        self.assertTrue(Enrollment.objects.filter(student=self.student, academic_year=self.next_year, status="active").exists())
+        self.assertEqual(StudentLifecycleEvent.objects.count(), 1)
+
+    def test_promotion_rejects_full_section(self):
+        other = Student.objects.create(student_number="ST-002", full_name="طالب آخر", grade=self.next_grade.name)
+        Enrollment.objects.create(student=other, academic_year=self.next_year, grade=self.next_grade, section=self.next_section)
+        with self.assertRaises(ValidationError):
+            perform_lifecycle_action(
+                student=self.student,
+                action="reenroll",
+                target_year=self.next_year,
+                target_grade=self.next_grade,
+                target_section=self.next_section,
+            )
+
+    def test_annual_transition_allows_capacity_overflow_and_reports_warning(self):
+        second_student = Student.objects.create(
+            student_number="ST-003",
+            full_name="طالب انتقال إضافي",
+            grade=self.grade.name,
+            section=self.section.name,
+        )
+        Enrollment.objects.create(
+            student=self.student,
+            academic_year=self.year,
+            grade=self.grade,
+            section=self.section,
+            status="active",
+        )
+        Enrollment.objects.create(
+            student=second_student,
+            academic_year=self.year,
+            grade=self.grade,
+            section=self.section,
+            status="active",
+        )
+        AcademicYear.objects.filter(pk=self.year.pk).update(is_closed=True, is_current=False)
+        AcademicYear.objects.filter(pk=self.next_year.pk).update(
+            prepared_at=timezone.now(),
+            preparation_source=self.year,
+        )
+        self.year.refresh_from_db()
+        self.next_year.refresh_from_db()
+
+        report = annual_transition_report(source_year=self.year, target_year=self.next_year)
+        self.assertFalse(report["blockers"])
+        self.assertEqual(len(report["warnings"]), 1)
+        self.assertEqual(report["warnings"][0]["projected_count"], 2)
+        self.assertEqual(report["warnings"][0]["capacity"], 1)
+
+        _source, summary = execute_annual_transition(
+            source_year=self.year,
+            target_year=self.next_year,
+        )
+        self.assertEqual(summary["promotions"], 2)
+        self.assertEqual(len(summary["capacity_warnings"]), 1)
+        self.assertEqual(
+            Enrollment.objects.filter(academic_year=self.next_year, status="active").count(),
+            2,
+        )
+
+
+class AcademicStructureFlowTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="admin", password="safe-password", is_staff=True)
+        self.school = School.objects.create(name="مدرسة الهيكل", is_active=True)
+        self.branch = Branch.objects.create(school=self.school, name="الفرع الرئيسي", is_main=True)
+        self.year = AcademicYear.objects.create(
+            school=self.school,
+            name="2026/2027",
+            start_date=date(2026, 9, 1),
+            end_date=date(2027, 6, 30),
+            is_current=True,
+        )
+        self.teacher = Teacher.objects.create(
+            school=self.school,
+            branch=self.branch,
+            employee_number="T-STRUCT-1",
+            full_name="معلم الصف",
+        )
+        self.client.force_login(self.user)
+
+    def test_configuring_grade_creates_fee_default_section_and_homeroom_teacher(self):
+        response = self.client.post(reverse("academics:academic_structure"), {
+            "action": "configure_grade",
+            "academic_year": self.year.pk,
+            "grade-name": "الصف الأول",
+            "grade-order": 1,
+            "grade-tuition_fee": "1250.00",
+            "grade-section_count": 1,
+            "grade-homeroom_teacher": self.teacher.pk,
+        })
+        self.assertRedirects(response, f"{reverse('academics:academic_structure')}?year={self.year.pk}")
+        grade = Grade.objects.get(school=self.school, name="الصف الأول")
+        self.assertEqual(GradeFee.objects.get(school=self.school, academic_year=self.year, grade=grade).tuition_fee, 1250)
+        section = Section.objects.get(academic_year=self.year, grade=grade)
+        self.assertTrue(section.is_default)
+        self.assertEqual(section.homeroom_teacher, self.teacher)
+
+    def test_configuring_existing_grade_updates_fee_without_duplicate_or_section_loss(self):
+        grade = Grade.objects.create(school=self.school, name="الصف الثاني", order=2)
+        GradeFee.objects.create(school=self.school, academic_year=self.year, grade=grade, tuition_fee=100)
+        section = Section.objects.create(academic_year=self.year, branch=self.branch, grade=grade, name="أ")
+        self.client.post(reverse("academics:academic_structure"), {
+            "action": "configure_grade",
+            "academic_year": self.year.pk,
+            "grade-name": "  الصف   الثاني  ",
+            "grade-order": 2,
+            "grade-tuition_fee": "150.00",
+            "grade-section_count": 3,
+        })
+        self.assertEqual(GradeFee.objects.filter(school=self.school, academic_year=self.year, grade=grade).count(), 1)
+        self.assertEqual(GradeFee.objects.get(school=self.school, academic_year=self.year, grade=grade).tuition_fee, 150)
+        self.assertEqual(Section.objects.filter(academic_year=self.year, grade=grade).count(), 1)
+        self.assertTrue(Section.objects.filter(pk=section.pk).exists())
+
+
+class CanonicalGradeEntryTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="grade_admin", password="safe-password", is_staff=True)
+        self.school = School.objects.create(name="مدرسة الصفوف الموحدة", is_active=True)
+        self.client.force_login(self.user)
+
+    def test_grade_model_rejects_arabic_normalized_duplicate(self):
+        Grade.objects.create(school=self.school, name="الصف الأول", order=1)
+        duplicate = Grade(school=self.school, name="  الصف   الأوّل  ", order=2)
+        with self.assertRaises(ValidationError):
+            duplicate.save()
+
+    def test_legacy_grade_list_redirects_to_canonical_structure(self):
+        response = self.client.get(reverse("academics:grade_list"))
+        self.assertRedirects(
+            response,
+            reverse("academics:academic_structure"),
+            fetch_redirect_response=False,
+        )
+
+
+class BulkGraduationFlowTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user("graduation_manager", password="pass", is_staff=True)
+        self.school = School.objects.create(name="مدرسة التخريج", is_active=True)
+        self.branch = Branch.objects.create(school=self.school, name="الرئيسي", is_main=True)
+        self.year = AcademicYear.objects.create(
+            school=self.school,
+            name="2026/2027",
+            start_date=date(2026, 9, 1),
+            end_date=date(2027, 6, 30),
+            is_current=True,
+        )
+        self.grade = Grade.objects.create(school=self.school, name="الصف الثاني عشر", order=12)
+        self.section = Section.objects.create(
+            academic_year=self.year,
+            branch=self.branch,
+            grade=self.grade,
+            name="أ",
+        )
+        self.enrollments = []
+        for index in range(2):
+            student = Student.objects.create(
+                student_number=f"GRAD-{index + 1}",
+                full_name=f"طالب خريج {index + 1}",
+                grade=self.grade.name,
+                section=self.section.name,
+            )
+            self.enrollments.append(
+                Enrollment.objects.create(
+                    student=student,
+                    academic_year=self.year,
+                    grade=self.grade,
+                    section=self.section,
+                    status="active",
+                )
+            )
+        self.client.force_login(self.user)
+
+    def test_legacy_bulk_route_redirects_to_atomic_annual_center(self):
+        response = self.client.post(
+            reverse("academics:promotion_batch"),
+            {
+                "operation": "graduate",
+                "source_year": self.year.pk,
+                "source_grade": self.grade.pk,
+                "effective_date": "2027-06-30",
+                "reason": "إنهاء العام",
+                "students": [item.pk for item in self.enrollments],
+                "execute": "1",
+            },
+        )
+        self.assertRedirects(response, reverse("academics:annual_lifecycle_center"))
+        self.assertEqual(
+            Enrollment.objects.filter(pk__in=[item.pk for item in self.enrollments], status="active").count(),
+            2,
+        )
+        self.assertEqual(StudentLifecycleEvent.objects.filter(action="graduate").count(), 0)

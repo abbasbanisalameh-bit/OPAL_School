@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-opal-time-zone="{{ opal_time_zone|default:'Asia/Amman' }}" data-opal-server-now="{{ opal_server_now|date:'c' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}نظام أوبال لإدارة المدرسة{% endblock %}</title>
+    <script>(function(){try{var m=localStorage.getItem("opal-theme-mode");if(m==="dark"||m==="green"||m==="light"){document.documentElement.setAttribute("data-opal-theme",m);document.documentElement.classList.add("opal-"+m+"-mode");}}catch(e){}})();</script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- OPAL CSS AUTHORITY: the only active shared OPAL stylesheet -->
+    <link href="{% static 'css/opal_theme_system.css' %}?v=opal-131.7-r118-bottom-nav-mobile" rel="stylesheet">
+    <!-- OPAL R78: one global CSS authority -->
+
+    {% block extra_css %}{% endblock %}
+
+</head>
+<body>
+<a class="opal-skip-link" href="#opal-main-content">تجاوز إلى المحتوى الرئيسي</a>
+<div id="opal-navigation-progress" class="opal-navigation-progress" aria-hidden="true"><span></span></div>
+<div id="opal-ux-status" class="opal-ux-status" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="opal-layout">
+
+    <main id="opal-main-content" class="opal-main" tabindex="-1">
+        {% if opal_is_impersonating and not opal_is_transport_driver_impersonating %}
+        <div class="opal-impersonation-banner">
+            <div><i class="bi bi-person-bounding-box"></i> أنت داخل حساب مستخدم آخر بواسطة المدير <strong>{{ opal_impersonator_name|default:"المدير العام" }}</strong>.</div>
+            <form method="post" action="{% url 'accounts:stop_impersonation' %}">
+                {% csrf_token %}
+                <button class="btn btn-warning btn-sm" type="submit"><i class="bi bi-arrow-return-right"></i> العودة إلى حساب المدير</button>
+            </form>
+        </div>
+        {% endif %}
+        {% if opal_is_transport_driver_impersonating %}
+        <div class="opal-impersonation-banner">
+            <div><i class="bi bi-bus-front-fill"></i> أنت داخل حساب سائق بواسطة الإدارة <strong>{{ opal_transport_driver_impersonator_name|default:"الإدارة" }}</strong>.</div>
+            <form method="post" action="{% url 'transport:driver-impersonate-stop' %}">
+                {% csrf_token %}
+                <button class="btn btn-warning btn-sm" type="submit"><i class="bi bi-arrow-return-right"></i> العودة إلى حساب المدير</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% include "includes/topbar.html" %}
+
+        <div class="opal-page-navigation">
+            <button type="button" class="btn btn-outline-warning opal-dynamic-back" data-fallback-url="{% url 'dashboard:home' %}" title="العودة"><i class="bi bi-arrow-right-circle-fill"></i> العودة</button>
+            <div class="opal-page-academic-year" aria-label="العام الدراسي المعتمد">
+                <i class="bi bi-calendar2-week-fill" aria-hidden="true"></i>
+                <span>{% if opal_academic_year %}{{ opal_academic_year.name }}{% else %}العام الدراسي الحالي{% endif %}</span>
+            </div>
+            <nav class="opal-breadcrumbs" aria-label="مسار الصفحة"><a href="{% url 'dashboard:home' %}"><i class="bi bi-house-door-fill"></i> الرئيسية</a>{% if opal_current_operation %}{% if opal_current_gateway and opal_current_gateway.label != opal_current_operation.label %}<i class="bi bi-chevron-left"></i><span>{{ opal_current_gateway.label|default:opal_current_operation.module_label }}</span>{% endif %}<i class="bi bi-chevron-left"></i><strong>{% block breadcrumb_current_label %}{{ opal_current_operation.label }}{% endblock %}</strong>{% elif request.resolver_match %}<i class="bi bi-chevron-left"></i><strong>{% block breadcrumb_label %}الصفحة الحالية{% endblock %}</strong>{% endif %}</nav>
+        </div>
+        <div class="page-heading">
+            <h1>{% block page_title %}لوحة التحكم{% endblock %}</h1>
+            <p>{% block page_subtitle %}{% endblock %}</p>
+            {% if opal_current_operation %}
+            <div class="opal-current-operation"><i class="bi bi-{{ opal_current_operation.icon }}"></i><span>{{ opal_current_gateway.label|default:opal_current_operation.module_label }}</span><i class="bi bi-chevron-left"></i><strong>{{ opal_current_operation.label }}</strong></div>
+            {% endif %}
+        </div>
+
+            {% if opal_module_subnav %}
+            {% include "includes/module_subnav.html" %}
+            {% endif %}
+
+        {% if messages %}
+        <div class="opal-messages" aria-label="رسائل النظام">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show opal-system-message" role="{% if 'error' in message.tags or 'danger' in message.tags %}alert{% else %}status{% endif %}">
+                <i class="bi {% if 'success' in message.tags %}bi-check-circle-fill{% elif 'error' in message.tags or 'danger' in message.tags %}bi-exclamation-octagon-fill{% elif 'warning' in message.tags %}bi-exclamation-triangle-fill{% else %}bi-info-circle-fill{% endif %}" aria-hidden="true"></i>
+                <span>{{ message }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق الرسالة"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if opal_semester_changed %}
+        <div class="alert alert-info" role="status">
+            <i class="bi bi-calendar2-check-fill"></i>
+            {% if opal_semester %}
+            انتقل السياق الأكاديمي تلقائيًا إلى <strong>{{ opal_semester.get_code_display }}</strong> ضمن {{ opal_academic_year.name }} وفق تاريخ اليوم.
+            {% else %}
+            انتهى الفصل النشط ودخل التقويم فترة عطلة؛ أوقفت العمليات اليومية المرتبطة بالفصل تلقائيًا حتى بداية الفصل التالي.
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+
+<div class="opal-copyright-footer text-center py-3 mt-4">
+    <small class="text-muted">
+        © نظام أوبال لإدارة المدرسة 2026 &nbsp;|&nbsp; تصميم وتطوير <strong>عباس بني سلامة</strong> &nbsp;|&nbsp; 0775115362
+    </small>
+</div>
+
+    </main>
+</div>
+
+{% include "includes/bottom_nav.html" %}
+{% include "includes/quick_access_modal.html" %}
+
+
+<script>
+(function(){
+  const menuBtn=document.getElementById("opal-bottom-menu");
+  if(menuBtn){menuBtn.addEventListener("click",function(){const modalEl=document.getElementById("opal-quick-access-modal");if(modalEl && window.bootstrap){bootstrap.Modal.getOrCreateInstance(modalEl).show();}});}
+  const searchBtn=document.getElementById("opal-bottom-search");
+  if(searchBtn){searchBtn.addEventListener("click",function(){
+    const input=document.getElementById("opal-global-operation-search");
+    if(!input)return;
+    const wrap=input.closest(".opal-global-search-wrap");
+    if(wrap){wrap.scrollIntoView({behavior:"smooth",block:"nearest"});}
+    window.setTimeout(function(){input.focus();},120);
+  });}
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/opal_erp.js' %}?v=opal-131.7-r106-css-cleanup"></script>
+<script>(function(){const el=document.getElementById('opal-event-countdown');if(!el)return;let s=parseInt(el.dataset.seconds||'0',10);function draw(){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;el.textContent=(h?h+':':'')+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0');if(s>0)s--;else window.location.reload();}draw();setInterval(draw,1000);})();</script>
+{% include "enterprise_ops/_monthly_evaluation_prompt.html" %}
+{% block extra_js %}{% endblock %}
+
+
+</body>
+</html>

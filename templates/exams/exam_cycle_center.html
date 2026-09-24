@@ -1,0 +1,14 @@
+{% extends "base/base.html" %}
+
+{% block title %}الامتحانات | OPAL ERP{% endblock %}
+{% block page_title %}الامتحانات{% endblock %}
+{% block breadcrumb_current_label %}الامتحانات{% endblock %}
+{% block content %}
+<div class="opal-domain-accordion">
+<details class="opal-card mb-3" open><summary class="opal-domain-summary"><strong>إعداد الامتحانات</strong><span>تعريف الامتحان والصف والشعبة والمادة</span></summary><div class="pt-3 d-flex justify-content-between align-items-center gap-2 flex-wrap"><span class="text-secondary">إدارة تعريفات الامتحانات الحالية.</span><a class="btn btn-primary" href="{% url 'exams:exam_definitions' %}"><i class="bi bi-pencil-square"></i> فتح إعداد الامتحانات</a></div></details>
+<details class="opal-card mb-3"><summary class="opal-domain-summary"><strong>الدورات الامتحانية</strong><span>الفتح والتوزيع والنشر</span></summary><div class="pt-3"><div class="row g-3"><div class="col-lg-5"><h5>فتح دورة عامة</h5><form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">فتح وتوزيع الدورة</button></form></div><div class="col-lg-7"><div class="table-responsive"><table class="opal-table"><thead><tr><th>العام</th><th>الفصل</th><th>الدورة</th><th>الحالة</th><th>التكليفات</th><th>التاريخ</th></tr></thead><tbody>{% for cycle in cycles %}<tr><td>{{ cycle.academic_year }}</td><td>{{ cycle.semester.get_code_display }}</td><td>{{ cycle.get_exam_type_display }}</td><td><span class="badge {% if cycle.status == 'open' %}bg-success{% else %}bg-dark{% endif %}">{{ cycle.get_status_display }}</span></td><td>{{ cycle.exams.count }}</td><td>{{ cycle.opened_at|date:'Y-m-d H:i' }}</td></tr>{% empty %}<tr><td colspan="6">لم تفتح أي دورة بعد.</td></tr>{% endfor %}</tbody></table></div></div></div></div></details>
+<details class="opal-card mb-3"><summary class="opal-domain-summary"><strong>سجل العلامات</strong><span>العلامات الحالية والمراجعة</span></summary><div class="pt-3"><p class="text-secondary mb-2">السجل التفصيلي يبقى في الشاشة الرسمية مع الفلاتر والإجراءات الكاملة.</p><a class="btn btn-outline-primary" href="{% url 'exams:gradebook' %}">فتح سجل العلامات</a></div></details>
+<details class="opal-card mb-3"><summary class="opal-domain-summary"><strong>تحليل النتائج</strong><span>التحليل والتقارير الأكاديمية</span></summary><div class="pt-3"><a class="btn btn-outline-primary" href="{% url 'exams:gradebook' %}#results-analysis">فتح تحليل النتائج</a></div></details>
+<details class="opal-card mb-3"><summary class="opal-domain-summary"><strong>مراجعة العلامات الرسمية</strong><span>المراجعة والاعتماد قبل النشر</span></summary><div class="pt-3"><a class="btn btn-outline-primary" href="{% url 'exams:gradebook' %}#official-marks-review">فتح مراجعة العلامات</a></div></details>
+</div>
+{% endblock %}

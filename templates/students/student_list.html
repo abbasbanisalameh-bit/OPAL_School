@@ -1,0 +1,28 @@
+{% extends "base/base.html" %}
+{% block title %}الطلبة | OPAL ERP{% endblock %}
+{% block page_title %}الطلبة{% endblock %}
+{% block content %}
+<section class="opal-card opal-gateway-header mb-4">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div><h2 class="mb-1">قائمة الطلبة</h2>{% if current_year %}<small class="text-secondary">{{ current_year.name }} — السجل الموحد للبيانات الدراسية والتسجيل والملخص المالي</small>{% endif %}</div>
+    <a href="{% url 'admissions:direct_registration' %}" class="btn btn-primary"><i class="bi bi-person-plus-fill"></i> تسجيل طالب</a>
+  </div>
+</section>
+<div class="opal-card" id="student-list">
+  <form method="get" class="row g-2 mb-4">
+    <div class="col-lg-6"><label class="form-label">بحث</label><input name="q" value="{{ q }}" class="form-control" placeholder="الاسم أو رقم الطالب أو الهاتف أو الرقم الوطني أو ولي الأمر"></div>
+    <div class="col-lg-4"><label class="form-label">الحالة</label><select name="status" class="form-control"><option value="">جميع الحالات</option>{% for value,label in status_choices %}<option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+    <div class="col-lg-2 d-grid"><button class="btn btn-dark">بحث</button></div>
+  </form>
+  <div class="table-responsive opal-mobile-compact-table"><table class="opal-table"><thead><tr><th>الطالب</th><th>الصف / الشعبة</th><th>الحالة</th><th>التسجيل</th><th>الملخص المالي</th><th class="text-center">الملف</th></tr></thead><tbody>
+  {% for student in students %}<tr>
+    <td class="fw-bold">{{ student.full_name }}<small class="d-block text-secondary">{{ student.student_number }}{% if student.phone %} · {{ student.phone }}{% endif %}</small></td>
+    <td>{{ student.registered_grade|default:student.grade|default:"-" }}{% if student.registered_section %} · {{ student.registered_section }}{% endif %}</td>
+    <td>{% if student.is_active %}<span class="badge bg-success">{{ student.get_status_display }}</span>{% else %}<span class="badge bg-secondary">{{ student.get_status_display }}</span>{% endif %}</td>
+    <td>{% if student.current_registration %}<span class="badge bg-light text-dark border">مسجل</span><small class="d-block text-secondary">{{ student.current_registration.registration_number }}</small>{% else %}<span class="text-secondary">لا يوجد قيد حالي</span>{% endif %}</td>
+    <td><strong>{{ student.finance_summary.remaining|floatformat:2 }} د.أ</strong><small class="d-block text-secondary">مدفوع {{ student.finance_summary.paid|floatformat:2 }} من {{ student.finance_summary.total|floatformat:2 }}</small></td>
+    <td class="text-center"><a href="{% url 'students:student_360' student.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-person-vcard"></i> بطاقة الطالب</a></td>
+  </tr>{% empty %}<tr><td colspan="6" class="text-center">لا يوجد طلاب مطابقون.</td></tr>{% endfor %}
+  </tbody></table></div>
+</div>
+{% endblock %}

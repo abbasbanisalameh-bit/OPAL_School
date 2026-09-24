@@ -1,0 +1,47 @@
+{% extends "base/base.html" %}
+{% block title %}ملفات أولياء الأمور{% endblock %}
+{% block page_title %}أولياء الأمور{% endblock %}
+
+{% block content %}
+<div class="opal-card">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">قائمة أولياء الأمور</h3>
+    <div><a href="{% url 'parent_portal:guardian_duplicates' %}" class="btn btn-outline-warning">فحص الملفات المكررة</a> <span class="badge bg-primary">{{ families|length }} ملف</span></div>
+  </div>
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead><tr><th>ولي الأمر</th><th>الهاتف</th><th>اسم المستخدم</th><th>الأبناء</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+      <tbody>
+      {% for family in families %}
+        <tr>
+          <td>{{ family.guardian_name|default:"-" }}</td>
+          <td>{{ family.phone|default:"-" }}</td>
+          <td>{% if family.user %}{{ family.user.username }}{% else %}<span class="text-muted">لا يوجد حساب</span>{% endif %}</td>
+          <td>
+            {% for link in family.children.all %}
+              {% if link.is_active %}<span class="badge bg-light text-dark border me-1">{{ link.student.full_name }}</span>{% endif %}
+            {% empty %}<span class="text-muted">لا يوجد أبناء مرتبطون</span>{% endfor %}
+          </td>
+          <td>{% if family.user and family.user.is_active %}<span class="badge bg-success">نشط</span>{% else %}<span class="badge bg-secondary">غير نشط</span>{% endif %}</td>
+          <td>
+            <div class="d-flex flex-wrap gap-2">
+              <a href="{% url 'parent_portal:family_detail' family.pk %}" class="btn btn-sm btn-primary">فتح الملف</a>
+              {% if request.user.is_superuser and family.user and family.user.is_active %}
+              <form method="post" action="{% url 'accounts:impersonate_user' family.user_id %}" onsubmit="return confirm('سيتم الدخول إلى حساب ولي الأمر {{ family.guardian_name|escapejs }}. هل تريد المتابعة؟');">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-warning" type="submit"><i class="bi bi-box-arrow-in-left"></i> الدخول بحسابه</button>
+              </form>
+              {% elif request.user.is_superuser %}
+                <span class="badge text-bg-secondary">لا يوجد حساب فعال</span>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="text-center text-muted py-4">لا توجد ملفات أولياء أمور مسجلة.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

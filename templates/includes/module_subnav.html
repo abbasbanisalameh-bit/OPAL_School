@@ -1,0 +1,12 @@
+{% if opal_module_subnav %}
+<nav class="opal-module-subnav" aria-label="روابط {{ opal_module_subnav.label }}">
+  <div class="opal-module-subnav-head">
+    <span><i class="bi bi-{{ opal_module_subnav.icon }}"></i> {{ opal_module_subnav.label }}</span>
+  </div>
+  <div class="opal-module-subnav-scroll">
+    {% for item in opal_module_subnav.items %}
+      <a href="{{ item.url }}" class="opal-subnav-btn{% if item.active %} active{% endif %}"{% if item.active %} aria-current="page"{% endif %}><i class="bi bi-{{ item.icon }}"></i><span>{{ item.label }}</span></a>
+    {% endfor %}
+  </div>
+</nav>
+{% endif %}

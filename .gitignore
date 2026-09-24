@@ -1,0 +1,9 @@
+db.sqlite3
+media/
+staticfiles/
+.env
+.env.*
+*.pem
+*.key
+__pycache__/
+*.pyc

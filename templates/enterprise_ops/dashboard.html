@@ -1,0 +1,12 @@
+{% extends "base/base.html" %}
+{% block title %}التواصل والمتابعة | OPAL{% endblock %}
+{% block page_title %}التواصل والمتابعة{% endblock %}
+{% block page_subtitle %}تم دمج الملخص التنفيذي للتواصل في لوحة الإدارة{% endblock %}
+{% block content %}
+<section class="opal-card text-center py-5">
+  <i class="bi bi-layout-text-window-reverse display-5 text-info"></i>
+  <h2 class="h4 mt-3">مركز التواصل أصبح جزءًا من لوحة الإدارة التنفيذية</h2>
+  <p class="text-secondary">تفتح بطاقات الشكاوى والتعاميم والإعلانات صفحاتها التشغيلية الحالية دون تكرار.</p>
+  <a class="btn btn-info" href="{% url 'dashboard:home' %}#opal-communication-actions">فتح لوحة الإدارة</a>
+</section>
+{% endblock %}

@@ -1,0 +1,36 @@
+from django.shortcuts import redirect
+
+from .permissions import is_teacher_user
+
+
+class TeacherPortalAccessMiddleware:
+    """Restrict active teacher accounts to their portal and session endpoints."""
+
+    ALLOWED_PREFIXES = (
+        "/teachers/portal/",
+        "/exams/",  # canonical marks entry; permissions remain enforced by the view
+        "/accounts/",
+        "/logout/",
+        "/static/",
+        "/media/",
+        "/learning/",
+        "/enterprise/feedback/",
+        "/enterprise/monthly-evaluation/",
+        "/enterprise/reports/",
+        "/enterprise/audit/",
+        "/enterprise/notifications/",
+    )
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if (
+            not (request.user.is_staff or request.user.is_superuser)
+            and is_teacher_user(request.user)
+        ):
+            if request.path == "/":
+                return redirect("teachers:portal_dashboard")
+            if not request.path.startswith(self.ALLOWED_PREFIXES):
+                return redirect("teachers:portal_dashboard")
+        return self.get_response(request)

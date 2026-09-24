@@ -1,0 +1,8 @@
+<nav class="opal-bottom-nav" aria-label="التنقل الرئيسي">
+  <a href="{% url 'dashboard:home' %}" class="is-current"><i class="bi bi-house-door-fill" aria-hidden="true"></i><span>الرئيسية</span></a>
+  <button type="button" id="opal-bottom-search" class="opal-bottom-search" aria-label="البحث"><i class="bi bi-search" aria-hidden="true"></i><span>البحث</span></button>
+  <button type="button" id="opal-bottom-menu" class="opal-bottom-services" aria-label="أزرار الوصول" data-bs-toggle="modal" data-bs-target="#opal-quick-access-modal"><i class="bi bi-grid-3x3-gap-fill" aria-hidden="true"></i><span>أزرار الوصول</span></button>
+  {% if opal_is_management %}<a href="{% url 'core:system_settings' %}"><i class="bi bi-gear-fill" aria-hidden="true"></i><span>الإعدادات</span></a>{% endif %}
+  <a href="{% if opal_profile_url %}{{ opal_profile_url }}{% else %}{% url 'accounts:my_profile' %}{% endif %}"><i class="bi bi-person-circle" aria-hidden="true"></i><span>الحساب</span></a>
+  <button type="button" id="opal-scroll-top" class="opal-bottom-scroll-top" aria-label="العودة إلى أعلى الصفحة" aria-hidden="true" tabindex="-1" title="العودة إلى أعلى الصفحة"><i class="bi bi-arrow-up" aria-hidden="true"></i><span>للأعلى</span></button>
+</nav>

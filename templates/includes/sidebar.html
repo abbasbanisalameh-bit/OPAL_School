@@ -1,0 +1,54 @@
+<aside id="opal-sidebar" class="opal-sidebar" aria-label="القائمة الرئيسية">
+  <button type="button" class="opal-sidebar-close" id="opal-sidebar-close" aria-label="إغلاق القائمة"><i class="bi bi-x-lg"></i></button>
+
+  <div class="opal-brand opal-school-brand-fixed">
+    <div class="opal-logo opal-school-logo-fixed">{% if opal_school and opal_school.logo %}<img src="{{ opal_school.logo.url }}" alt="{{ opal_school.name }}" class="opal-school-logo-img-fixed">{% else %}<i class="bi bi-mortarboard-fill"></i>{% endif %}</div>
+    <div class="opal-school-brand-text-fixed"><h3>{{ opal_school.name|default:"OPAL" }}</h3><span>School ERP</span></div>
+  </div>
+
+  <nav class="opal-menu" aria-label="القائمة الرئيسية">
+    {% for section in opal_navigation_sections %}
+      {% if section.items|length == 1 %}
+        {% for item in section.items %}
+          <a href="{{ item.url }}"{% if item.active %} class="active" aria-current="page"{% endif %}>
+            <i class="bi bi-{{ item.icon }}" aria-hidden="true"></i>
+            <span>{{ section.label }}</span>
+          </a>
+        {% endfor %}
+      {% else %}
+        <section class="opal-menu-group" data-sidebar-group>
+          <button type="button" class="opal-menu-section" data-sidebar-toggle aria-expanded="true" aria-controls="opal-sidebar-items-{{ forloop.counter }}">
+            <span>{{ section.label }}</span>
+            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div id="opal-sidebar-items-{{ forloop.counter }}" class="opal-menu-items" data-sidebar-items>
+            {% for item in section.items %}
+              <a href="{{ item.url }}"{% if item.active %} class="active" aria-current="page"{% endif %}>
+                <i class="bi bi-{{ item.icon }}" aria-hidden="true"></i>
+                <span>{{ item.label }}</span>
+              </a>
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+    {% empty %}
+      <section class="opal-menu-group" data-sidebar-group>
+        <button type="button" class="opal-menu-section" data-sidebar-toggle aria-expanded="true" aria-controls="opal-sidebar-items-account">
+          <span>الحساب</span>
+          <i class="bi bi-chevron-down" aria-hidden="true"></i>
+        </button>
+        <div id="opal-sidebar-items-account" class="opal-menu-items" data-sidebar-items>
+          <a href="{% url 'accounts:my_profile' %}">
+            <i class="bi bi-person-circle" aria-hidden="true"></i>
+            <span>الملف الشخصي</span>
+          </a>
+        </div>
+      </section>
+    {% endfor %}
+  </nav>
+
+  <form method="post" action="{% url 'accounts:logout' %}" class="opal-logout-form">
+    {% csrf_token %}
+    <button class="btn btn-outline-light w-100" type="submit"><i class="bi bi-box-arrow-right" aria-hidden="true"></i> تسجيل الخروج</button>
+  </form>
+</aside>

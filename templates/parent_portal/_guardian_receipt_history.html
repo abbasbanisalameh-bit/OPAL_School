@@ -1,0 +1,16 @@
+<section class="opal-card opal-guardian-receipts" aria-labelledby="guardianReceiptHistoryTitle">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"><h3 class="fw-bold mb-0" id="guardianReceiptHistoryTitle"><i class="bi bi-receipt"></i> إيصالات ولي الأمر</h3><span class="badge bg-primary">{{ receipt_history|length }} إيصال</span></div>
+  {% if receipt_history %}
+  <div class="table-responsive"><table class="opal-table opal-receipt-table"><thead><tr><th>الإيصال</th><th>التاريخ</th><th>المبلغ</th><th>نوع العملية</th><th>طريقة الدفع</th><th>الأبناء</th><th>المستلم</th><th>الحالة</th><th></th></tr></thead><tbody>
+  {% for receipt in receipt_history %}<tr>
+    <td class="fw-bold" dir="ltr">{{ receipt.receipt_number }}</td>
+    <td>{{ receipt.created_at|date:"Y-m-d" }}<small class="d-block text-secondary">{{ receipt.created_at|date:"H:i" }}</small></td>
+    <td class="fw-bold">{{ receipt.amount|floatformat:2 }} د.أ</td>
+    <td>{{ receipt.payment_type }}</td><td>{{ receipt.payment_method }}</td>
+    <td>{{ receipt.children_names }}</td><td>{{ receipt.receiver }}{% if receipt.receiver_title %}<small class="d-block text-secondary">{{ receipt.receiver_title }}</small>{% endif %}</td>
+    <td>{% if receipt.status_label == "ملغى" %}<span class="badge bg-danger">ملغى</span>{% else %}<span class="badge bg-success">معتمد</span>{% endif %}</td>
+    <td>{% if can_print_receipts and receipt.source_id %}<a class="btn btn-sm btn-outline-dark" target="_blank" href="{% url 'parent_portal:family_receipt_print' receipt_family_pk receipt.source_type receipt.source_id %}"><i class="bi bi-printer"></i> عرض / طباعة</a>{% endif %}</td>
+  </tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}<div class="text-secondary">لا توجد إيصالات.</div>{% endif %}
+</section>

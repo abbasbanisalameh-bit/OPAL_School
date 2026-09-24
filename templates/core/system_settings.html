@@ -1,0 +1,279 @@
+{% extends "base/base.html" %}
+{% block title %}إعدادات النظام | OPAL ERP{% endblock %}
+{% block page_title %}إعدادات النظام{% endblock %}
+{% block page_subtitle %}{% endblock %}
+{% block content %}
+{# OPAL_SYSTEM_UPDATES_PAGE_V2 #}
+{% if request.user.is_superuser %}
+<div class="opal-card mb-4">
+    <h3 class="fw-bold mb-3"><i class="bi bi-arrow-repeat"></i> مركز تحديثات النظام</h3>
+    <p class="text-secondary">حفظ نسخة الكود الحالية، رفع تحديث، استعادة نسخة محفوظة، وإدارة نسخ GitHub.</p>
+    <a href="{% url 'core:system_updates' %}" class="btn btn-dark">
+        <i class="bi bi-gear-wide-connected"></i> فتح مركز تحديثات النظام
+    </a>
+</div>
+{% endif %}
+
+
+<section id="setup-guide" class="opal-card mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+    <div>
+      <h3 class="fw-bold mb-1">ابدأ استخدام النظام</h3>
+      <p class="text-secondary mb-0">اتبع الخطوات بالترتيب حتى تكتمل التهيئة.</p>
+    </div>
+    <div class="text-end">
+      <strong>{{ setup_progress }}%</strong>
+      <small class="d-block text-secondary">اكتملت {{ setup_completed_count }} من {{ setup_steps|length }} خطوات</small>
+    </div>
+  </div>
+  <div class="progress mt-3" role="progressbar" aria-label="تقدم تهيئة النظام" aria-valuenow="{{ setup_progress }}" aria-valuemin="0" aria-valuemax="100" style="height:8px">
+    <div class="progress-bar" style="width:{{ setup_progress }}%"></div>
+  </div>
+  {% if setup_next_step %}
+  <div class="opal-inner-panel mt-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div><span class="text-secondary d-block small">الخطوة التالية</span><strong>{{ setup_next_step.label }}</strong></div>
+    <a class="btn btn-primary" href="{{ setup_next_step.url }}">فتح الخطوة</a>
+  </div>
+  {% else %}
+  <div id="setup-complete" class="alert alert-success mt-3 mb-0"><strong>اكتملت تهيئة النظام الأساسية.</strong> يمكنك الانتقال مباشرة إلى التشغيل اليومي.</div>
+  {% endif %}
+
+  <div class="row g-2 mt-3">
+    {% for step in setup_steps %}
+    <div class="col-md-6 col-xl-4">
+      <a class="opal-settings-action {% if step.done %}primary{% endif %}" href="{{ step.url }}">
+        <i class="bi bi-{% if step.done %}check2-circle{% else %}circle{% endif %}"></i>
+        <strong>{{ forloop.counter }}. {{ step.label }}</strong>
+        <small>{% if step.done %}مكتملة{% else %}لم تكتمل بعد{% endif %}</small>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="opal-card mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h3 class="fw-bold mb-0">ابحث في إعدادات النظام</h3>
+    <span class="text-secondary small">بحث سريع داخل عناصر الإعدادات الحالية</span>
+  </div>
+  <input id="opal-settings-search" class="form-control" type="search" placeholder="ابحث في إعدادات النظام" autocomplete="off">
+</section>
+
+<details id="school-settings" class="opal-card mb-4 opal-settings-section" open>
+  <summary class="opal-settings-summary">
+    <span><i class="bi bi-building-fill"></i><strong>معلومات المدرسة</strong><small>{% if school %}{{ school.name }}{% else %}بيانات الهوية الأساسية{% endif %}</small></span>
+    <i class="bi bi-chevron-down opal-settings-chevron"></i>
+  </summary>
+  <div class="opal-settings-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="school_settings">
+      <div class="row g-3">
+        {% for field in form %}
+        <div class="{% if field.name == 'address' %}col-12{% else %}col-md-6{% endif %}">
+          {% if field.field.widget.input_type == 'checkbox' %}
+          <div class="form-check opal-check-card">{{ field }}<label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label></div>
+          {% else %}
+          <label class="form-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% endif %}
+          {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="opal-form-footer"><button class="btn btn-primary"><i class="bi bi-check2-circle"></i> حفظ بيانات المدرسة</button></div>
+    </form>
+  </div>
+</details>
+
+<section class="opal-card mb-4 opal-settings-section" id="annual-setup">
+  <div class="opal-settings-summary">
+    <span><i class="bi bi-calendar-range-fill"></i><strong>العام الدراسي</strong><small>{% if current_year %}{{ current_year.name }}{% else %}لم يتم تفعيل عام حالي{% endif %}</small></span>
+    <a class="btn btn-outline-primary" href="{% url 'academics:academic_year_list' %}">فتح الأعوام الدراسية</a>
+  </div>
+</section>
+
+<section class="opal-card mb-4 opal-settings-section" id="academic-structure-settings">
+  <div class="opal-settings-summary">
+    <span><i class="bi bi-diagram-3-fill"></i><strong>الهيكل الأكاديمي</strong><small>الفروع وبنية العام الأكاديمي.</small></span>
+    <a class="btn btn-outline-primary" href="{% url 'academics:academic_structure' %}">فتح الهيكل الأكاديمي</a>
+  </div>
+</section>
+
+<section class="opal-card mb-4 opal-settings-section" id="grades-sections-setup">
+  <div class="opal-settings-summary">
+    <span><i class="bi bi-grid-3x3-gap-fill"></i><strong>الصفوف والشعب</strong><small>{{ grades_count }} صفًا · {{ sections_count }} شعبة في العام الحالي</small></span>
+    <span class="text-secondary small">تُدار من بوابة الصفوف والشعب</span>
+  </div>
+</section>
+
+<section class="opal-card mb-4 opal-settings-section" id="subjects-setup">
+  <div class="opal-settings-summary">
+    <span><i class="bi bi-book-half"></i><strong>المواد والخطة</strong><small>{{ subjects_count }} مادة مرتبطة بالعام الحالي.</small></span>
+
+  </div>
+</section>
+
+<details id="registration-settings" class="opal-card mb-4 opal-settings-section" {% if selected_section == 'registration' %}open{% endif %}>
+  <summary class="opal-settings-summary">
+    <span><i class="bi bi-person-vcard-fill"></i><strong>التسجيل</strong><small>الدفعة الأولى والخصومات وسياسات التسجيل.</small></span>
+    <i class="bi bi-chevron-down opal-settings-chevron"></i>
+  </summary>
+  <div class="opal-settings-body">
+    {% if not current_year %}<div class="alert alert-warning">لا يوجد عام دراسي حالي مفتوح. أنشئ العام وفعّله قبل بدء التسجيل.</div>{% endif %}
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="registration_settings">
+      <div class="row g-3">
+        {% for field in registration_form %}
+        <div class="{% if field.field.widget.input_type == 'checkbox' %}col-md-6{% else %}col-md-4{% endif %}">
+          {% if field.field.widget.input_type == 'checkbox' %}
+          <div class="form-check opal-check-card">{{ field }}<label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label></div>
+          {% else %}
+          <label class="form-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}
+          {% endif %}
+          {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="opal-form-footer"><button class="btn btn-primary"><i class="bi bi-check2-circle"></i> حفظ إعدادات التسجيل</button></div>
+    </form>
+
+    <div class="opal-inner-panel mt-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"><h4 class="fw-bold mb-0">جولات المواصلات المستخدمة في التسجيل</h4><a class="btn btn-outline-primary" href="{% url 'transport:transport-dashboard' %}">فتح المواصلات</a></div>
+      <form method="post" class="row g-3 align-items-end">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="route">
+        {% for field in route_form %}
+        <div class="{% if field.name == 'notes' %}col-lg-6{% else %}col-lg-2 col-md-4{% endif %}">
+          {% if field.field.widget.input_type == 'checkbox' %}
+          <div class="form-check opal-check-card">{{ field }}<label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label></div>
+          {% else %}
+          <label class="form-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}
+          {% endif %}
+          {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+        </div>
+        {% endfor %}
+        <div class="col-lg-2 col-md-4"><button class="btn btn-outline-primary w-100"><i class="bi bi-plus-circle"></i> حفظ الجولة</button></div>
+      </form>
+      {% if routes %}
+      <div class="table-responsive mt-4"><table class="opal-table"><thead><tr><th>الجولة</th><th>رسوم ذهاب وعودة</th><th>الحالة</th><th></th></tr></thead><tbody>
+      {% for route in routes %}<tr><td class="fw-bold">{{ route.name }}</td><td>{{ route.full_fee }} د.أ</td><td>{% if route.is_active %}<span class="badge bg-success">فعالة</span>{% else %}<span class="badge bg-secondary">موقفة</span>{% endif %}</td><td><form method="post" class="d-inline">{% csrf_token %}<input type="hidden" name="route_id" value="{{ route.id }}"><button type="submit" name="action" value="toggle_route" class="btn btn-sm btn-outline-secondary">تفعيل / إيقاف</button></form> <form method="post" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف الجولة نهائيًا؟');">{% csrf_token %}<input type="hidden" name="route_id" value="{{ route.id }}"><button type="submit" name="action" value="delete_route" class="btn btn-sm btn-outline-danger">حذف</button></form></td></tr>{% endfor %}
+      </tbody></table></div>
+      {% endif %}
+    </div>
+  </div>
+</details>
+
+<details id="operations-settings" class="opal-card mb-4 opal-settings-section" {% if selected_section == 'operations' %}open{% endif %}>
+  <summary class="opal-settings-summary">
+    <span><i class="bi bi-gear-wide-connected"></i><strong>إدارة النظام</strong><small>الفروع وتحديثات النظام.</small></span>
+    <i class="bi bi-chevron-down opal-settings-chevron"></i>
+  </summary>
+  <div class="opal-settings-body">
+    <div class="opal-settings-actions-grid">
+      <a href="{% url 'core:branch_list' %}" class="opal-settings-action"><i class="bi bi-diagram-2-fill"></i><strong>الفروع</strong><small>إدارة فروع المدرسة</small></a>
+      {% if request.user.is_superuser %}
+      <a href="{% url 'core:system_updates' %}" class="opal-settings-action primary"><i class="bi bi-arrow-repeat"></i><strong>تحديثات النظام</strong><small>التحديث والنسخ والاستعادة</small></a>
+      {% endif %}
+    </div>
+  </div>
+</details>
+
+<details id="access-settings" class="opal-card mb-4 opal-settings-section" {% if selected_section == 'access' %}open{% endif %}>
+  <summary class="opal-settings-summary">
+    <span><i class="bi bi-shield-lock-fill"></i><strong>المستخدمون والصلاحيات</strong><small>الأدوار ومصفوفة الوصول.</small></span>
+    <i class="bi bi-chevron-down opal-settings-chevron"></i>
+  </summary>
+  <div class="opal-settings-body">
+    <div class="opal-settings-actions-grid">
+      {% if request.user.is_superuser %}
+      <a href="{% url 'accounts:role_list' %}" class="opal-settings-action primary"><i class="bi bi-people-fill"></i><strong>الأدوار</strong><small>أدوار مستخدمي النظام</small></a>
+      <a href="{% url 'enterprise_ops:permission_matrix' %}" class="opal-settings-action"><i class="bi bi-person-lock"></i><strong>مصفوفة الصلاحيات</strong><small>الوصول والتنفيذ والاعتماد</small></a>
+      {% endif %}
+    </div>
+    {% if not request.user.is_superuser %}<div class="alert alert-info mt-3 mb-0">إدارة الأدوار ومصفوفة الصلاحيات متاحة لمدير النظام الأعلى.</div>{% endif %}
+  </div>
+</details>
+
+<details id="system-admin-tools" class="opal-card mb-4 opal-settings-section" {% if selected_section == 'system-admin' %}open{% endif %}>
+  <summary class="opal-settings-summary">
+    <span><i class="bi bi-shield-check"></i><strong>الأدوات الإدارية المتقدمة</strong><small>الفحص والتشغيل وإدارة البنية.</small></span>
+    <i class="bi bi-chevron-down opal-settings-chevron"></i>
+  </summary>
+  <div class="opal-settings-body">
+    <div class="opal-settings-actions-grid">
+      <a href="{% url 'core:operations_center' %}" class="opal-settings-action"><i class="bi bi-signpost-split-fill"></i><strong>دليل بنية العمليات</strong><small>مرجع ملكية المسارات</small></a>
+      {% if request.user.is_superuser %}
+      <a href="{% url 'core:integrity_center' %}" class="opal-settings-action warning"><i class="bi bi-database-check"></i><strong>سلامة البيانات</strong><small>فحص وإصلاح آمن</small></a>
+      <a href="{% url 'core:production_launch_preparation' %}" class="opal-settings-action warning"><i class="bi bi-rocket-takeoff-fill"></i><strong>تهيئة التشغيل الفعلي</strong><small>معاينة ثم تأكيد قبل التنظيف</small></a>
+      <form method="post" class="opal-system-data-form opal-settings-action-form" data-confirm="سيتم إدخال بيانات اختبار مترابطة وقد تؤثر على البيانات التشغيلية الحالية. هل تريد المتابعة؟">
+        {% csrf_token %}<input type="hidden" name="action" value="seed_system">
+        <button type="submit" class="opal-settings-action warning w-100 text-start border-0"><i class="bi bi-database-add"></i><strong>بيانات اختبار مترابطة</strong><small>أداة اختبار لمدير النظام الأعلى</small></button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</details>
+
+<details id="integrations-settings" class="opal-card mb-4 opal-settings-section" {% if selected_section == 'integrations' %}open{% endif %}>
+  <summary class="opal-settings-summary">
+    <span><i class="bi bi-plug-fill"></i><strong>التكاملات والأنظمة</strong><small>الخدمات المرتبطة بالنظام.</small></span>
+    <i class="bi bi-chevron-down opal-settings-chevron"></i>
+  </summary>
+  <div class="opal-settings-body">
+    <div class="opal-settings-actions-grid">
+      {% if request.user.is_superuser %}<a href="{% url 'learning_platform:manager_school_access' %}" class="opal-settings-action primary"><i class="bi bi-mortarboard-fill"></i><strong>إتاحة منصة أوبال التعليمية</strong><small>إدارة وصول المعلمين وأولياء الأمور</small></a>{% endif %}
+      {% if opal_openemis_enabled and request.user.is_staff %}
+      <a href="{% url 'openemis:settings' %}" class="opal-settings-action"><i class="bi bi-cloud-arrow-up-fill"></i><strong>OpenEMIS</strong><small>الإعداد واختبار الاتصال</small></a>
+      <a href="{% url 'openemis:logs' %}" class="opal-settings-action"><i class="bi bi-clock-history"></i><strong>سجل OpenEMIS</strong><small>المزامنة والاستيراد</small></a>
+      {% endif %}
+    </div>
+    {% if not opal_openemis_enabled %}<div class="text-secondary small mt-3">تكامل OpenEMIS غير مفعّل حاليًا.</div>{% endif %}
+  </div>
+</details>
+
+{% if opal_development_center_enabled and request.user.is_superuser %}
+<details id="development-settings" class="opal-card mb-4 opal-settings-section">
+  <summary class="opal-settings-summary">
+    <span><i class="bi bi-tools"></i><strong>مركز التطوير</strong><small>أدوات التطوير الداخلية.</small></span>
+    <i class="bi bi-chevron-down opal-settings-chevron"></i>
+  </summary>
+  <div class="opal-settings-body">
+    <div class="opal-settings-actions-grid">
+      <a href="{% url 'development_center:dashboard' %}" class="opal-settings-action"><i class="bi bi-tools"></i><strong>فتح مركز التطوير</strong><small>الخطة والإصدارات والأخطاء</small></a>
+    </div>
+  </div>
+</details>
+{% endif %}
+
+<section class="opal-card mb-4" id="setup-complete">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div><h3 class="fw-bold mb-1">حالة التهيئة</h3><div class="text-secondary">العام الحالي: {% if current_year %}{{ current_year.name }}{% else %}غير محدد{% endif %} · الصفوف {{ grades_count }} · الشعب {{ sections_count }} · المواد {{ subjects_count }}</div></div>
+    <a class="btn btn-outline-primary" href="{% url 'dashboard:home' %}">الانتقال إلى الرئيسية</a>
+  </div>
+</section>
+
+<script>
+(() => {
+  const input = document.getElementById("opal-settings-search");
+  if (!input) return;
+  const sections = Array.from(document.querySelectorAll(".opal-settings-section, #setup-guide, #setup-complete, #annual-setup, #academic-structure-settings, #grades-sections-setup, #subjects-setup"));
+  input.addEventListener("input", () => {
+    const q = input.value.trim().toLowerCase();
+    sections.forEach((section) => {
+      const match = !q || section.textContent.toLowerCase().includes(q);
+      section.hidden = !match;
+      if (q && match && section.tagName.toLowerCase() === "details") section.open = true;
+    });
+  });
+})();
+
+Array.from(document.querySelectorAll(".opal-system-data-form")).forEach((form) => {
+  form.addEventListener("submit", (event) => {
+    const message = form.dataset.confirm || "";
+    if (message && !window.confirm(message)) event.preventDefault();
+  });
+});
+</script>
+{% endblock %}

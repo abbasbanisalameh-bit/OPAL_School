@@ -1,0 +1,70 @@
+{% extends "base/base.html" %}
+{% block title %}الأعوام الدراسية{% endblock %}
+{% block page_title %}الأعوام الدراسية{% endblock %}
+{% block content %}
+
+<section class="panel">
+    <div class="panel-header">
+        <h2>الأعوام الدراسية</h2>
+        <div class="d-flex gap-2 flex-wrap">
+            <a class="btn btn-success" href="{% url 'academics:academic_year_create' %}">إضافة عام جديد</a>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table class="opal-table">
+            <thead>
+                <tr>
+                    <th>العام</th>
+                    <th>بداية الفصل الأول</th>
+                    <th>نهاية الفصل الأول</th>
+                    <th>بداية الفصل الثاني</th>
+                    <th>نهاية الفصل الثاني</th>
+                    <th>الحالة</th>
+                    <th>الإغلاق</th>
+                    <th>إجراء</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for y in years %}
+                <tr>
+                    <td>{{ y.name }}</td>
+                    <td>{{ y.start_date }}</td>
+                    <td>{{ y.semesters.all.0.end_date }}</td>
+                    <td>{{ y.semesters.all.1.start_date }}</td>
+                    <td>{{ y.end_date }}</td>
+                    <td>
+                        <span class="badge {% if y.operational_status == 'current' %}bg-success{% elif y.operational_status == 'financial_archived' %}bg-dark{% elif y.operational_status == 'academic_closed' %}bg-secondary{% else %}bg-info text-dark{% endif %}">{{ y.operational_status_label }}</span>
+                    </td>
+                    <td>
+                        {% if y.is_closed %}
+                            {{ y.closed_at|date:"Y-m-d H:i" }}<br>
+                            <small class="text-secondary">{{ y.closed_by|default:"النظام" }}</small>
+                        {% else %}—{% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2 flex-wrap">
+                            {% if not y.is_closed %}
+                            <a class="btn btn-sm btn-outline-primary" href="{% url 'academics:academic_year_update' y.id %}">تعديل</a>
+                            {% if not y.is_current %}
+                            <form method="post" action="{% url 'academics:academic_year_activate' y.id %}">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-success" onclick="return confirm('تفعيل هذا العام كعام حالي؟')">تفعيل</button>
+                            </form>
+                            {% endif %}
+                            <a class="btn btn-sm btn-outline-dark" href="{% url 'academics:academic_year_close' y.id %}">فحص وإغلاق</a>
+                            {% else %}
+                            <span class="text-secondary small">محفوظ للقراءة فقط</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8">لا توجد أعوام دراسية.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% endblock %}

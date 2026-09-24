@@ -1,0 +1,366 @@
+from django.shortcuts import render
+
+# Create your views here.
+
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse
+from django.contrib import messages
+import logging
+
+logger = logging.getLogger(__name__)
+from .models import Branch, School
+from .forms import BranchForm, SchoolSettingsForm
+from enterprise_ops.permissions import is_management, management_required
+
+def can_manage_system(user):
+    return is_management(user)
+
+@login_required
+@user_passes_test(can_manage_system)
+def system_settings(request):
+    """لوحة إعدادات OPAL المركزية، وتشمل إعدادات المدرسة والتسجيل والتنقل إلى الوحدات البنيوية."""
+    from admissions.forms import RegistrationSettingsForm, TransportRouteForm
+    from admissions.models import TransportRoute
+    from admissions.services import current_academic_year, get_registration_settings
+
+    school = School.objects.filter(is_active=True).first() or School.objects.create(name="مدرسة أوبال")
+    registration_settings = get_registration_settings(school)
+    current_year = current_academic_year(school)
+    from academics.models import Grade, Section, Subject
+    from django.contrib.auth import get_user_model
+    grades_count = (
+        Grade.objects.filter(
+            school=school,
+            id__in=Section.objects.filter(academic_year=current_year, branch__school=school).values("grade_id"),
+        ).distinct().count()
+        if current_year else 0
+    )
+    sections_count = Section.objects.filter(academic_year=current_year, branch__school=school).count() if current_year else 0
+    subjects_count = Subject.objects.filter(academic_year=current_year, grade__school=school).count() if current_year else 0
+    branches_count = Branch.objects.filter(school=school, is_active=True).count()
+    active_users_count = get_user_model().objects.filter(is_active=True).count()
+    setup_steps = [
+        {"label": "معلومات المدرسة", "done": bool(school.name), "url": "#school-settings"},
+        {"label": "العام الدراسي", "done": bool(current_year), "url": reverse("academics:academic_year_list")},
+        {"label": "الهيكل الأكاديمي", "done": bool(branches_count), "url": reverse("academics:academic_structure")},
+        {"label": "الصفوف والشعب", "done": bool(grades_count and sections_count), "url": "#grades-sections-setup"},
+        {"label": "المواد والخطة", "done": bool(current_year and subjects_count), "url": "#subjects-setup"},
+        {"label": "الإعدادات الأساسية", "done": registration_settings is not None, "url": "#registration-settings"},
+        {"label": "المستخدمون والصلاحيات", "done": bool(active_users_count), "url": "#access-settings"},
+        {"label": "الإعدادات التشغيلية", "done": bool(branches_count), "url": "#operations-settings"},
+        {"label": "بقية الإعدادات المطلوبة", "done": True, "url": "#integrations-settings"},
+        {"label": "الإكمال", "done": False, "url": "#setup-complete"},
+    ]
+    prerequisites_complete = all(step["done"] for step in setup_steps[:-1])
+    setup_steps[-1]["done"] = prerequisites_complete
+    setup_steps[-1]["url"] = "#setup-complete" if prerequisites_complete else "#setup-guide"
+    completed_setup = sum(1 for step in setup_steps if step["done"])
+    setup_progress = round((completed_setup / len(setup_steps)) * 100) if setup_steps else 100
+    setup_next_step = next((step for step in setup_steps if not step["done"]), None)
+
+    school_form = SchoolSettingsForm(instance=school, prefix="school")
+    registration_form = RegistrationSettingsForm(instance=registration_settings, prefix="registration")
+    route_form = TransportRouteForm(prefix="route")
+
+    if request.method == "POST":
+        action = request.POST.get('action')
+        route_id = request.POST.get('route_id')
+
+        if action == 'toggle_route' and route_id:
+            route = get_object_or_404(TransportRoute, id=route_id, school=school)
+            route.is_active = not route.is_active
+            route.save()
+            return redirect('core:system_settings')
+
+        elif action == 'delete_route' and route_id:
+            route = get_object_or_404(TransportRoute, id=route_id, school=school)
+            route.delete()
+            return redirect('core:system_settings')
+
+        action = request.POST.get("action", "school_settings")
+
+        if action == "reset_all":
+            messages.error(
+                request,
+                "التصفير المباشر متوقف. استخدم صفحة تهيئة التشغيل الفعلي التي تبدأ بالمعاينة والتأكيد.",
+            )
+            return redirect("core:production_launch_preparation")
+
+        if action == "seed_system":
+            if not request.user.is_superuser:
+                messages.error(request, "إدخال البيانات التجريبية المترابطة متاح لمدير النظام الأعلى فقط.")
+                return redirect("core:system_settings")
+            try:
+                from .system_data import seed_system_data
+                result = seed_system_data(user=request.user)
+            except Exception as exc:
+                logger.exception("R29 integrated demo seed failed")
+                messages.error(request, f"تعذر إنشاء البيانات التجريبية، ولم تُعتمد عملية جزئية: {exc}")
+            else:
+                messages.success(
+                    request,
+                    "تم إنشاء بيانات R29 المترابطة: "
+                    f"{result.get('students', 0)} طالب، {result.get('families', 0)} ولي أمر، "
+                    f"{result.get('teachers', 0)} معلم، وجدول ومنصة تعليمية مترابطان.",
+                )
+            return redirect(f"{reverse('core:system_settings')}?section=operations#operations-settings")
+
+        if action == "registration_settings":
+            registration_form = RegistrationSettingsForm(
+                request.POST, instance=registration_settings, prefix="registration"
+            )
+            if registration_form.is_valid():
+                registration_form.save()
+                messages.success(request, "تم حفظ إعدادات التسجيل والخصومات والدفعة الأولى.")
+                return redirect(f"{reverse('core:system_settings')}?section=registration#registration-settings")
+
+        elif action == "route":
+            route_form = TransportRouteForm(request.POST, prefix="route")
+            if route_form.is_valid():
+                route = route_form.save(commit=False)
+                route.school = school
+                route.save()
+                messages.success(request, "تم حفظ جولة المواصلات.")
+                return redirect(f"{reverse('core:system_settings')}?section=registration#registration-settings")
+
+        else:
+            school_form = SchoolSettingsForm(request.POST, request.FILES, instance=school, prefix="school")
+            if school_form.is_valid():
+                school_form.save()
+                messages.success(request, "تم تحديث بيانات المدرسة وهوية النظام بنجاح.")
+                return redirect(f"{reverse('core:system_settings')}?section=school#school-settings")
+
+    return render(request, "core/system_settings.html", {
+        "form": school_form,
+        "school": school,
+        "registration_form": registration_form,
+        "route_form": route_form,
+        "routes": TransportRoute.objects.filter(school=school).order_by("name"),
+        "current_year": current_year,
+        "selected_section": request.GET.get("section", "school"),
+        "setup_steps": setup_steps,
+        "setup_progress": setup_progress,
+        "setup_completed_count": completed_setup,
+        "setup_next_step": setup_next_step,
+        "grades_count": grades_count,
+        "sections_count": sections_count,
+        "subjects_count": subjects_count,
+    })
+
+
+@login_required
+@user_passes_test(can_manage_system)
+def branch_list(request):
+    school = School.objects.filter(is_active=True).first() or School.objects.first()
+    if school is None:
+        messages.error(request, "أدخل بيانات المدرسة أولًا.")
+        return redirect("core:system_settings")
+    form = BranchForm(request.POST or None, school=school)
+    if request.method == "POST" and form.is_valid():
+        branch = form.save(commit=False)
+        branch.school = school
+        if branch.is_main:
+            Branch.objects.filter(school=school).update(is_main=False)
+        branch.save()
+        messages.success(request, "تم حفظ الفرع من واجهة النظام.")
+        return redirect("core:branch_list")
+    return render(request, "core/branch_list.html", {"school": school, "form": form, "branches": school.branches.all()})
+
+
+@login_required
+@user_passes_test(can_manage_system)
+def branch_update(request, pk):
+    branch = get_object_or_404(Branch, pk=pk)
+    form = BranchForm(request.POST or None, instance=branch, school=branch.school)
+    if request.method == "POST" and form.is_valid():
+        item = form.save(commit=False)
+        if item.is_main:
+            Branch.objects.filter(school=branch.school).exclude(pk=branch.pk).update(is_main=False)
+        item.save()
+        messages.success(request, "تم تعديل الفرع.")
+        return redirect("core:branch_list")
+    return render(request, "core/branch_form.html", {"form": form, "title": "تعديل الفرع"})
+
+
+def admin_disabled(request):
+    from django.http import HttpResponseNotFound
+    return HttpResponseNotFound("لوحة Django Admin غير مستخدمة في OPAL ERP. أدخل البيانات من واجهة النظام.")
+
+
+@login_required
+@user_passes_test(lambda user: user.is_superuser)
+def integrity_center(request):
+    from .data_integrity import run_integrity_audit
+    from .models import DataIntegrityRun
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action in {"scan", "fix_safe"}:
+            run = run_integrity_audit(
+                fix_safe=(action == "fix_safe"),
+                user=request.user,
+            )
+
+            if action == "fix_safe":
+                messages.success(
+                    request,
+                    f"اكتمل الإصلاح الآمن: عولجت {run.fixed_count} مشكلة، "
+                    f"وبقيت {run.critical_count} حرجة للمراجعة."
+                )
+            else:
+                messages.success(
+                    request,
+                    f"اكتمل الفحص: {run.total_issues} مشكلة، "
+                    f"منها {run.critical_count} حرجة."
+                )
+
+            return redirect(f"{request.path}?run={run.pk}")
+
+    runs = DataIntegrityRun.objects.select_related("created_by")[:20]
+    run_id = request.GET.get("run")
+    selected_run = (
+        DataIntegrityRun.objects.filter(pk=run_id).first()
+        if run_id else runs.first()
+    )
+
+    issues = selected_run.issues.all() if selected_run else []
+    severity = request.GET.get("severity", "")
+
+    if severity and selected_run:
+        issues = issues.filter(severity=severity)
+
+    return render(
+        request,
+        "core/integrity_center.html",
+        {
+            "runs": runs,
+            "selected_run": selected_run,
+            "issues": issues,
+            "selected_severity": severity,
+        },
+    )
+
+@management_required
+def operations_center(request):
+    """Role-aware map of canonical operations and read-only integration diagnostics."""
+    from django.urls import NoReverseMatch, reverse
+
+    from .operation_audit import build_operation_audit
+    from .workflow_catalog import get_operations_for_user, group_operations
+
+    operations = get_operations_for_user(request.user)
+    audit_context = build_operation_audit()
+    for issue in audit_context["integration_issues"]:
+        try:
+            issue["url"] = reverse(issue["route"])
+        except NoReverseMatch:
+            issue["url"] = ""
+
+    strengths = [
+        "نموذج الطالب الرسمي واحد فقط: students.Student، وبطاقة الطالب 360 تجمع القيد والأسرة والرسوم والحضور والعلامات والوثائق والجدول.",
+        "التسجيل الذكي ينشئ الطالب والقيد والرسم والدفعة الأولى والإيصال وملف ولي الأمر ويجهز مزامنة OpenEMIS في عملية مترابطة.",
+        "تكليف المعلم هو الرابط الرسمي بين المعلم والعام والشعبة والمادة، ويُستخدم في الجدول والعلامات والحضور والواجبات.",
+        "الرسوم المدرسية مبسطة حول الرسوم والدفعات والإيصالات والمتبقي والإخوة، مع حذف آمن وسجل عمليات.",
+        "بوابتا المعلم وولي الأمر مقيدتان بصلاحيات ومسارات منفصلة، مع إشعارات وتقارير وسجل عمليات مناسب للدور.",
+        "النظام يحتوي مراكز مستقلة لسلامة البيانات والتحديثات والصلاحيات والتقارير والتكامل الوزاري.",
+    ]
+    weaknesses = [
+        "بعض البيانات القديمة قد تكون موجودة دون الروابط الرسمية الجديدة؛ لذلك تعرض هذه الصفحة فحوص التكامل وعدد الحالات المطلوب إصلاحها.",
+        "الاختبارات الكاملة كبيرة وتحتاج تشغيلًا ضمن بيئة أطول زمنًا أو تقسيمها إلى مجموعات في مسار النشر.",
+        "تكامل OpenEMIS ما زال تأسيسيًا حتى توفر واجهة الوزارة والحقول النهائية، ولا يجوز اعتباره مصدر البيانات الداخلي.",
+        "لا توجد بعد منظومة مخزون ورواتب وموارد بشرية مكتملة، وهي خارج النطاق الأساسي الحالي ويجب ألا تعطل إكمال وظائف المدرسة الأساسية.",
+        "توحيد الواجهة كان موجودًا جزئيًا، لكن البحث العلوي لم يكن ينفذ عملية فعلية؛ أصبح الآن دليل عمليات قابلًا للبحث.",
+    ]
+    completion_requirements = [
+        "معالجة جميع حالات التكامل الظاهرة في الفحوص حتى تصل النسبة إلى 100% قبل إدخال البيانات الحقيقية.",
+        "إكمال تغطية الاختبارات الآلية لمسارات التسجيل، الدفع، الإغلاق، الترفيع، نشر العلامات، الحضور، الوثائق والإشعارات.",
+        "اعتماد دورة تشغيل سنوية موثقة: إنشاء العام والفصلين، الهيكل، التكليفات، الجدول، التسجيل، التشغيل اليومي، النتائج، ثم الإغلاق والترفيع.",
+        "تنفيذ تجربة قبول تشغيلية بأدوار حقيقية: مدير، مسؤول رسوم، سكرتير، معلم وولي أمر، وتسجيل الملاحظات قبل الإطلاق.",
+        "تجهيز خطة الانتقال إلى PostgreSQL قبل زيادة عدد المدارس أو الفروع أو المستخدمين المتزامنين.",
+        "إكمال الربط الوزاري فقط بعد استلام مواصفات API الرسمية وبيانات الاعتماد من الوزارة.",
+    ]
+
+    flow_definitions = [
+        {
+            "title": "تهيئة العام الدراسي",
+            "icon": "calendar-range-fill",
+            "description": "تهيئة المرجع الأكاديمي الذي تعتمد عليه بقية الوحدات.",
+            "steps": [
+                ("إعدادات المدرسة", "core:system_settings"), ("الفروع", "core:branch_list"),
+                ("العام الدراسي", "academics:academic_year_list"), ("الفصل الحالي", "academics:semester_list"),
+                ("الصفوف والشعب", "academics:academic_structure"), ("المواد", "academics:subject_list"),
+                ("المواد والخطة الدراسية", "academics:subject_list"),
+            ],
+        },
+        {
+            "title": "المعلم والجدول",
+            "icon": "person-workspace",
+            "description": "ملف المعلم ثم الحساب والتكليف، وبعدها إنشاء الجدول دون تعارض.",
+            "steps": [
+                ("ملف المعلم", "teachers:dashboard"), ("التكليفات", "teachers:dashboard"),
+                ("إعداد اليوم المدرسي", "timetable:schedule_settings"), ("الجدول والمنشئ الذكي", "timetable:dashboard"),
+            ],
+        },
+        {
+            "title": "التسجيل والملف الموحد",
+            "icon": "person-plus-fill",
+            "description": "إنشاء الطالب والقيد والأسرة والرسم والإيصال ثم المتابعة من بطاقة 360.",
+            "steps": [
+                ("التسجيل الذكي", "admissions:direct_registration"),
+                ("سجل الطلبة", "admissions:admission_list"), ("قائمة الطلاب", "students:student_list"),
+                ("ملفات الأسر", "parent_portal:family_management"),
+            ],
+        },
+        {
+            "title": "الرسوم المدرسية",
+            "icon": "cash-stack",
+            "description": "إعداد الرسوم، إصدارها، تحصيلها، ثم التقارير والإغلاق من مسارات غير مكررة.",
+            "steps": [
+                ("فئات الرسوم", "accounting:fee_category_list"), ("رسوم الطلاب", "accounting:invoice_list"),
+                ("التسديد الموحد", "admissions:fee_payment_create"), ("أرشيف التسديد", "admissions:fee_payment_archive"),
+                ("الأقساط", "accounting:installment_list"), ("الخصومات", "accounting:discount_list"),
+                ("الإغلاق المالي السنوي", "accounting:financial_year_close"),
+            ],
+        },
+        {
+            "title": "التشغيل اليومي والنتائج",
+            "icon": "clipboard2-check-fill",
+            "description": "الحضور والواجبات والامتحانات والعلامات ثم النشر لولي الأمر.",
+            "steps": [
+                ("الحضور", "attendance_v2:dashboard"), ("بوابة المعلم", "teachers:portal_dashboard"),
+                ("الدورات الامتحانية", "exams:exam_cycle_center"), ("العلامات والتحليل", "exams:exam_list"),
+                ("بوابة ولي الأمر", "parent_portal:dashboard"),
+            ],
+        },
+        {
+            "title": "التواصل والرقابة",
+            "icon": "bell-fill",
+            "description": "استقبال الملاحظات، قياس الرضا، إرسال التنبيهات، ثم التتبع والتقارير.",
+            "steps": [
+                ("الشكاوى والتقييمات", "enterprise_ops:feedback_list"), ("التعاميم", "enterprise_ops:broadcast_list"),
+                ("الإعلانات", "announcements:list"), ("الإشعارات", "enterprise_ops:notification_list"),
+                ("التقارير", "enterprise_ops:report_center"), ("سجل العمليات", "enterprise_ops:audit_log"),
+            ],
+        },
+    ]
+    operation_flows = []
+    for flow in flow_definitions:
+        resolved_steps = []
+        for label, route in flow["steps"]:
+            try:
+                resolved_steps.append({"label": label, "url": reverse(route)})
+            except NoReverseMatch:
+                continue
+        operation_flows.append({**flow, "steps": resolved_steps})
+
+    return render(request, "core/operations_center.html", {
+        "operation_groups": group_operations(operations),
+        "operation_count": len(operations),
+        "strengths": strengths,
+        "weaknesses": weaknesses,
+        "completion_requirements": completion_requirements,
+        "operation_flows": operation_flows,
+        **audit_context,
+    })

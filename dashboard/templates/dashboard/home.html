@@ -1,0 +1,180 @@
+{% extends "base/base.html" %}
+{% load static l10n %}
+
+{% block title %}الرئيسية | OPAL ERP{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+{% block page_title %}الرئيسية{% endblock %}
+{% block page_subtitle %}{% endblock %}
+
+{% block content %}
+<div class="opal-reference-dashboard" id="opal-reference-dashboard">
+  <section class="opal-dashboard-hero" aria-label="هوية المدرسة ولوحة الرئيسية">
+    <img
+      src="{% if opal_school and opal_school.dashboard_image %}{{ opal_school.dashboard_image.url }}{% else %}{% static 'dashboard/opal_school_hero_reference.webp' %}{% endif %}"
+      alt="صورة مدرسة أوبال الدولية"
+      class="opal-dashboard-hero-image"
+      style="object-position:{{ opal_school.dashboard_image_position|default:'50% 50%' }};"
+    >
+    <a class="opal-dashboard-hero-edit" href="{% url 'core:system_settings' %}?section=school#school-settings" aria-label="تغيير وضبط صورة لوحة الرئيسية" title="تغيير وضبط الصورة">
+      <i class="bi bi-pencil-fill" aria-hidden="true"></i>
+    </a>
+    <div class="opal-dashboard-hero-overlay">
+      <div class="opal-dashboard-hero-brand" aria-label="اسم المدرسة">
+        <strong>{{ opal_school.name|default:"مدرسة أوبال الدولية" }}</strong>
+        <small>Opal International School</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="opal-dashboard-section" aria-labelledby="opal-kpis-title">
+    <div class="opal-dashboard-section-head"><h2 id="opal-kpis-title">المؤشرات الرئيسية</h2></div>
+    <div class="opal-dashboard-kpi-grid">
+      <a class="opal-dashboard-kpi kpi-fees" href="{% url 'accounting:dashboard' %}#fee-summary">
+        <span class="opal-kpi-icon"><i class="bi bi-bar-chart-fill"></i></span>
+        <span class="opal-kpi-copy"><strong>الرسوم المحصلة</strong><b>{% if finance_data_available %}{{ paid_amount }}{% else %}-{% endif %}</b><small>{% if finance_data_available %}{{ collection_rate }}% تحصيل{% else %}لا توجد بيانات{% endif %}</small></span>
+      </a>
+      <a class="opal-dashboard-kpi kpi-students" href="{% url 'students:student_list' %}#student-list">
+        <span class="opal-kpi-icon"><i class="bi bi-person-fill"></i></span>
+        <span class="opal-kpi-copy"><strong>الطلبة</strong><b>{{ students_count }}</b><small>نشط {{ active_students }}</small></span>
+      </a>
+      <a class="opal-dashboard-kpi kpi-attendance" href="{% url 'dashboard:attendance_detail' %}">
+        <span class="opal-kpi-icon"><i class="bi bi-calendar2-check-fill"></i></span>
+        <span class="opal-kpi-copy"><strong>نسبة الحضور</strong><b>{% if attendance_data_available %}{{ attendance_percent }}%{% else %}-{% endif %}</b><small>{% if attendance_data_available %}{{ present_today }} حاضر اليوم{% else %}لا توجد بيانات معتمدة{% endif %}</small></span>
+      </a>
+      <a class="opal-dashboard-kpi kpi-teachers" href="{% url 'teachers:dashboard' %}">
+        <span class="opal-kpi-icon"><i class="bi bi-people-fill"></i></span>
+        <span class="opal-kpi-copy"><strong>المعلمون</strong><b>{{ teachers_count }}</b><small>{{ sections_count }} شعبة</small></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="opal-dashboard-section" aria-labelledby="opal-quick-title">
+    <div class="opal-dashboard-section-head"><h2 id="opal-quick-title">الوصول السريع</h2><span>كل بوابات النظام في مكان واحد</span></div>
+    <nav class="opal-dashboard-quick-grid" aria-label="الوصول السريع">
+      {% for section in opal_navigation_sections %}
+        {% for item in section.items %}
+          {% if item.key != "system-settings" and item.key != "profile" %}
+          <a class="opal-quick-tile {% if item.active %}is-active{% endif %}" href="{{ item.url }}">
+            <i class="bi bi-{{ item.icon }}" aria-hidden="true"></i><span>{{ item.label|default:section.label }}</span>
+          </a>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </nav>
+  </section>
+
+  <section class="opal-dashboard-feature-grid" aria-label="مؤشرات الرضا وأفضل المعلمين">
+    <article class="opal-dashboard-feature feature-satisfaction">
+      <header><h2>مؤشرات الرضا <i class="bi bi-star-fill"></i></h2><span>مؤشرات رقمية وبيانية للتقييمات الشهرية المعتمدة</span></header>
+      <div class="opal-satisfaction-grid">
+        <a class="opal-satisfaction-card" href="{% url 'enterprise_ops:feedback_list' %}">
+          <span class="opal-satisfaction-ring electronic" style="--satisfaction-value:{% if electronic_satisfaction_percent != None %}{{ electronic_satisfaction_percent }}{% else %}0{% endif %}%"><span>{% if electronic_satisfaction_percent != None %}{{ electronic_satisfaction_percent|floatformat:0 }}%{% else %}—{% endif %}</span></span>
+          <div class="opal-satisfaction-copy"><strong>الرضا عن الخدمات الإلكترونية</strong><b>{% if electronic_satisfaction_percent != None %}{{ electronic_satisfaction_percent|floatformat:0 }}%{% else %}—{% endif %}</b><small>رضا المستخدمين</small></div>
+          <div class="opal-progress"><span style="width:{% if electronic_satisfaction_percent != None %}{{ electronic_satisfaction_percent }}{% else %}0{% endif %}%"></span></div>
+        </a>
+        <a class="opal-satisfaction-card" href="{% url 'enterprise_ops:feedback_list' %}">
+          <span class="opal-satisfaction-ring teaching" style="--satisfaction-value:{% if teaching_satisfaction_percent != None %}{{ teaching_satisfaction_percent }}{% else %}0{% endif %}%"><span>{% if teaching_satisfaction_percent != None %}{{ teaching_satisfaction_percent|floatformat:0 }}%{% else %}—{% endif %}</span></span>
+          <div class="opal-satisfaction-copy"><strong>جودة التدريس</strong><b>{% if teaching_satisfaction_percent != None %}{{ teaching_satisfaction_percent|floatformat:0 }}%{% else %}—{% endif %}</b><small>رضا أولياء الأمور والطلبة</small></div>
+          <div class="opal-progress"><span style="width:{% if teaching_satisfaction_percent != None %}{{ teaching_satisfaction_percent }}{% else %}0{% endif %}%"></span></div>
+        </a>
+      </div>
+    </article>
+
+    <article class="opal-dashboard-feature feature-teachers">
+      <header><h2>أفضل المعلمين لهذا الشهر <i class="bi bi-trophy-fill"></i></h2><span>{{ teacher_evaluation_period|date:'Y-m' }}</span></header>
+      <div class="opal-dashboard-teacher-list">
+        {% for row in top_teacher_evaluations %}
+        <div class="opal-dashboard-teacher-row">
+          <span class="rank">{{ forloop.counter }}</span>
+          <div class="teacher-name"><strong>{{ row.teacher.full_name }}</strong><small>{{ row.responses }} ولي أمر</small></div>
+          <b>{{ row.adjusted_average|floatformat:2 }}/5</b>
+        </div>
+        {% empty %}<p class="opal-dashboard-empty">لا توجد تقييمات معتمدة لهذا الشهر.</p>{% endfor %}
+      </div>
+    </article>
+
+    <article class="opal-dashboard-feature feature-alerts">
+      <header><h2>ملاحظات وتنبيهات <i class="bi bi-bell-fill"></i></h2></header>
+      <div class="opal-dashboard-alert-list">
+        <a href="{% url 'accounting:previous_debt_list' %}" class="alert-item alert-red"><i class="bi bi-check-circle-fill"></i><span>{% if previous_debt_total %}توجد متبقيات رسوم سابقة{% else %}لا توجد متبقيات رسوم سابقة مسجلة على الطلبة{% endif %}</span></a>
+        <a href="{% url 'accounting:dashboard' %}#outstanding-balances" class="alert-item alert-green"><i class="bi bi-check-circle-fill"></i><span>{% if finance_data_available %}{{ overdue_invoices }} رسوم متأخرة للمتابعة{% else %}لا توجد بيانات مالية معتمدة{% endif %}</span></a>
+        <a href="{% url 'dashboard:attendance_detail' %}" class="alert-item alert-blue"><i class="bi bi-calendar-event-fill"></i><span>{% if attendance_data_available %}{{ attendance_pending_sections }} سجلات حضور تحتاج المتابعة{% else %}سجلات الحضور غير معتمدة بعد{% endif %}</span></a>
+        <a href="{% url 'dashboard:attendance_detail' %}" class="alert-more">عرض التفاصيل <i class="bi bi-chevron-left"></i></a>
+      </div>
+    </article>
+  </section>
+
+  <section class="opal-dashboard-section opal-dashboard-students-section" aria-labelledby="opal-top-students-title">
+    <div class="opal-dashboard-section-head"><h2 id="opal-top-students-title">أوائل الطلبة من الصف الأول حتى الثاني عشر <i class="bi bi-trophy-fill"></i></h2><span>{{ top_students_year|default:"العام الحالي" }}</span></div>
+    <div class="opal-dashboard-students-wrap">
+      <table class="opal-dashboard-students-table">
+        <tbody>
+          <tr><th>الصف</th>{% for item in top_students_matrix %}<th>{{ item.grade.name }}</th>{% endfor %}</tr>
+          <tr><th>الأول</th>{% for item in top_students_matrix %}<td>{% for leader in item.leaders %}<strong>{{ leader.student.full_name }}</strong>{% if not forloop.last %}<span>و</span>{% endif %}{% empty %}<small>لا توجد نتائج</small>{% endfor %}{% if item.leaders %}<b>{{ item.leaders.0.average }}%</b>{% endif %}</td>{% endfor %}</tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="opal-dashboard-income-row" aria-labelledby="opal-income-title">
+    <article class="opal-dashboard-mini-panel income-panel">
+      <header><h2 id="opal-income-title">الإيرادات الشهرية <i class="bi bi-bar-chart-fill"></i></h2><span>{% if finance_data_available %}{{ paid_amount }} د.أ محصل{% else %}لا توجد دفعات معتمدة{% endif %}</span></header>
+      {% if monthly_income_values %}<div class="opal-dashboard-income-chart"><canvas id="incomeChart"></canvas></div>{% else %}<p class="opal-dashboard-empty">لا توجد دفعات معتمدة في العام الدراسي الحالي.</p>{% endif %}
+    </article>
+  </section>
+
+  <section class="opal-dashboard-two-col" aria-label="حالات الغياب">
+    <article class="opal-dashboard-mini-panel">
+      <header><h2>غياب الطلبة اليوم</h2><a href="{% url 'dashboard:attendance_detail' %}">التفاصيل</a></header>
+      <div class="opal-mini-horizontal-metrics"><b>{{ absent_today }} <small>غائب</small></b><b>{{ present_today }} <small>حاضر</small></b><b>{{ departed_today }} <small>مغادر</small></b></div>
+    </article>
+    <article class="opal-dashboard-mini-panel">
+      <header><h2>غياب المعلمين اليوم</h2><a href="{% url 'teachers:dashboard' %}">التفاصيل</a></header>
+      <div class="opal-mini-horizontal-metrics"><b>{{ absent_teachers_today|length }} <small>غائب</small></b><b>{{ teachers_count }} <small>إجمالي نشط</small></b></div>
+    </article>
+  </section>
+
+  <section class="opal-dashboard-two-col" aria-label="حالة المعلمين">
+    <article class="opal-dashboard-mini-panel">
+      <header><h2>المعلمون المشغولون الآن</h2></header>
+      <div class="opal-mini-status-card busy"><strong>{{ opal_live_schedule.busy_teachers|default:0 }}</strong><span>معلم مشغول</span></div>
+    </article>
+    <article class="opal-dashboard-mini-panel">
+      <header><h2>المعلمون المتفرغون الآن</h2></header>
+      <div class="opal-mini-status-card free"><strong>{{ opal_live_schedule.free_teachers_count|default:0 }}</strong><span>معلم متفرغ</span></div>
+    </article>
+  </section>
+
+  <details class="opal-dashboard-more">
+    <summary><span><i class="bi bi-grid-3x3-gap-fill"></i> التفاصيل التشغيلية</span><i class="bi bi-chevron-down"></i></summary>
+    <div class="opal-dashboard-more-grid">
+      <article class="opal-dashboard-mini-panel"><h3>تفاصيل غياب الطلبة</h3>{% if attendance_data_available %}<div class="opal-mini-list">{% for row in absent_students_today|slice:":8" %}<div><strong>{{ row.student.full_name }}</strong><small>{{ row.grade|default:"-" }}{% if row.section %} — {{ row.section.name }}{% endif %}</small></div>{% empty %}<p>لا يوجد غياب ضمن السجلات المعتمدة اليوم.</p>{% endfor %}</div>{% else %}<p>سجلات الحضور غير معتمدة بعد.</p>{% endif %}</article>
+      <article class="opal-dashboard-mini-panel"><h3>تفاصيل غياب المعلمين</h3><div class="opal-mini-list">{% for row in absent_teachers_today|slice:":8" %}<div><strong>{{ row.teacher.full_name }}</strong><small>{{ row.reason|default:"دون سبب مسجل" }}</small></div>{% empty %}<p>لا يوجد غياب معلمين مسجل اليوم.</p>{% endfor %}</div></article>
+      <article class="opal-dashboard-mini-panel"><h3>المعلمون المشغولون</h3><div class="opal-mini-list">{% for row in opal_live_schedule.busy_rows|slice:":8" %}<div><strong>{{ row.teacher.full_name }}</strong><small>{{ row.entry.section.grade.name }} — {{ row.entry.section.name }} · {{ row.entry.time_slot.name }}</small></div>{% empty %}<p>لا يوجد معلم مشغول بحصة الآن.</p>{% endfor %}</div></article>
+      <article class="opal-dashboard-mini-panel"><h3>المعلمون المتفرغون</h3><div class="opal-mini-list">{% for teacher in opal_live_schedule.free_teachers|slice:":8" %}<div><strong>{{ teacher.full_name }}</strong><small>{{ teacher.specialization|default:"معلم" }}</small></div>{% empty %}<p>لا توجد قائمة متفرغين الآن.</p>{% endfor %}</div></article>
+    </div>
+  </details>
+</div>
+
+{{ monthly_income_labels|json_script:"income-labels" }}
+{{ monthly_income_values|json_script:"income-values" }}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'vendor/chartjs/chart.umd.min.js' %}?v=4.5.1"></script>
+<script>
+if (typeof Chart !== "undefined") {
+  const readJson = (id) => JSON.parse(document.getElementById(id)?.textContent || "[]");
+  const text = getComputedStyle(document.documentElement).getPropertyValue('--opal-text') || '#dbeafe';
+  const grid = 'rgba(148,163,184,.12)';
+  const incomeCanvas = document.getElementById('incomeChart');
+  if (incomeCanvas) {
+    const ctx = incomeCanvas.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 310);
+    gradient.addColorStop(0, 'rgba(56,211,159,.34)');
+    gradient.addColorStop(1, 'rgba(56,211,159,.02)');
+    new Chart(incomeCanvas,{type:'line',data:{labels:readJson('income-labels'),datasets:[{label:'الإيرادات',data:readJson('income-values'),borderColor:'#5eead4',backgroundColor:gradient,fill:true,tension:.34,borderWidth:3,pointRadius:4,pointHoverRadius:6,pointBackgroundColor:'#d9fffa',pointBorderColor:'#14b8a6',pointBorderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{rtl:true,displayColors:false,padding:10}},scales:{x:{ticks:{color:text,padding:8},grid:{display:false}},y:{beginAtZero:true,ticks:{color:text,padding:8},grid:{color:grid}}}}});
+  }
+}
+</script>
+{% endblock %}

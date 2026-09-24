@@ -1,0 +1,39 @@
+{% extends "base/base.html" %}
+
+{% block title %}حساب ولي الأمر | OPAL ERP{% endblock %}
+{% block page_title %}حساب ولي الأمر {{ family.guardian_name|default:"" }}{% endblock %}
+{% block page_subtitle %}{% endblock %}
+{% block breadcrumb_current_label %}{{ family.guardian_name|default:"ولي الأمر" }}{% endblock %}
+
+{% block content %}
+<div class="opal-card mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+    <div><h2 class="fw-bold mb-1">{{ family.guardian_name|default:"ولي أمر" }}</h2><div class="text-muted">رقم الملف: {{ family.family_code|default:"غير محدد" }} · {{ family.phone|default:"بدون هاتف" }}</div><div class="mt-2">{% if family.user %}الحساب: <strong>{{ family.user.username }}</strong> {% if family.user.is_active %}<span class="badge bg-success">نشط</span>{% else %}<span class="badge bg-secondary">موقوف</span>{% endif %}{% else %}<span class="badge bg-warning text-dark">لا يوجد حساب</span>{% endif %}</div></div>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{% url 'parent_portal:family_update' family.pk %}" class="btn btn-primary"><i class="bi bi-pencil"></i> تعديل بيانات ولي الأمر</a>
+      <a href="{% url 'parent_portal:family_statement_print' family.pk %}" target="_blank" class="btn btn-outline-dark"><i class="bi bi-printer"></i> كشف مطبوع</a>
+      <a href="{% url 'parent_portal:family_statement_csv' family.pk %}" class="btn btn-outline-success"><i class="bi bi-file-earmark-spreadsheet"></i> Excel/CSV</a>
+      <a href="{% url 'documents:issue_guardian' family.pk %}?template=guardian-statement" class="btn btn-outline-primary"><i class="bi bi-file-earmark-text"></i> إصدار كشف حساب رسمي</a>
+      {% if family.user %}<form method="post" action="{% url 'parent_portal:family_account_reset' family.pk %}">{% csrf_token %}<button class="btn btn-warning" onclick="return confirm('إعادة تعيين كلمة المرور؟')">إعادة كلمة المرور</button></form>{% else %}<form method="post" action="{% url 'parent_portal:family_account_create' family.pk %}">{% csrf_token %}<button class="btn btn-success">إنشاء حساب ولي الأمر</button></form>{% endif %}
+      <a href="{% url 'parent_portal:family_management' %}" class="btn btn-secondary">العودة</a>
+    </div>
+  </div>
+</div>
+
+<div class="opal-compact-metric-grid mb-4">
+  <div class="opal-card opal-compact-metric-card"><span class="opal-metric-label">عدد الأبناء</span><strong class="opal-metric-value">{{ totals.students_count }}</strong></div>
+  <div class="opal-card opal-compact-metric-card"><span class="opal-metric-label">رسوم {{ totals.current_year.name|default:"السنة الحالية" }}</span><strong class="opal-metric-value">{{ totals.total|floatformat:2 }}</strong></div>
+  <div class="opal-card opal-compact-metric-card"><span class="opal-metric-label">مدفوع السنة الحالية</span><strong class="opal-metric-value text-success">{{ totals.paid|floatformat:2 }}</strong></div>
+  <div class="opal-card opal-compact-metric-card"><span class="opal-metric-label">متبقي السنة الحالية</span><strong class="opal-metric-value text-warning">{{ totals.remaining|floatformat:2 }}</strong></div>
+  <div class="opal-card opal-compact-metric-card"><span class="opal-metric-label">متبقيات السنوات السابقة</span><strong class="opal-metric-value text-danger">{{ totals.previous_debt|floatformat:2 }}</strong></div>
+  <div class="opal-card opal-compact-metric-card"><span class="opal-metric-label">الإجمالي المطلوب</span><strong class="opal-metric-value">{{ totals.combined_remaining|floatformat:2 }}</strong></div>
+</div>
+
+<div class="opal-card mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3"><div><h3 class="fw-bold mb-0">الأبناء</h3><small class="text-secondary">الملخص المالي الحالي والمتراكم السابق.</small></div></div>
+  <div class="table-responsive"><table class="table align-middle"><thead><tr><th>الطالب</th><th>الصف</th><th>رسوم السنة الحالية</th><th>مدفوع السنة الحالية</th><th>متبقي السنة الحالية</th><th>متبقيات السنوات السابقة</th><th>الإجمالي المطلوب</th><th>حالة السنة الحالية</th><th></th></tr></thead><tbody>
+  {% for card in cards %}<tr><td class="fw-bold">{{ card.student.full_name }}</td><td>{{ card.student.class_display }}</td><td>{{ card.total|floatformat:2 }}</td><td class="text-success">{{ card.paid|floatformat:2 }}</td><td class="text-warning">{{ card.remaining|floatformat:2 }}</td><td class="text-danger">{{ card.previous_debt.total|floatformat:2 }}</td><td class="fw-bold">{{ card.combined_remaining|floatformat:2 }}</td><td><span class="badge bg-{{ card.status_class }}">{{ card.status_label }}</span></td><td><a href="{% url 'students:student_360' card.student.pk %}" class="btn btn-sm btn-outline-primary">بطاقة الطالب</a></td></tr>{% empty %}<tr><td colspan="9" class="text-center text-muted">لا يوجد أبناء مرتبطون.</td></tr>{% endfor %}
+  </tbody></table></div>
+</div>
+{% include "parent_portal/_guardian_receipt_history.html" %}
+{% endblock %}

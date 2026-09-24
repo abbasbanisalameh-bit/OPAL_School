@@ -1,0 +1,24 @@
+{% extends "base/base.html" %}
+{% load opal_subjects %}
+{% block title %}شهادة الطالب | OPAL ERP{% endblock %}
+{% block page_title %}شهادة الطالب{% endblock %}
+{% block page_subtitle %}النتيجة السنوية وفق أربعة امتحانات لكل مادة في كل فصل{% endblock %}
+{% block content %}
+<div class="opal-card">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div><h2 class="fw-bold mb-1">{{ student.full_name }}</h2>{% if report %}<div class="text-secondary">العام الدراسي: {{ report.academic_year.name }}</div>{% endif %}</div>
+    <button type="button" class="btn btn-secondary" onclick="window.print()">طباعة الشهادة</button>
+  </div>
+  {% if not report %}<div class="alert alert-warning">لا يوجد عام دراسي مرتبط بهذا الطالب.</div>{% else %}
+  {% for term in report.terms %}
+  <h3 class="fw-bold mt-4">{{ term.semester.name }}</h3>
+  <div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th>المادة</th><th>الأول /20</th><th>الثاني /20</th><th>الثالث /20</th><th>النهائي /40</th><th>المجموع /100</th></tr></thead>
+    <tbody>{% for row in term.rows %}<tr><td class="opal-subject-cell" style="{% subject_style row.subject %}"><span class="opal-subject-chip" style="{% subject_style row.subject %}">{{ row.subject.name }}</span></td>{% for item in row.assessments %}<td>{{ item.mark }}</td>{% endfor %}<td class="fw-bold">{{ row.total }}</td></tr>{% empty %}<tr><td colspan="6" class="text-center text-muted">لا توجد مواد أو علامات.</td></tr>{% endfor %}</tbody>
+    <tfoot><tr><th colspan="5">معدل الفصل</th><th>{{ term.average }}</th></tr></tfoot>
+  </table></div>
+  {% endfor %}
+  <div class="alert alert-primary fs-5 mt-4"><strong>المعدل السنوي:</strong> {{ report.annual_average }} / 100 {% if not report.complete %}<span class="d-block small mt-2">النتيجة غير مكتملة لوجود علامات مفقودة.</span>{% endif %}</div>
+  {% endif %}
+</div>
+{% endblock %}
