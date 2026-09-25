@@ -12,7 +12,7 @@
     <label class="learning-checkbox-row"><input type="checkbox" name="teacher_sso_enabled" value="1" {% if access_settings.teacher_sso_enabled %}checked{% endif %}> <span>إتاحة المنصة للمعلمين من بوابة المعلم</span></label>
     <button class="learning-button" type="submit">حفظ الإعداد العام</button>
   </form>
-  <div class="learning-manager-form-actions" style="margin-top:1rem;">
+  <div class="learning-manager-form-actions opal-inline-r124-26">
     <form method="post">{% csrf_token %}<input type="hidden" name="action" value="all_on"><button class="learning-button learning-button-small" type="submit" onclick="return confirm('سيتم إتاحة المنصة لجميع الطلاب وإلغاء جميع استثناءات الصفوف والطلاب. متابعة؟')">إتاحة للجميع</button></form>
     <form method="post">{% csrf_token %}<input type="hidden" name="action" value="all_off"><button class="learning-button learning-button-small learning-button-ghost" type="submit" onclick="return confirm('سيتم إيقاف المنصة عن جميع الطلاب وإلغاء جميع استثناءات الصفوف والطلاب. متابعة؟')">إيقاف عن الجميع</button></form>
   </div>

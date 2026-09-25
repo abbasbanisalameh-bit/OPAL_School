@@ -15,6 +15,7 @@
 {% endif %}
 
 
+
 <section id="setup-guide" class="opal-card mb-4">
   <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
     <div>
@@ -26,7 +27,7 @@
       <small class="d-block text-secondary">اكتملت {{ setup_completed_count }} من {{ setup_steps|length }} خطوات</small>
     </div>
   </div>
-  <div class="progress mt-3" role="progressbar" aria-label="تقدم تهيئة النظام" aria-valuenow="{{ setup_progress }}" aria-valuemin="0" aria-valuemax="100" style="height:8px">
+  <div class="progress mt-3 opal-inline-r124-3" role="progressbar" aria-label="تقدم تهيئة النظام" aria-valuenow="{{ setup_progress }}" aria-valuemin="0" aria-valuemax="100">
     <div class="progress-bar" style="width:{{ setup_progress }}%"></div>
   </div>
   {% if setup_next_step %}

@@ -5028,64 +5028,65 @@ img,svg,video,canvas{max-width:100%;height:auto}
   box-shadow: var(--opal-identity-shadow);
 }
 
+/* OPAL R120 — Theme cascade fix: the green theme must never enter legacy dark-only rules. */
 /* Update 85: historical consolidation files introduced light glass surfaces
    after the original dark OPAL theme.  Keep the working area consistently
    dark, including the nested panels and Bootstrap utility cards. */
-body:not(.opal-light-mode) .opal-main .bg-white,
-body:not(.opal-light-mode) .opal-main .bg-light,
-body:not(.opal-light-mode) .opal-main .opal-entity-360 > .opal-card:first-child,
-body:not(.opal-light-mode) .opal-main .opal-teacher-360 > .d-flex:first-child,
-body:not(.opal-light-mode) .opal-main .opal-entity-360 .nav-pills,
-body:not(.opal-light-mode) .opal-main .opal-settings-tabs,
-body:not(.opal-light-mode) .opal-main .opal-settings-section,
-body:not(.opal-light-mode) .opal-main .opal-settings-action,
-body:not(.opal-light-mode) .opal-main .opal-inner-panel,
-body:not(.opal-light-mode) .opal-main .opal-check-card,
-body:not(.opal-light-mode) .opal-main .opal-data-chip,
-body:not(.opal-light-mode) .opal-main .data-table-wrapper,
-body:not(.opal-light-mode) .opal-main .table-responsive,
-body:not(.opal-light-mode) .opal-main .opal-table-wrap {
+html[data-opal-theme="dark"] body .opal-main .bg-white,
+html[data-opal-theme="dark"] body .opal-main .bg-light,
+html[data-opal-theme="dark"] body .opal-main .opal-entity-360 > .opal-card:first-child,
+html[data-opal-theme="dark"] body .opal-main .opal-teacher-360 > .d-flex:first-child,
+html[data-opal-theme="dark"] body .opal-main .opal-entity-360 .nav-pills,
+html[data-opal-theme="dark"] body .opal-main .opal-settings-tabs,
+html[data-opal-theme="dark"] body .opal-main .opal-settings-section,
+html[data-opal-theme="dark"] body .opal-main .opal-settings-action,
+html[data-opal-theme="dark"] body .opal-main .opal-inner-panel,
+html[data-opal-theme="dark"] body .opal-main .opal-check-card,
+html[data-opal-theme="dark"] body .opal-main .opal-data-chip,
+html[data-opal-theme="dark"] body .opal-main .data-table-wrapper,
+html[data-opal-theme="dark"] body .opal-main .table-responsive,
+html[data-opal-theme="dark"] body .opal-main .opal-table-wrap {
   color: var(--opal-identity-text) !important;
   background: linear-gradient(145deg, rgba(13, 27, 47, .98), rgba(16, 36, 61, .98)) !important;
   border-color: var(--opal-identity-border) !important;
   box-shadow: var(--opal-identity-shadow) !important;
 }
 
-body:not(.opal-light-mode) .opal-main .table,
-body:not(.opal-light-mode) .opal-main .table tbody td,
-body:not(.opal-light-mode) .opal-main .table caption,
-body:not(.opal-light-mode) .opal-main .opal-settings-action,
-body:not(.opal-light-mode) .opal-main .opal-settings-action small,
-body:not(.opal-light-mode) .opal-main .opal-inner-panel h4,
-body:not(.opal-light-mode) .opal-main .opal-section-heading h3,
-body:not(.opal-light-mode) .opal-main .opal-section-heading p,
-body:not(.opal-light-mode) .opal-main .opal-settings-tab,
-body:not(.opal-light-mode) .opal-main .opal-data-chip span {
+html[data-opal-theme="dark"] body .opal-main .table,
+html[data-opal-theme="dark"] body .opal-main .table tbody td,
+html[data-opal-theme="dark"] body .opal-main .table caption,
+html[data-opal-theme="dark"] body .opal-main .opal-settings-action,
+html[data-opal-theme="dark"] body .opal-main .opal-settings-action small,
+html[data-opal-theme="dark"] body .opal-main .opal-inner-panel h4,
+html[data-opal-theme="dark"] body .opal-main .opal-section-heading h3,
+html[data-opal-theme="dark"] body .opal-main .opal-section-heading p,
+html[data-opal-theme="dark"] body .opal-main .opal-settings-tab,
+html[data-opal-theme="dark"] body .opal-main .opal-data-chip span {
   color: var(--opal-identity-text) !important;
 }
 
-body:not(.opal-light-mode) .opal-main .table tbody tr,
-body:not(.opal-light-mode) .opal-main .table-striped > tbody > tr:nth-of-type(odd) > *,
-body:not(.opal-light-mode) .opal-main .list-group-item,
-body:not(.opal-light-mode) .opal-main .accordion-item {
+html[data-opal-theme="dark"] body .opal-main .table tbody tr,
+html[data-opal-theme="dark"] body .opal-main .table-striped > tbody > tr:nth-of-type(odd) > *,
+html[data-opal-theme="dark"] body .opal-main .list-group-item,
+html[data-opal-theme="dark"] body .opal-main .accordion-item {
   color: var(--opal-identity-text) !important;
   background-color: rgba(255, 255, 255, .028) !important;
   border-color: var(--opal-identity-border) !important;
 }
 
-body:not(.opal-light-mode) .opal-main .opal-empty-state,
-body:not(.opal-light-mode) .opal-main .empty-state,
-body:not(.opal-light-mode) .opal-main .no-data,
-body:not(.opal-light-mode) .modal-content,
-body:not(.opal-light-mode) .toast {
+html[data-opal-theme="dark"] body .opal-main .opal-empty-state,
+html[data-opal-theme="dark"] body .opal-main .empty-state,
+html[data-opal-theme="dark"] body .opal-main .no-data,
+html[data-opal-theme="dark"] body .modal-content,
+html[data-opal-theme="dark"] body .toast {
   color: var(--opal-identity-text) !important;
   background: linear-gradient(145deg, rgba(13, 27, 47, .99), rgba(16, 36, 61, .99)) !important;
   border-color: var(--opal-identity-border) !important;
 }
 
-body:not(.opal-light-mode) .modal-title,
-body:not(.opal-light-mode) .modal-body,
-body:not(.opal-light-mode) .toast-header { color: var(--opal-identity-text) !important; }
+html[data-opal-theme="dark"] body .modal-title,
+html[data-opal-theme="dark"] body .modal-body,
+html[data-opal-theme="dark"] body .toast-header { color: var(--opal-identity-text) !important; }
 
 /* Dashboard information stays dense without forcing horizontal/vertical
    scrolling on normal desktop screens.  Mobile keeps natural scrolling. */
@@ -7960,4 +7961,812 @@ body{padding-bottom:82px!important}
   .opal-kpi-icon{width:33px!important;height:33px!important;flex-basis:33px!important}
   .opal-kpi-copy b{font-size:.9rem!important}
   .opal-quick-tile{min-height:64px!important}
+}
+
+/* OPAL Update 131.7 R119 — Unified subpage card color system.
+   Presentation-only update. No data, routing, permissions, models, migrations,
+   workflows, or parallel stylesheets are introduced. */
+:root{
+  --opal-subcard-blue:#38bdf8;
+  --opal-subcard-teal:#2dd4bf;
+  --opal-subcard-gold:#fbbf24;
+  --opal-subcard-purple:#a78bfa;
+  --opal-subcard-rose:#fb7185;
+  --opal-subcard-green:#4ade80;
+}
+
+.opal-main .opal-card,
+.opal-main .stat-card,
+.opal-main .panel,
+.opal-main .dashboard-panel,
+.opal-main .opal-crystal-card,
+.opal-main .opal-module-card,
+.opal-main .opal-report-card,
+.opal-main .opal-enterprise-kpi,
+.opal-main .opal-kpi-compact,
+.opal-main .opal-mini-status-card,
+.opal-main .opal-satisfaction-mini-card,
+.opal-main .opal-assessment-card,
+.opal-main .opal-assignment-summary,
+.opal-main .opal-receipt-summary-card,
+.opal-main .overall-progress-card,
+.opal-main .opal-check-card,
+.opal-main .dev-card,
+.opal-main .gantt-card{
+  --opal-subpage-card-accent:var(--opal-primary,var(--opal-accent,#14b8a6));
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb,var(--opal-subpage-card-accent) 10%,var(--opal-surface,var(--opal-card,#0d1b2f))),
+      color-mix(in srgb,var(--opal-subpage-card-accent) 4%,var(--opal-bg,#07111f))
+    ) !important;
+  border-color:
+    color-mix(in srgb,var(--opal-subpage-card-accent) 32%,var(--opal-border,#1f3552)) !important;
+  border-inline-start:
+    3px solid color-mix(in srgb,var(--opal-subpage-card-accent) 78%,var(--opal-border,#1f3552)) !important;
+  box-shadow:
+    0 14px 34px color-mix(in srgb,var(--opal-subpage-card-accent) 8%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.045) !important;
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+
+.opal-main .opal-card:hover,
+.opal-main .stat-card:hover,
+.opal-main .panel:hover,
+.opal-main .dashboard-panel:hover,
+.opal-main .opal-crystal-card:hover,
+.opal-main .opal-module-card:hover,
+.opal-main .opal-report-card:hover,
+.opal-main .opal-enterprise-kpi:hover,
+.opal-main .opal-kpi-compact:hover,
+.opal-main .opal-mini-status-card:hover,
+.opal-main .opal-satisfaction-mini-card:hover,
+.opal-main .opal-assessment-card:hover,
+.opal-main .opal-assignment-summary:hover,
+.opal-main .opal-receipt-summary-card:hover,
+.opal-main .overall-progress-card:hover,
+.opal-main .opal-check-card:hover,
+.opal-main .dev-card:hover,
+.opal-main .gantt-card:hover{
+  border-color:
+    color-mix(in srgb,var(--opal-subpage-card-accent) 52%,var(--opal-border,#1f3552)) !important;
+  box-shadow:
+    0 18px 40px color-mix(in srgb,var(--opal-subpage-card-accent) 13%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+
+.opal-main .opal-detail-stat-grid > .dashboard-card:nth-child(6n+1),
+.opal-main .opal-module-grid > .opal-module-card:nth-child(6n+1),
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+1) .dashboard-panel,
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+1) .opal-crystal-card{
+  --opal-subpage-card-accent:var(--opal-subcard-blue);
+}
+.opal-main .opal-detail-stat-grid > .dashboard-card:nth-child(6n+2),
+.opal-main .opal-module-grid > .opal-module-card:nth-child(6n+2),
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+2) .dashboard-panel,
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+2) .opal-crystal-card{
+  --opal-subpage-card-accent:var(--opal-subcard-teal);
+}
+.opal-main .opal-detail-stat-grid > .dashboard-card:nth-child(6n+3),
+.opal-main .opal-module-grid > .opal-module-card:nth-child(6n+3),
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+3) .dashboard-panel,
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+3) .opal-crystal-card{
+  --opal-subpage-card-accent:var(--opal-subcard-gold);
+}
+.opal-main .opal-detail-stat-grid > .dashboard-card:nth-child(6n+4),
+.opal-main .opal-module-grid > .opal-module-card:nth-child(6n+4),
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+4) .dashboard-panel,
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+4) .opal-crystal-card{
+  --opal-subpage-card-accent:var(--opal-subcard-purple);
+}
+.opal-main .opal-detail-stat-grid > .dashboard-card:nth-child(6n+5),
+.opal-main .opal-module-grid > .opal-module-card:nth-child(6n+5),
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+5) .dashboard-panel,
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+5) .opal-crystal-card{
+  --opal-subpage-card-accent:var(--opal-subcard-rose);
+}
+.opal-main .opal-detail-stat-grid > .dashboard-card:nth-child(6n+6),
+.opal-main .opal-module-grid > .opal-module-card:nth-child(6n+6),
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+6) .dashboard-panel,
+.opal-main .row.g-3 > [class*="col-"]:nth-child(6n+6) .opal-crystal-card{
+  --opal-subpage-card-accent:var(--opal-subcard-green);
+}
+
+@media(max-width:767.98px){
+  .opal-main .opal-card,
+  .opal-main .stat-card,
+  .opal-main .panel,
+  .opal-main .dashboard-panel,
+  .opal-main .opal-crystal-card,
+  .opal-main .opal-module-card,
+  .opal-main .opal-report-card,
+  .opal-main .opal-enterprise-kpi,
+  .opal-main .opal-kpi-compact,
+  .opal-main .opal-mini-status-card,
+  .opal-main .opal-satisfaction-mini-card,
+  .opal-main .opal-assessment-card,
+  .opal-main .opal-assignment-summary,
+  .opal-main .opal-receipt-summary-card,
+  .opal-main .overall-progress-card,
+  .opal-main .opal-check-card,
+  .opal-main .dev-card,
+  .opal-main .gantt-card{
+    box-shadow:
+      0 10px 24px color-mix(
+        in srgb,
+        var(--opal-subpage-card-accent,var(--opal-primary,#14b8a6)) 9%,
+        transparent
+      ) !important;
+  }
+}
+
+/* ========================================================================
+   OPAL Update 131.7 R121 — FINAL THEME AUTHORITY / CASCADE LOCK
+   ------------------------------------------------------------------------
+   This layer is intentionally LAST in the single shared stylesheet.
+   Older historical rules remain for compatibility, but they cannot override
+   the active theme on ordinary application surfaces anymore.
+   No database, model, route, permission, workflow, or JavaScript behavior
+   is changed here.
+   ======================================================================== */
+
+:root{
+  --opal-theme-card-start:var(--opal-surface);
+  --opal-theme-card-end:var(--opal-surface-soft);
+  --opal-theme-card-border:var(--opal-border);
+  --opal-theme-card-text:var(--opal-text);
+  --opal-theme-card-shadow:var(--opal-shadow);
+}
+
+/* The three official themes inherit their complete palette from the central
+   variables defined earlier in this same file.  These aliases make the final
+   cascade explicit and prevent historical hard-coded backgrounds from winning. */
+html[data-opal-theme="dark"],
+html[data-opal-theme="green"],
+html[data-opal-theme="light"]{
+  --opal-theme-card-start:var(--opal-surface);
+  --opal-theme-card-end:var(--opal-surface-soft);
+  --opal-theme-card-border:var(--opal-border);
+  --opal-theme-card-text:var(--opal-text);
+  --opal-theme-card-shadow:var(--opal-shadow);
+}
+
+/* FINAL CARD/SURFACE CONTRACT.
+   Deliberately excludes semantic action tiles and buttons. */
+html[data-opal-theme] .opal-main :where(
+  .card,
+  .opal-card,
+  .glass-card,
+  .panel,
+  .widget,
+  .box,
+  .well,
+  .content-card,
+  .dashboard-card,
+  .dashboard-panel,
+  .stat-card,
+  .metric-card,
+  .summary-card,
+  .opal-section,
+  .opal-enterprise-section,
+  .opal-flow-section,
+  .opal-flow-card,
+  .opal-module-card,
+  .opal-report-card,
+  .opal-feedback-card,
+  .opal-kpi-card,
+  .opal-enterprise-kpi,
+  .opal-live-panel,
+  .opal-analytics-panel,
+  .opal-mini-status-card,
+  .opal-satisfaction-mini-card,
+  .opal-assessment-card,
+  .opal-assignment-summary,
+  .opal-receipt-summary-card,
+  .opal-check-card,
+  .opal-kpi-compact,
+  .overall-progress-card,
+  .dev-card,
+  .gantt-card,
+  .opal-detail-item,
+  .opal-inner-panel,
+  .opal-settings-section,
+  .opal-settings-action,
+  .opal-filter-bar,
+  .filter-card,
+  .filters-card,
+  .search-filter-bar,
+  .data-table-wrapper,
+  .table-responsive,
+  .opal-table-wrap,
+  .opal-page-navigation,
+  .opal-subnav,
+  .opal-current-operation,
+  .opal-instant-table-search,
+  .opal-dashboard-data-empty,
+  .opal-empty-state,
+  .empty-state,
+  .no-data,
+  .chart-box,
+  .chart-container,
+  .canvas-wrap,
+  .list-group-item,
+  .accordion-item,
+  .accordion-body,
+  .tab-content
+){
+  color:var(--opal-theme-card-text) !important;
+  background:
+    linear-gradient(
+      145deg,
+      var(--opal-theme-card-start),
+      var(--opal-theme-card-end)
+    ) !important;
+  border-color:var(--opal-theme-card-border) !important;
+  box-shadow:var(--opal-theme-card-shadow) !important;
+}
+
+/* Student/Teacher 360 shells and settings surfaces that historically carried
+   their own hard-coded glass backgrounds. */
+html[data-opal-theme] .opal-main :where(
+  .opal-entity-360 > .opal-card:first-child,
+  .opal-teacher-360 > .d-flex:first-child,
+  .opal-entity-360 .nav-pills,
+  .opal-settings-tabs
+){
+  color:var(--opal-theme-card-text) !important;
+  background:
+    linear-gradient(
+      145deg,
+      var(--opal-theme-card-start),
+      var(--opal-theme-card-end)
+    ) !important;
+  border-color:var(--opal-theme-card-border) !important;
+}
+
+/* Tables are part of the surface contract, not a second theme system. */
+html[data-opal-theme] .opal-main :where(
+  .table,
+  .opal-table,
+  table
+){
+  color:var(--opal-theme-card-text) !important;
+  --bs-table-color:var(--opal-theme-card-text);
+  --bs-table-bg:transparent;
+}
+
+html[data-opal-theme] .opal-main :where(
+  table thead th,
+  table thead td,
+  .opal-table th,
+  .table th
+){
+  color:var(--opal-theme-card-text) !important;
+  background:var(--opal-surface-strong) !important;
+  border-color:var(--opal-theme-card-border) !important;
+}
+
+html[data-opal-theme] .opal-main :where(
+  table tbody td,
+  table tbody th,
+  .opal-table td,
+  .table td
+){
+  color:var(--opal-theme-card-text) !important;
+  background:var(--opal-theme-card-start) !important;
+  border-color:var(--opal-theme-card-border) !important;
+}
+
+html[data-opal-theme] .opal-main :where(
+  table tbody tr:nth-child(even) td,
+  table tbody tr:nth-child(even) th
+){
+  background:var(--opal-theme-card-end) !important;
+}
+
+/* Card header/footer and nested empty states must follow the same active theme. */
+html[data-opal-theme] .opal-main :where(
+  .card > .card-header,
+  .opal-card > .card-header,
+  .card > .card-footer,
+  .opal-card > .card-footer,
+  .opal-dashboard-data-empty,
+  .opal-empty-state,
+  .empty-state,
+  .no-data
+){
+  color:var(--opal-theme-card-text) !important;
+  background:var(--opal-theme-card-end) !important;
+  border-color:var(--opal-theme-card-border) !important;
+}
+
+/* Do not let the theme layer repaint semantic buttons, badges, alerts or
+   navigation states. Their colors carry functional meaning. */
+html[data-opal-theme] .opal-main :where(
+  .btn,
+  .badge,
+  .alert,
+  .nav-link.active,
+  .opal-quick-tile,
+  .opal-dashboard-action-card
+){
+  /* Intentionally no background declaration. */
+}
+
+/* Final text inheritance for descendants of ordinary themed surfaces. */
+html[data-opal-theme] .opal-main :where(
+  .card,.opal-card,.panel,.dashboard-card,.dashboard-panel,.stat-card,
+  .metric-card,.summary-card,.opal-module-card,.opal-report-card,
+  .opal-flow-card,.opal-feedback-card,.opal-kpi-card,.opal-enterprise-kpi,
+  .opal-assignment-summary,.opal-receipt-summary-card,.opal-check-card,
+  .opal-kpi-compact,.overall-progress-card,.dev-card,.gantt-card,
+  .opal-inner-panel,.opal-settings-section,.opal-settings-action,
+  .filter-card,.filters-card,.search-filter-bar,.data-table-wrapper,
+  .table-responsive,.opal-table-wrap,.opal-empty-state,.empty-state,.no-data
+) :where(h1,h2,h3,h4,h5,h6,p,span,div,label,legend,dt,dd,li,strong,b,em){
+  color:inherit;
+}
+
+/* R121 cache marker: this rule intentionally has no visual effect. */
+html[data-opal-theme] body::before{content:none;}
+
+/* =========================================================================
+   OPAL R122 — THEME SURFACE CLEANUP / DASHBOARD + SEARCH + MODAL
+   -------------------------------------------------------------------------
+   R121 fixed the ordinary-card cascade. R122 closes the remaining historical
+   dark surfaces that live outside that contract: the global search shell,
+   reference dashboard sections/features, dashboard mini panels/rows, and the
+   quick-access modal. Semantic quick-action tiles keep their own identity.
+   ========================================================================= */
+
+/* Global search must follow the active theme in Green and Light as well as Dark. */
+html[data-opal-theme] .opal-global-search-box{
+  color:var(--opal-text) !important;
+  background:var(--opal-surface) !important;
+  border-color:var(--opal-border) !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.24),0 8px 22px color-mix(in srgb,var(--opal-bg) 18%,transparent) !important;
+}
+html[data-opal-theme] .opal-global-search-box > i{
+  color:var(--opal-primary) !important;
+}
+html[data-opal-theme] .opal-global-search-box .search-box{
+  color:var(--opal-text) !important;
+  background:transparent !important;
+}
+html[data-opal-theme] .opal-global-search-box .search-box::placeholder{
+  color:var(--opal-muted) !important;
+  opacity:1;
+}
+html[data-opal-theme] .opal-global-search-box kbd{
+  color:var(--opal-muted) !important;
+  background:var(--opal-surface-soft) !important;
+  border-color:var(--opal-border) !important;
+}
+
+/* The topbar shell/ribbon are structural surfaces, not dark-mode-only chrome. */
+html[data-opal-theme="green"] .opal-topbar-shell,
+html[data-opal-theme="light"] .opal-topbar-shell{
+  color:var(--opal-text) !important;
+  background:linear-gradient(145deg,var(--opal-surface),var(--opal-surface-soft)) !important;
+  border-color:var(--opal-border) !important;
+  box-shadow:var(--opal-shadow) !important;
+}
+html[data-opal-theme="green"] .opal-topbar-ribbon,
+html[data-opal-theme="light"] .opal-topbar-ribbon{
+  background:transparent !important;
+  border-color:color-mix(in srgb,var(--opal-border) 65%,transparent) !important;
+}
+
+/* Reference dashboard outer sections must never fall back to the historical
+   dark dashboard palette when Green/Light is active. */
+html[data-opal-theme] .opal-reference-dashboard{
+  color:var(--opal-text) !important;
+}
+html[data-opal-theme] .opal-reference-dashboard :where(
+  .opal-dashboard-section,
+  .opal-dashboard-feature,
+  .opal-dashboard-more,
+  .opal-dashboard-mini-panel,
+  .opal-dashboard-teacher-row,
+  .opal-dashboard-students-table,
+  .opal-dashboard-gateway-group,
+  .opal-command-header
+){
+  color:var(--opal-text) !important;
+  background:linear-gradient(145deg,var(--opal-surface),var(--opal-surface-soft)) !important;
+  border-color:var(--opal-border) !important;
+  box-shadow:var(--opal-shadow) !important;
+}
+
+/* Preserve the photo hero as an intentionally image-based surface. */
+html[data-opal-theme="green"] .opal-reference-dashboard .opal-dashboard-hero,
+html[data-opal-theme="light"] .opal-reference-dashboard .opal-dashboard-hero{
+  color:#fff !important;
+}
+
+/* Dashboard headings and supporting text follow the active theme. */
+html[data-opal-theme] .opal-reference-dashboard :where(
+  .opal-dashboard-section-head h2,
+  .opal-dashboard-feature header h2,
+  .opal-dashboard-more > summary,
+  .opal-dashboard-mini-panel h3
+){
+  color:var(--opal-text) !important;
+}
+html[data-opal-theme] .opal-reference-dashboard :where(
+  .opal-dashboard-section-head > span,
+  .opal-dashboard-feature header > span,
+  .opal-dashboard-empty,
+  .opal-dashboard-mini-panel > p,
+  .opal-dashboard-teacher-row small,
+  .opal-dashboard-students-table td span
+){
+  color:var(--opal-muted) !important;
+}
+
+/* Keep links/active controls readable without repainting their semantic colors. */
+html[data-opal-theme] .opal-reference-dashboard .opal-dashboard-feature header a{
+  color:var(--opal-link) !important;
+}
+
+/* Quick-access modal was still hard-coded dark and therefore ignored Green/Light. */
+html[data-opal-theme] .opal-quick-access-modal .modal-content{
+  color:var(--opal-text) !important;
+  background:linear-gradient(145deg,var(--opal-surface),var(--opal-surface-soft)) !important;
+  border-color:var(--opal-border) !important;
+  box-shadow:var(--opal-shadow) !important;
+}
+html[data-opal-theme] .opal-quick-access-modal .modal-header,
+html[data-opal-theme] .opal-quick-access-modal .modal-footer{
+  color:var(--opal-text) !important;
+  background:transparent !important;
+  border-color:var(--opal-border) !important;
+}
+html[data-opal-theme] .opal-quick-access-modal .modal-title,
+html[data-opal-theme] .opal-quick-access-modal .modal-body{
+  color:var(--opal-text) !important;
+}
+html[data-opal-theme] .opal-quick-access-modal .modal-header small{
+  color:var(--opal-muted) !important;
+}
+
+/* The quick-access tiles remain intentionally colorful; only their container
+   and modal surface belong to the theme surface system. */
+
+/* R122 cache marker. */
+html[data-opal-theme] body::after{content:none;}
+
+/* =========================================================================
+   OPAL R123 — SINGLE THEME AUTHORITY / TOPBAR + DASHBOARD CASCADE LOCK
+   -------------------------------------------------------------------------
+   IMPORTANT:
+   - opal_theme_system.css is the single OPAL application theme authority.
+   - Bootstrap remains a framework dependency only; it is not the OPAL theme.
+   - Dynamic inline styles for widths/positions are intentionally preserved.
+   - Semantic action colors (KPI/quick-access tiles, alerts, badges) remain
+     functional colors and are not repainted as generic surfaces.
+   - This layer is intentionally LAST and uses !important only where a legacy
+     hard-coded rule or inline visual declaration could otherwise win.
+   ========================================================================= */
+
+/* ---------- 1. Central aliases: no component gets its own theme palette. */
+html[data-opal-theme="dark"],
+html[data-opal-theme="green"],
+html[data-opal-theme="light"]{
+  --opal-authority-bg:var(--opal-bg);
+  --opal-authority-surface:var(--opal-surface);
+  --opal-authority-surface-soft:var(--opal-surface-soft);
+  --opal-authority-surface-strong:var(--opal-surface-strong);
+  --opal-authority-text:var(--opal-text);
+  --opal-authority-muted:var(--opal-muted);
+  --opal-authority-border:var(--opal-border);
+  --opal-authority-primary:var(--opal-primary);
+  --opal-authority-link:var(--opal-link);
+  --opal-authority-shadow:var(--opal-shadow);
+}
+
+/* ---------- 2. TOPBAR: profile photo + notifications + theme + search. */
+html[data-opal-theme] .opal-topbar-shell,
+html[data-opal-theme] .opal-topbar-main,
+html[data-opal-theme] .opal-topbar-actions{
+  color:var(--opal-authority-text)!important;
+  background:linear-gradient(145deg,var(--opal-authority-surface),var(--opal-authority-surface-soft))!important;
+  border-color:var(--opal-authority-border)!important;
+  box-shadow:var(--opal-authority-shadow)!important;
+}
+
+html[data-opal-theme] .opal-topbar-ribbon{
+  color:var(--opal-authority-text)!important;
+  background:transparent!important;
+  border-color:color-mix(in srgb,var(--opal-authority-border) 70%,transparent)!important;
+}
+
+html[data-opal-theme] .opal-topbar-announcement,
+html[data-opal-theme] .opal-topbar-event{
+  color:var(--opal-authority-text)!important;
+  background:transparent!important;
+}
+html[data-opal-theme] .opal-topbar-announcement>i,
+html[data-opal-theme] .opal-topbar-event>i{
+  color:var(--opal-authority-primary)!important;
+}
+
+html[data-opal-theme] .opal-global-search-box{
+  color:var(--opal-authority-text)!important;
+  background:var(--opal-authority-surface-soft)!important;
+  border:1px solid var(--opal-authority-border)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.20),0 8px 22px color-mix(in srgb,var(--opal-authority-bg) 18%,transparent)!important;
+}
+html[data-opal-theme] .opal-global-search-box .search-box{
+  color:var(--opal-authority-text)!important;
+  background:transparent!important;
+}
+html[data-opal-theme] .opal-global-search-box .search-box::placeholder{
+  color:var(--opal-authority-muted)!important;
+  opacity:1!important;
+}
+html[data-opal-theme] .opal-global-search-box>i{
+  color:var(--opal-authority-primary)!important;
+}
+html[data-opal-theme] .opal-global-search-box kbd{
+  color:var(--opal-authority-muted)!important;
+  background:var(--opal-authority-surface)!important;
+  border-color:var(--opal-authority-border)!important;
+}
+
+html[data-opal-theme] .opal-topbar-actions .icon-btn,
+html[data-opal-theme] .opal-topbar-actions .opal-profile-link,
+html[data-opal-theme] .opal-topbar-actions .opal-gold-clock{
+  color:var(--opal-authority-text)!important;
+  background:var(--opal-authority-surface-soft)!important;
+  border-color:var(--opal-authority-border)!important;
+}
+html[data-opal-theme] .opal-topbar-actions .icon-btn:hover,
+html[data-opal-theme] .opal-topbar-actions .opal-profile-link:hover{
+  color:var(--opal-authority-primary)!important;
+  background:var(--opal-authority-surface-strong)!important;
+  border-color:var(--opal-authority-primary)!important;
+}
+html[data-opal-theme] .opal-profile-copy strong{
+  color:var(--opal-authority-text)!important;
+}
+html[data-opal-theme] .opal-profile-copy small{
+  color:var(--opal-authority-muted)!important;
+}
+
+/* The user's photo itself is an image; only its frame is theme-controlled. */
+html[data-opal-theme] .opal-user-photo-frame{
+  background:var(--opal-authority-surface-strong)!important;
+  border-color:var(--opal-authority-border)!important;
+  color:var(--opal-authority-primary)!important;
+}
+
+/* Notification dropdown/results must use the same authority. */
+html[data-opal-theme] .opal-notification-menu,
+html[data-opal-theme] .opal-global-operation-results{
+  color:var(--opal-authority-text)!important;
+  background:var(--opal-authority-surface)!important;
+  border-color:var(--opal-authority-border)!important;
+  box-shadow:var(--opal-authority-shadow)!important;
+}
+html[data-opal-theme] .opal-notification-menu-head,
+html[data-opal-theme] .opal-notification-menu-foot{
+  background:var(--opal-authority-surface-soft)!important;
+  border-color:var(--opal-authority-border)!important;
+}
+html[data-opal-theme] .opal-notification-menu-item{
+  color:var(--opal-authority-text)!important;
+  background:transparent!important;
+  border-bottom-color:var(--opal-authority-border)!important;
+}
+html[data-opal-theme] .opal-notification-menu-item:hover,
+html[data-opal-theme] .opal-notification-menu-item.unread{
+  background:color-mix(in srgb,var(--opal-authority-primary) 10%,var(--opal-authority-surface))!important;
+}
+html[data-opal-theme] .opal-notification-menu-head small,
+html[data-opal-theme] .opal-notification-menu-item small,
+html[data-opal-theme] .opal-notification-menu-item em{
+  color:var(--opal-authority-muted)!important;
+}
+html[data-opal-theme] .opal-notification-menu-head a,
+html[data-opal-theme] .opal-notification-menu-foot a{
+  color:var(--opal-authority-link)!important;
+}
+
+/* ---------- 3. MAIN PAGE SURFACES: one palette for every ordinary container. */
+html[data-opal-theme] .opal-main :where(
+  .opal-dashboard-section,
+  .opal-dashboard-feature,
+  .opal-dashboard-income-row,
+  .opal-dashboard-mini-panel,
+  .opal-dashboard-more,
+  .opal-dashboard-more-grid,
+  .opal-dashboard-students-wrap,
+  .opal-dashboard-students-section,
+  .opal-dashboard-teacher-row,
+  .opal-dashboard-students-table,
+  .opal-dashboard-gateway-group,
+  .opal-dashboard-command,
+  .opal-command-header
+){
+  color:var(--opal-authority-text)!important;
+  background:linear-gradient(145deg,var(--opal-authority-surface),var(--opal-authority-surface-soft))!important;
+  border-color:var(--opal-authority-border)!important;
+  box-shadow:var(--opal-authority-shadow)!important;
+}
+
+/* Child rows/panels are also surfaces, but retain semantic rank badges/colors. */
+html[data-opal-theme] .opal-main :where(
+  .opal-dashboard-teacher-row,
+  .opal-dashboard-mini-panel .opal-mini-list>div,
+  .opal-dashboard-mini-panel .opal-mini-metrics>b,
+  .opal-dashboard-feature .opal-satisfaction-card
+){
+  color:var(--opal-authority-text)!important;
+  background:var(--opal-authority-surface-soft)!important;
+  border-color:var(--opal-authority-border)!important;
+}
+
+html[data-opal-theme] .opal-main :where(
+  .opal-dashboard-section-head h2,
+  .opal-dashboard-feature header h2,
+  .opal-dashboard-mini-panel header h2,
+  .opal-dashboard-mini-panel header h3,
+  .opal-dashboard-more>summary
+){
+  color:var(--opal-authority-text)!important;
+}
+html[data-opal-theme] .opal-main :where(
+  .opal-dashboard-section-head>span,
+  .opal-dashboard-feature header>span,
+  .opal-dashboard-mini-panel header>span,
+  .opal-dashboard-mini-panel header>a,
+  .opal-dashboard-empty,
+  .opal-dashboard-mini-panel>p,
+  .opal-dashboard-teacher-row small,
+  .opal-dashboard-students-table small,
+  .opal-mini-metrics small,
+  .opal-mini-list small
+){
+  color:var(--opal-authority-muted)!important;
+}
+html[data-opal-theme] .opal-main .opal-dashboard-feature header a{
+  color:var(--opal-authority-link)!important;
+}
+
+/* The photo hero intentionally remains image-based, not a generic surface. */
+html[data-opal-theme] .opal-reference-dashboard .opal-dashboard-hero{
+  color:#fff!important;
+}
+
+/* ---------- 4. Quick-access modal: only the shell follows the theme. */
+html[data-opal-theme] .opal-quick-access-modal .modal-content{
+  color:var(--opal-authority-text)!important;
+  background:linear-gradient(145deg,var(--opal-authority-surface),var(--opal-authority-surface-soft))!important;
+  border-color:var(--opal-authority-border)!important;
+  box-shadow:var(--opal-authority-shadow)!important;
+}
+html[data-opal-theme] .opal-quick-access-modal .modal-header,
+html[data-opal-theme] .opal-quick-access-modal .modal-footer{
+  color:var(--opal-authority-text)!important;
+  background:transparent!important;
+  border-color:var(--opal-authority-border)!important;
+}
+html[data-opal-theme] .opal-quick-access-modal .modal-title,
+html[data-opal-theme] .opal-quick-access-modal .modal-header small{
+  color:var(--opal-authority-text)!important;
+}
+
+/* ---------- 5. Generic legacy dark surfaces: final safety net. */
+html[data-opal-theme] .opal-main :where(
+  .opal-card,.card,.panel,.dashboard-card,.dashboard-panel,.stat-card,
+  .glass-card,.content-card,.widget,.box,.well,.list-card,.summary-card,
+  .metric-card,.opal-module-card,.opal-report-card,.opal-flow-card,
+  .opal-enterprise-section,.opal-flow-section,.opal-feedback-card,
+  .opal-kpi-card,.opal-enterprise-kpi,.opal-live-panel,.opal-analytics-panel,
+  .opal-section,.opal-assignment-summary,.opal-receipt-summary-card,
+  .opal-check-card,.opal-kpi-compact,.overall-progress-card,.dev-card,
+  .gantt-card,.opal-detail-item,.opal-inner-panel,.opal-settings-section,
+  .filter-card,.filters-card,.search-filter-bar,.data-table-wrapper,
+  .table-responsive,.opal-table-wrap
+){
+  color:var(--opal-authority-text)!important;
+  background:linear-gradient(145deg,var(--opal-authority-surface),var(--opal-authority-surface-soft))!important;
+  border-color:var(--opal-authority-border)!important;
+  box-shadow:var(--opal-authority-shadow)!important;
+}
+
+/* ---------- 6. Tables follow the same surface authority. */
+html[data-opal-theme] .opal-main :where(
+  .table,.opal-table,table
+){
+  color:var(--opal-authority-text)!important;
+  --bs-table-color:var(--opal-authority-text)!important;
+  --bs-table-bg:transparent!important;
+}
+html[data-opal-theme] .opal-main :where(
+  .table thead th,.opal-table thead th,table thead th,
+  .table thead td,.opal-table thead td,table thead td
+){
+  color:var(--opal-authority-text)!important;
+  background:var(--opal-authority-surface-strong)!important;
+  border-color:var(--opal-authority-border)!important;
+}
+html[data-opal-theme] .opal-main :where(
+  .table tbody td,.opal-table tbody td,table tbody td,
+  .table tbody th,.opal-table tbody th,table tbody th
+){
+  color:var(--opal-authority-text)!important;
+  background:var(--opal-authority-surface)!important;
+  border-color:var(--opal-authority-border)!important;
+}
+
+/* ---------- 7. Explicitly neutralize legacy dark-only dashboard declarations. */
+html[data-opal-theme="green"] .opal-reference-dashboard :where(
+  .opal-dashboard-section,
+  .opal-dashboard-feature,
+  .opal-dashboard-feature.feature-chart,
+  .opal-dashboard-feature.feature-teachers,
+  .opal-dashboard-feature.feature-alerts,
+  .opal-dashboard-mini-panel,
+  .opal-dashboard-more,
+  .opal-dashboard-more-grid
+),
+html[data-opal-theme="light"] .opal-reference-dashboard :where(
+  .opal-dashboard-section,
+  .opal-dashboard-feature,
+  .opal-dashboard-feature.feature-chart,
+  .opal-dashboard-feature.feature-teachers,
+  .opal-dashboard-feature.feature-alerts,
+  .opal-dashboard-mini-panel,
+  .opal-dashboard-more,
+  .opal-dashboard-more-grid
+){
+  background:linear-gradient(145deg,var(--opal-authority-surface),var(--opal-authority-surface-soft))!important;
+}
+
+/* ---------- 8. Dynamic inline styles are not theme authority. */
+html[data-opal-theme] .opal-main [style*="background:"],
+html[data-opal-theme] .opal-main [style*="background-color:"]{
+  /* This selector intentionally does not set a value.
+     Functional/data-driven inline styles remain intact where required. */
+}
+
+/* R123 cache marker. */
+html[data-opal-theme] body::after{content:none;}
+
+
+/* OPAL R124 FINAL PATCH — satisfaction indicators */
+html[data-opal-theme] .opal-dashboard-feature .opal-satisfaction-card {
+  color: var(--opal-text) !important;
+  background: linear-gradient(145deg,var(--opal-surface),var(--opal-surface-soft)) !important;
+  border-color: var(--opal-border) !important;
+}
+html[data-opal-theme] .opal-dashboard-feature .opal-satisfaction-ring {
+  color: var(--opal-text) !important;
+  background: conic-gradient(
+    var(--opal-satisfaction-electronic,#35c9b0) var(--satisfaction-value),
+    color-mix(in srgb,var(--opal-border) 42%,transparent) 0
+  ) !important;
+  box-shadow: 0 8px 20px color-mix(in srgb,var(--opal-bg) 18%,transparent) !important;
+}
+html[data-opal-theme] .opal-dashboard-feature .opal-satisfaction-ring.teaching {
+  background: conic-gradient(
+    var(--opal-satisfaction-teaching,#4bb8df) var(--satisfaction-value),
+    color-mix(in srgb,var(--opal-border) 42%,transparent) 0
+  ) !important;
+}
+html[data-opal-theme] .opal-dashboard-feature .opal-satisfaction-ring::before {
+  background: var(--opal-surface) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb,var(--opal-border) 60%,transparent) !important;
+}
+html[data-opal-theme] .opal-dashboard-feature .opal-satisfaction-ring > span {
+  color: var(--opal-text) !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: grid !important;
+  place-items: center !important;
+  position: relative !important;
+  z-index: 2 !important;
 }

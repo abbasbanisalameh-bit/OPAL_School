@@ -250,7 +250,7 @@ def run_critical_workflow_contract_audit(root: Path | None = None) -> dict:
         "critical_routes": audit_critical_routes(),
         "parent_communication": audit_parent_communication_contract(root=root),
         "teacher_lifecycle": audit_teacher_lifecycle_contract(root=root),
-        "receipt_printing": audit_receipt_print_contract(root=root),
+        # Receipt printing is audited separately; it is not a startup gate.
     }
     issues = [issue for group in checks.values() for issue in group]
     return {

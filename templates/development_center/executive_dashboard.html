@@ -23,7 +23,7 @@
     <strong>نسبة إنجاز المشروع الكلية</strong>
     <strong>{{ project_progress }}%</strong>
   </div>
-  <div class="progress" style="height:26px;">
+  <div class="progress opal-inline-r124-5">
     <div class="progress-bar" style="width: {{ project_progress }}%;">
       {{ project_progress }}%
     </div>
@@ -76,7 +76,7 @@
         <strong>{{ item.sprint.title }}</strong>
         <span>{{ item.done }}/{{ item.total }} — {{ item.progress }}%</span>
       </div>
-      <div class="progress" style="height:18px;">
+      <div class="progress opal-inline-r124-6">
         <div class="progress-bar" style="width: {{ item.progress }}%;"></div>
       </div>
     </div>
@@ -91,7 +91,7 @@
         <strong>{{ item.module.name }}</strong>
         <span>{{ item.done }}/{{ item.total }} — {{ item.progress }}%</span>
       </div>
-      <div class="progress" style="height:18px;">
+      <div class="progress opal-inline-r124-6">
         <div class="progress-bar" style="width: {{ item.progress }}%;"></div>
       </div>
     </div>
@@ -108,7 +108,7 @@
         <strong>{{ item.release.version }}</strong>
         <span>{{ item.done }}/{{ item.total }} — {{ item.progress }}%</span>
       </div>
-      <div class="progress" style="height:18px;">
+      <div class="progress opal-inline-r124-6">
         <div class="progress-bar" style="width: {{ item.progress }}%;"></div>
       </div>
     </div>

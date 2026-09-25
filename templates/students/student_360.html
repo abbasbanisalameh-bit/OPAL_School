@@ -9,7 +9,7 @@
 <div class="opal-card mb-4">
   <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
     <div class="d-flex align-items-center gap-3">
-      {% if student.photo %}<img src="{{ student.photo.url }}" alt="{{ student.full_name }}" class="rounded-circle border" style="width:92px;height:92px;object-fit:cover">{% else %}<div class="rounded-circle bg-light border d-flex align-items-center justify-content-center" style="width:92px;height:92px"><i class="bi bi-person fs-1 text-secondary"></i></div>{% endif %}
+      {% if student.photo %}<img src="{{ student.photo.url }}" alt="{{ student.full_name }}" class="rounded-circle border opal-inline-r124-34">{% else %}<div class="rounded-circle bg-light border d-flex align-items-center justify-content-center opal-inline-r124-35"><i class="bi bi-person fs-1 text-secondary"></i></div>{% endif %}
       <div>
         <h2 class="fw-bold mb-1">{{ student.full_name }}</h2>
         <div class="text-muted">{{ student.student_number }} · {{ student.grade }}{% if student.section %} / {{ student.section }}{% endif %}</div>
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <div class="opal-compact-action-row" style="--opal-action-count:10">
+    <div class="opal-compact-action-row opal-inline-r124-36">
       <a href="{% url 'students:student_update' student.pk %}" class="btn btn-warning"><i class="bi bi-pencil"></i> تعديل</a>
       {% if current_registration %}<a href="{% url 'admissions:registration_receipt' current_registration.pk %}" target="_blank" class="btn btn-outline-primary"><i class="bi bi-card-checklist"></i> سجل التسجيل</a>{% else %}<a href="{% url 'admissions:direct_registration' %}" class="btn btn-outline-primary"><i class="bi bi-card-checklist"></i> تسجيل</a>{% endif %}
       <a href="{% url 'admissions:student_financial_record' student.pk %}" class="btn btn-primary"><i class="bi bi-wallet2"></i> السجل المالي</a>
@@ -93,14 +93,14 @@
     </div>
   </div>
 
-  <div class="tab-pane fade" id="activity"><div class="opal-card"><h4 class="fw-bold mb-3">السجل الزمني للطالب</h4>{% for item in activity_timeline %}<div class="d-flex gap-3 py-3 {% if not forloop.last %}border-bottom{% endif %}"><div class="rounded-circle bg-light d-flex align-items-center justify-content-center flex-shrink-0" style="width:42px;height:42px"><i class="bi bi-{{ item.icon }}"></i></div><div class="flex-grow-1"><div class="d-flex flex-wrap justify-content-between gap-2"><strong>{{ item.label }}</strong><small class="text-muted">{{ item.at|date:"Y-m-d H:i" }}</small></div><div class="text-muted mt-1">{{ item.description }}</div></div></div>{% empty %}<p class="text-muted mb-0">لا توجد أنشطة مسجلة حتى الآن.</p>{% endfor %}</div></div>
+  <div class="tab-pane fade" id="activity"><div class="opal-card"><h4 class="fw-bold mb-3">السجل الزمني للطالب</h4>{% for item in activity_timeline %}<div class="d-flex gap-3 py-3 {% if not forloop.last %}border-bottom{% endif %}"><div class="rounded-circle bg-light d-flex align-items-center justify-content-center flex-shrink-0 opal-inline-r124-37"><i class="bi bi-{{ item.icon }}"></i></div><div class="flex-grow-1"><div class="d-flex flex-wrap justify-content-between gap-2"><strong>{{ item.label }}</strong><small class="text-muted">{{ item.at|date:"Y-m-d H:i" }}</small></div><div class="text-muted mt-1">{{ item.description }}</div></div></div>{% empty %}<p class="text-muted mb-0">لا توجد أنشطة مسجلة حتى الآن.</p>{% endfor %}</div></div>
 
   <div class="tab-pane fade" id="academic"><div class="opal-card"><h4 class="fw-bold mb-3">السجل الأكاديمي</h4><div class="table-responsive"><table class="table align-middle"><thead><tr><th>العام</th><th>الصف</th><th>الشعبة</th><th>الحالة</th><th>تاريخ الالتحاق</th></tr></thead><tbody>{% for row in enrollments %}<tr><td>{{ row.academic_year }}</td><td>{{ row.grade|default:"-" }}</td><td>{{ row.section|default:"-" }}</td><td>{{ row.get_status_display }}</td><td>{{ row.joined_at|default:"-" }}</td></tr>{% empty %}<tr><td colspan="5" class="text-center text-muted">لا يوجد سجل أكاديمي.</td></tr>{% endfor %}</tbody></table></div></div></div>
 
   <div class="tab-pane fade" id="finance">
     <div class="opal-card mb-3">
       <div class="d-flex flex-wrap justify-content-between gap-2 mb-3"><h4 class="fw-bold mb-0">رسوم السنة الحالية — {{ current_enrollment.academic_year.name|default:"غير محددة" }}</h4><span class="badge bg-{{ finance.status_class }}">نسبة السداد الحالية {{ finance.payment_rate }}%</span></div>
-      <div class="progress mb-3" style="height:8px"><div class="progress-bar" role="progressbar" style="width:{{ finance.payment_rate }}%"></div></div>
+      <div class="progress mb-3 opal-inline-r124-3"><div class="progress-bar" role="progressbar" style="width:{{ finance.payment_rate }}%"></div></div>
       <div class="table-responsive"><table class="table"><thead><tr><th>البند</th><th>صافي الرسوم</th><th>المدفوع</th><th>المتبقي</th><th>الاستحقاق</th></tr></thead><tbody>{% for inv in current_invoices %}<tr><td>{{ inv.fee_category.name }}</td><td>{{ inv.net_amount|floatformat:2 }}</td><td>{{ inv.total_paid|floatformat:2 }}</td><td>{{ inv.remaining|floatformat:2 }}</td><td>{{ inv.due_date }}</td></tr>{% empty %}<tr><td colspan="5" class="text-center text-muted">لا توجد رسوم للسنة الحالية.</td></tr>{% endfor %}</tbody></table></div>
     </div>
     <div class="opal-card mb-3">
