@@ -68,14 +68,14 @@
       <header><h2>مؤشرات الرضا <i class="bi bi-star-fill"></i></h2><span>مؤشرات رقمية وبيانية للتقييمات الشهرية المعتمدة</span></header>
       <div class="opal-satisfaction-grid">
         <a class="opal-satisfaction-card" href="{% url 'enterprise_ops:feedback_list' %}">
-          <span class="opal-satisfaction-ring electronic" style="--satisfaction-value:{% if electronic_satisfaction_percent != None %}{{ electronic_satisfaction_percent }}{% else %}0{% endif %}%"><span>{% if electronic_satisfaction_percent != None %}{{ electronic_satisfaction_percent|floatformat:0 }}%{% else %}—{% endif %}</span></span>
+          <span class="opal-satisfaction-ring electronic" data-opal-satisfaction-value="{% if electronic_satisfaction_percent != None %}{{ electronic_satisfaction_percent }}{% else %}0{% endif %}%"><span>{% if electronic_satisfaction_percent != None %}{{ electronic_satisfaction_percent|floatformat:0 }}%{% else %}—{% endif %}</span></span>
           <div class="opal-satisfaction-copy"><strong>الرضا عن الخدمات الإلكترونية</strong><b>{% if electronic_satisfaction_percent != None %}{{ electronic_satisfaction_percent|floatformat:0 }}%{% else %}—{% endif %}</b><small>رضا المستخدمين</small></div>
-          <div class="opal-progress"><span style="width:{% if electronic_satisfaction_percent != None %}{{ electronic_satisfaction_percent }}{% else %}0{% endif %}%"></span></div>
+          <div class="opal-progress"><span data-opal-progress="{% if electronic_satisfaction_percent != None %}{{ electronic_satisfaction_percent }}{% else %}0{% endif %}%"></span></div>
         </a>
         <a class="opal-satisfaction-card" href="{% url 'enterprise_ops:feedback_list' %}">
-          <span class="opal-satisfaction-ring teaching" style="--satisfaction-value:{% if teaching_satisfaction_percent != None %}{{ teaching_satisfaction_percent }}{% else %}0{% endif %}%"><span>{% if teaching_satisfaction_percent != None %}{{ teaching_satisfaction_percent|floatformat:0 }}%{% else %}—{% endif %}</span></span>
+          <span class="opal-satisfaction-ring teaching" data-opal-satisfaction-value="{% if teaching_satisfaction_percent != None %}{{ teaching_satisfaction_percent }}{% else %}0{% endif %}%"><span>{% if teaching_satisfaction_percent != None %}{{ teaching_satisfaction_percent|floatformat:0 }}%{% else %}—{% endif %}</span></span>
           <div class="opal-satisfaction-copy"><strong>جودة التدريس</strong><b>{% if teaching_satisfaction_percent != None %}{{ teaching_satisfaction_percent|floatformat:0 }}%{% else %}—{% endif %}</b><small>رضا أولياء الأمور والطلبة</small></div>
-          <div class="opal-progress"><span style="width:{% if teaching_satisfaction_percent != None %}{{ teaching_satisfaction_percent }}{% else %}0{% endif %}%"></span></div>
+          <div class="opal-progress"><span data-opal-progress="{% if teaching_satisfaction_percent != None %}{{ teaching_satisfaction_percent }}{% else %}0{% endif %}%"></span></div>
         </a>
       </div>
     </article>
@@ -167,15 +167,16 @@
 <script>
 if (typeof Chart !== "undefined") {
   const readJson = (id) => JSON.parse(document.getElementById(id)?.textContent || "[]");
-  const text = getComputedStyle(document.documentElement).getPropertyValue('--opal-text') || '#dbeafe';
-  const grid = 'rgba(148,163,184,.12)';
+  const token = (name) => window.OPALTheme.color(name);
+  const text = token('--opal-chart-text');
+  const grid = token('--opal-chart-grid');
   const incomeCanvas = document.getElementById('incomeChart');
   if (incomeCanvas) {
     const ctx = incomeCanvas.getContext('2d');
     const gradient = ctx.createLinearGradient(0, 0, 0, 310);
-    gradient.addColorStop(0, 'rgba(56,211,159,.34)');
-    gradient.addColorStop(1, 'rgba(56,211,159,.02)');
-    new Chart(incomeCanvas,{type:'line',data:{labels:readJson('income-labels'),datasets:[{label:'الإيرادات',data:readJson('income-values'),borderColor:'#5eead4',backgroundColor:gradient,fill:true,tension:.34,borderWidth:3,pointRadius:4,pointHoverRadius:6,pointBackgroundColor:'#d9fffa',pointBorderColor:'#14b8a6',pointBorderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{rtl:true,displayColors:false,padding:10}},scales:{x:{ticks:{color:text,padding:8},grid:{display:false}},y:{beginAtZero:true,ticks:{color:text,padding:8},grid:{color:grid}}}}});
+    gradient.addColorStop(0, token('--opal-chart-fill-start'));
+    gradient.addColorStop(1, token('--opal-chart-fill-end'));
+    new Chart(incomeCanvas,{type:'line',data:{labels:readJson('income-labels'),datasets:[{label:'الإيرادات',data:readJson('income-values'),borderColor:token('--opal-chart-line'),backgroundColor:gradient,fill:true,tension:.34,borderWidth:3,pointRadius:4,pointHoverRadius:6,pointBackgroundColor:token('--opal-chart-point'),pointBorderColor:token('--opal-chart-point-border'),pointBorderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{rtl:true,displayColors:false,padding:10}},scales:{x:{ticks:{color:text,padding:8},grid:{display:false}},y:{beginAtZero:true,ticks:{color:text,padding:8},grid:{color:grid}}}}});
   }
 }
 </script>

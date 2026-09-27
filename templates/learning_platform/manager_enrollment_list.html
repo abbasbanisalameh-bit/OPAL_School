@@ -24,10 +24,10 @@
                     {% for enrollment in enrollments %}
                         <tr>
                             <td><strong>{{ enrollment.learner.full_name }}</strong><small>{{ enrollment.learner.email }}</small></td>
-                            <td><strong>{{ enrollment.course.title }}</strong><small style="{% subject_style enrollment.course.subject %}">{{ enrollment.course.subject.name }}</small></td>
+                            <td><strong>{{ enrollment.course.title }}</strong><small data-opal-subject-color="{% subject_style enrollment.course.subject %}">{{ enrollment.course.subject.name }}</small></td>
                             <td>{{ enrollment.course.teacher.full_name }}</td>
                             <td><span class="learning-table-status status-{{ enrollment.status }}">{{ enrollment.get_status_display }}</span></td>
-                            <td><div class="learning-table-progress"><i><em style="width:{{ enrollment.progress_percent }}%"></em></i><b>{{ enrollment.progress_percent }}%</b></div></td>
+                            <td><div class="learning-table-progress"><i><em data-opal-progress="{{ enrollment.progress_percent }}%"></em></i><b>{{ enrollment.progress_percent }}%</b></div></td>
                             <td>{{ enrollment.enrolled_at|date:"Y/m/d" }}</td>
                             <td>{% if enrollment.last_activity_at %}{{ enrollment.last_activity_at|date:"Y/m/d H:i" }}{% else %}لم يبدأ{% endif %}</td>
                         </tr>

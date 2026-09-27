@@ -31,7 +31,7 @@ def opal_identity(request):
             or "الإدارة"
         )
 
-    academic_context = request_academic_context(request, persist=True)
+    academic_context = request_academic_context(request, persist=False)
     return {
         "opal_school": school,
         "opal_profile": profile,

@@ -3,7 +3,7 @@
 {% block title %}تقييمات {{ course.title }} | أوبال{% endblock %}
 {% block body_class %}learning-manager-mode{% endblock %}
 {% block content %}
-<section class="learning-page-hero manager-page"><div class="learning-container"><span style="{% subject_style course.subject %}">{{ course.subject.name }}</span><h1>تقييمات: {{ course.title }}</h1><p>اختبارات إلكترونية وواجبات مرتبطة بإكمال الدورة.</p></div></section>
+<section class="learning-page-hero manager-page"><div class="learning-container"><span data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name }}</span><h1>تقييمات: {{ course.title }}</h1><p>اختبارات إلكترونية وواجبات مرتبطة بإكمال الدورة.</p></div></section>
 <section class="learning-section learning-manager-page-section"><div class="learning-container">
     {% include "learning_platform/_manager_nav.html" %}
     <div class="learning-manager-toolbar">

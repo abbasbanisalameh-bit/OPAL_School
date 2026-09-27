@@ -3,55 +3,6 @@
 {% block page_title %}التتبع المباشر{% endblock %}
 {% block page_subtitle %}جميع الرحلات النشطة في المدرسة في شاشة واحدة{% endblock %}
 {% block content %}
-<style>
-  body.opal-transport-map-open { overflow: hidden !important; }
-  #manager-map-wrap.opal-map-fullscreen {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    max-width: none !important;
-    max-height: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #000;
-    z-index: 2147483647 !important;
-    overflow: hidden !important;
-    border-radius: 0 !important;
-  }
-  #manager-map-wrap.opal-map-fullscreen #transport-map {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 100vh !important;
-    min-height: 100dvh !important;
-    border-radius: 0 !important;
-  }
-
-  .opal-map-viewport-layer {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #000 !important;
-    z-index: 2147483647 !important;
-    overflow: hidden !important;
-    border-radius: 0 !important;
-  }
-  .opal-map-viewport-layer > #transport-map {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 100dvh !important;
-    border-radius: 0 !important;
-  }
-</style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <div class="container-fluid py-4" dir="rtl">
   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -63,8 +14,8 @@
   </div>
 
   <div id="manager-map-wrap" class="position-relative mb-4">
-    <div id="transport-map" style="height:520px;border-radius:16px;overflow:hidden;"></div>
-    <div class="position-absolute top-0 start-0 p-2 d-flex gap-1" style="z-index:1000;">
+    <div id="transport-map"></div>
+    <div class="position-absolute top-0 start-0 p-2 d-flex gap-1 opal-map-controls">
       <button type="button" class="btn btn-sm btn-light shadow" id="manager-map-plus">＋</button>
       <button type="button" class="btn btn-sm btn-light shadow" id="manager-map-minus">−</button>
       <button type="button" class="btn btn-sm btn-light shadow" id="manager-map-fullscreen">⛶ تكبير الخريطة</button>

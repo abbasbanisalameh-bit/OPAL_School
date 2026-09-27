@@ -27,7 +27,7 @@
                         <tr>
                             <td><code class="learning-code">{{ card.code }}</code></td>
                             <td>{{ card.get_duration_display }}</td>
-                            <td>{% if card.grants_all_subjects %}جميع المواد{% else %}{% for subject in card.subjects.all %}<span style="{% subject_style subject %}">{{ subject.name }}</span>{% if not forloop.last %}، {% endif %}{% empty %}غير محدد{% endfor %}{% endif %}</td>
+                            <td>{% if card.grants_all_subjects %}جميع المواد{% else %}{% for subject in card.subjects.all %}<span data-opal-subject-color="{% subject_style subject %}">{{ subject.name }}</span>{% if not forloop.last %}، {% endif %}{% empty %}غير محدد{% endfor %}{% endif %}</td>
                             <td><span class="learning-table-status status-{{ card.status }}">{{ card.get_status_display }}</span></td>
                             <td>{% if card.redeemed_by %}<strong>{{ card.redeemed_by.full_name }}</strong><small>{{ card.redeemed_by.email }}</small>{% else %}—{% endif %}</td>
                             <td>{% if card.expires_at %}{{ card.expires_at|date:"Y/m/d" }}{% else %}—{% endif %}</td>

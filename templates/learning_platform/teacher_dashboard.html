@@ -12,8 +12,8 @@
         <div class="learning-teacher-course-list">
             {% for course in courses %}
                 <article>
-                    <span class="learning-teacher-course-symbol" style="--course-color:{{ course.cover_color }}; {% subject_style course.subject %}">{{ course.subject.name|slice:":1" }}</span>
-                    <div><small><span style="{% subject_style course.subject %}">{{ course.subject.name }}</span> · {{ course.get_status_display }}</small><h3>{{ course.title }}</h3><p>{{ course.lesson_count }} درسًا · {{ course.assessment_count }} تقييمًا · {{ course.learner_count }} متعلمًا</p></div>
+                    <span class="learning-teacher-course-symbol" data-opal-course-color="{{ course.cover_color }}" data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name|slice:":1" }}</span>
+                    <div><small><span data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name }}</span> · {{ course.get_status_display }}</small><h3>{{ course.title }}</h3><p>{{ course.lesson_count }} درسًا · {{ course.assessment_count }} تقييمًا · {{ course.learner_count }} متعلمًا</p></div>
                     <div class="learning-teacher-actions">
                         {% if school_managed_teacher %}<a href="{% url 'learning_platform:teacher_lesson_list' course.pk %}">الدروس والمحتوى</a>{% endif %}<a href="{% url 'learning_platform:teacher_course_learners' course.pk %}">المتعلمون والتقدم</a>
                         <a href="{% url 'learning_platform:teacher_submission_list' course.pk %}">التسليمات{% if course.pending_submission_count %} ({{ course.pending_submission_count }}){% endif %}</a>

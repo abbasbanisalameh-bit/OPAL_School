@@ -10,7 +10,7 @@
     <p>ابدأ العمل من بوابة الدور الرئيسية فقط. تعرض هذه الصفحة الملكية والترابط للقراءة، ولا تُنشئ مدخلًا آخر لأي وظيفة.</p>
   </div>
   <div class="opal-operations-health is-{{ integration_health_class }}">
-    <div class="opal-health-ring" style="--opal-health:{{ integration_health_percent }}%"><span>{{ integration_health_percent }}%</span></div>
+    <div class="opal-health-ring" data-opal-health="{{ integration_health_percent }}%"><span>{{ integration_health_percent }}%</span></div>
     <div><strong>{{ integration_health_label }}</strong><small>{{ integration_passed_checks }} من {{ integration_total_checks }} فحصًا دون ملاحظات</small></div>
   </div>
 </section>

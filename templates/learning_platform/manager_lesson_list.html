@@ -5,7 +5,7 @@
 {% block body_class %}learning-manager-mode{% endblock %}
 
 {% block content %}
-<section class="learning-page-hero manager-page"><div class="learning-container"><span style="{% subject_style course.subject %}">{{ course.subject.name }}</span><h1>دروس: {{ course.title }}</h1><p>المدرّس: {{ course.teacher.full_name }} · حالة الدورة: {{ course.get_status_display }}</p></div></section>
+<section class="learning-page-hero manager-page"><div class="learning-container"><span data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name }}</span><h1>دروس: {{ course.title }}</h1><p>المدرّس: {{ course.teacher.full_name }} · حالة الدورة: {{ course.get_status_display }}</p></div></section>
 <section class="learning-section learning-manager-page-section"><div class="learning-container">
     {% include "learning_platform/_manager_nav.html" %}
     <div class="learning-manager-toolbar"><div class="learning-manager-actions"><a class="learning-button learning-button-ghost learning-button-small" href="{% url 'learning_platform:manager_course_list' %}">العودة للدورات</a><a class="learning-button learning-button-ghost learning-button-small" href="{% url 'learning_platform:manager_assessment_list' course.pk %}">التقييمات</a></div><a class="learning-button learning-button-small" href="{% url 'learning_platform:manager_lesson_create' course.pk %}">إضافة درس</a></div>

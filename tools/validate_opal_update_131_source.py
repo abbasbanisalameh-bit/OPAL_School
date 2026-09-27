@@ -123,7 +123,13 @@ def main() -> int:
     learning_models = require_file("learning_platform/models.py")
     learning_session = require_file("learning_platform/session_auth.py")
     learning_base = require_file("templates/learning_platform/base.html")
-    require_file("static/learning_platform/css/platform.css")
+    add_check(
+        "learning_platform_single_css_authority",
+        not (root / "static/learning_platform/css/platform.css").exists()
+        and "css/opal_theme_system.css" in learning_base,
+        "The learning platform must use the single OPAL CSS authority and must not ship a parallel platform.css file.",
+        path="templates/learning_platform/base.html",
+    )
     require_file("static/learning_platform/js/platform.js")
     require_file("INSTALL_OPAL_UPDATE_131_7_R11_INTEGRATED_LEARNING_PLATFORM_AR.md")
     require_file("OPAL_UPDATE_131_7_R11_INTEGRATED_LEARNING_PLATFORM_RELEASE_NOTES_AR.md")
@@ -228,21 +234,51 @@ def main() -> int:
         and "base/base.html" not in learning_base
         and "includes/sidebar.html" not in learning_base
         and "includes/topbar.html" not in learning_base
-        and "learning_platform/css/platform.css" in learning_base,
-        "The learning platform must keep its independent LearningAccount/session/shell while using explicit one-to-one ERP student/teacher bridge profiles.",
+        and "css/opal_theme_system.css" in learning_base
+        and "learning_platform/css/platform.css" not in learning_base,
+        "The learning platform must keep its independent LearningAccount/session/shell while using explicit one-to-one ERP student/teacher bridge profiles under the single CSS authority.",
         path="learning_platform/models.py",
     )
     base = require_file("templates/base/base.html")
     primary_tokens = re.findall(
-        r"(?:opal_erp\.css|opal_dashboard_executive\.css|opal_entity_360_consolidation\.css|opal_erp\.js)' %\}\?v=([^\"\s]+)",
+        r"(?:css/opal_theme_system\.css|js/opal_erp\.js)' %\}\?v=([^\"\s]+)",
         base,
     )
     add_check(
         "cache_token",
-        len(primary_tokens) == 4 and len(set(primary_tokens)) == 1,
-        "The four primary CSS/JS references must share one non-empty cache token.",
+        len(primary_tokens) == 2 and len(set(primary_tokens)) == 1,
+        "The authoritative OPAL CSS and shared JS references must share one non-empty cache token.",
         path="templates/base/base.html",
     )
+    require_file("core/test_update131_7_r125_css_sovereignty_contract.py")
+    require_file("tools/verify_opal_css_authority_r125.py")
+    require_file("OPAL_CSS_AUTHORITY_CONTRACT_AR.md")
+
+    # R125: one local stylesheet, no template style authority, no legacy theme-mode classes.
+    local_css = sorted(p.relative_to(root).as_posix() for p in root.rglob("*.css") if ".git" not in p.parts)
+    html_files = sorted(root.rglob("*.html"))
+    css_authority_violations = []
+    for html_path in html_files:
+        html = read(root, html_path.relative_to(root).as_posix())
+        if re.search(r"<style\b", html, re.I) or "block extra_css" in html or "block extra_head" in html:
+            css_authority_violations.append(str(html_path.relative_to(root)))
+        for link in re.findall(r"<link[^>]+rel=[\"']stylesheet[\"'][^>]*>", html, re.I):
+            if "cdn.jsdelivr.net" in link or "unpkg.com/leaflet" in link:
+                continue
+            if "static/css/opal_theme_system.css" not in link:
+                css_authority_violations.append(f"{html_path.relative_to(root)}: non-authority stylesheet")
+    mode_violations = []
+    for source_path in list(root.rglob("*.html")) + list(root.rglob("*.js")):
+        source_text = read(root, source_path.relative_to(root).as_posix())
+        if re.search(r"opal-(?:dark|green|light)-mode", source_text):
+            mode_violations.append(str(source_path.relative_to(root)))
+    add_check(
+        "r125_css_authority",
+        local_css == ["static/css/opal_theme_system.css"] and not css_authority_violations and not mode_violations,
+        "R125 requires one local CSS authority, no template CSS escape hatches, and no legacy theme-mode classes.",
+        path="static/css/opal_theme_system.css",
+    )
+
     entity_css = require_file("static/css/opal_theme_system.css")
     student_360 = require_file("templates/students/student_360.html")
     add_check(

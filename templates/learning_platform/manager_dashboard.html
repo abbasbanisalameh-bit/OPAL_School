@@ -73,7 +73,7 @@
                 {% if recent_courses %}
                     <div class="learning-manager-list courses">
                         {% for course in recent_courses %}
-                            <article><span style="--course-color:{{ course.cover_color }}; {% subject_style course.subject %}">{{ course.subject.name|slice:":1" }}</span><div><strong>{{ course.title }}</strong><small><span style="{% subject_style course.subject %}">{{ course.subject.name }}</span> · {{ course.teacher.full_name }}</small></div><b>{{ course.get_status_display }}</b></article>
+                            <article><span data-opal-course-color="{{ course.cover_color }}" data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name|slice:":1" }}</span><div><strong>{{ course.title }}</strong><small><span data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name }}</span> · {{ course.teacher.full_name }}</small></div><b>{{ course.get_status_display }}</b></article>
                         {% endfor %}
                     </div>
                 {% else %}

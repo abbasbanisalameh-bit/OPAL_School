@@ -30,7 +30,7 @@
                 {% for s in subjects %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td class="fw-bold"><span class="opal-subject-swatch" style="--opal-subject-color: {{ s|subject_colour }}"></span><span style="color:{{ s|subject_colour }}">{{ s.name }}</span></td>
+                    <td class="fw-bold"><span class="opal-subject-swatch" data-opal-subject-color="{{ s|subject_colour }}"></span><span>{{ s.name }}</span></td>
                     <td>{{ s.code|default:"-" }}</td>
                     <td>{{ s.grade|default:"-" }}</td>
                     <td>{{ s.weekly_periods }}</td>

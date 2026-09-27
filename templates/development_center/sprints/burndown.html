@@ -24,6 +24,11 @@
 const labels = {{ labels|safe }};
 const ideal = {{ ideal|safe }};
 const actual = {{ actual|safe }};
+const chartColor = (name) => window.OPALTheme.color(name);
+const chartText = chartColor('--opal-chart-text');
+const chartGrid = chartColor('--opal-chart-grid');
+const chartPrimary = chartColor('--opal-chart-line');
+const chartWarm = chartColor('--opal-chart-warm');
 
 new Chart(document.getElementById("burndownChart"), {
   type: "line",
@@ -34,12 +39,14 @@ new Chart(document.getElementById("burndownChart"), {
         label: "الخطة المثالية",
         data: ideal,
         borderWidth: 2,
+        borderColor: chartPrimary,
         tension: 0.2
       },
       {
         label: "الواقع الفعلي",
         data: actual,
         borderWidth: 3,
+        borderColor: chartWarm,
         tension: 0.2
       }
     ]
@@ -48,18 +55,18 @@ new Chart(document.getElementById("burndownChart"), {
     responsive: true,
     plugins: {
       legend: {
-        labels: { color: "#fff" }
+        labels: { color: chartText }
       }
     },
     scales: {
       x: {
-        ticks: { color: "#fff" },
-        grid: { color: "rgba(255,255,255,0.1)" }
+        ticks: { color: chartText },
+        grid: { color: chartGrid }
       },
       y: {
         beginAtZero: true,
-        ticks: { color: "#fff" },
-        grid: { color: "rgba(255,255,255,0.1)" }
+        ticks: { color: chartText },
+        grid: { color: chartGrid }
       }
     }
   }

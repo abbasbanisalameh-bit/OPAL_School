@@ -4,6 +4,7 @@ from __future__ import annotations
 from collections import defaultdict
 from datetime import datetime
 
+from django.core.cache import cache
 from django.utils import timezone
 
 from academics.models import Enrollment, Section
@@ -164,7 +165,18 @@ def _event_rows(school, day, section_id=None):
 
 
 def school_live_status(school, now=None, *, guardian=False, section_id=None):
+    """Return the compact live state using a very short read-only cache.
+
+    The schedule changes slowly compared with page requests, while the browser
+    countdown keeps the visible seconds current. A ten-second cache removes
+    repeated schedule/settings queries from every page render without making
+    operational data stale for a meaningful period.
+    """
     now, day, current_time = _now_parts(now)
+    cache_key = f"opal:live-school:{school.pk}:{day}:{now.hour}:{now.minute}:{int(bool(guardian))}:{section_id or 0}"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
     settings = SchoolScheduleSettings.objects.filter(school=school).first() or SchoolScheduleSettings(school=school)
     if day in settings.weekend_day_codes:
         return {
@@ -173,9 +185,11 @@ def school_live_status(school, now=None, *, guardian=False, section_id=None):
             "current": None, "next": None, "seconds_remaining": None,
         }
     rows = _event_rows(school, day, section_id=section_id)
-    return _status_from_rows(
+    result = _status_from_rows(
         settings=settings, now=now, current_time=current_time, rows=rows, guardian=guardian,
     )
+    cache.set(cache_key, result, 10)
+    return result
 
 
 def teacher_live_status(teacher, now=None):

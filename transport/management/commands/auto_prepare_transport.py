@@ -18,7 +18,7 @@ class Command(BaseCommand):
             schools = schools.filter(pk=school_id)
 
         total = {"created": 0, "updated": 0, "rebuilt": 0, "missing_locations": 0}
-        for school in schools: 
+        for school in schools:
             with transaction.atomic():
                 result = synchronize_transport_operations(
                     school=school,

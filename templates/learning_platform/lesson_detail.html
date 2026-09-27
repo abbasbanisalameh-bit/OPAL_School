@@ -6,7 +6,7 @@
 {% block content %}
 <section class="learning-page-hero lesson-page">
     <div class="learning-container">
-        <span style="{% subject_style course.subject %}">{{ course.subject.name }}</span> · {{ course.title }}
+        <span data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name }}</span> · {{ course.title }}
         <h1>{{ lesson.title }}</h1>
         <p>الدرس {{ lesson.order }} من {{ lessons|length }} · {% if lesson.duration_minutes %}{{ lesson.duration_minutes }} دقيقة{% else %}مدة مرنة{% endif %}</p>
     </div>
@@ -18,7 +18,7 @@
             <div class="learning-lesson-progress-card">
                 <span>تقدم الدورة</span>
                 <strong>{{ enrollment.progress_percent }}%</strong>
-                <i><em style="width:{{ enrollment.progress_percent }}%"></em></i>
+                <i><em data-opal-progress="{{ enrollment.progress_percent }}%"></em></i>
             </div>
             <nav aria-label="دروس الدورة">
                 {% for item in lessons %}

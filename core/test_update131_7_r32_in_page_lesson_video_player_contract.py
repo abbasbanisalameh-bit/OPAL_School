@@ -39,7 +39,7 @@ class R32InPageLessonVideoPlayerContractTests(unittest.TestCase):
         self.assertIn("allowfullscreen", template)
 
     def test_responsive_player_styles_exist(self):
-        css = self.source("static/learning_platform/css/platform.css")
+        css = self.source("static/css/opal_theme_system.css")
         self.assertIn(".learning-video-browser", css)
         self.assertIn("aspect-ratio:16/9", css)
         self.assertIn(".learning-video-browser-screen iframe", css)

@@ -5,16 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light">
-    <meta name="theme-color" content="#0d5cb6">
-    <meta name="mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="{% url 'learning_platform:mobile_manifest' %}">
     <link rel="icon" href="{% static 'learning_platform/icons/icon-192.png' %}" type="image/png">
     <title>{% block title %}منصة أوبال التعليمية{% endblock %}</title>
     <meta name="description" content="منصة أوبال التعليمية للدورات والتعلم الرقمي والاشتراكات المستقلة.">
-    <link rel="stylesheet" href="{% static 'learning_platform/css/platform.css' %}?v=20260810-r36-branding">
-    {% block extra_head %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/opal_theme_system.css' %}?v=opal-131.7-r125-css-sovereignty-clean">
 </head>
 <body class="learning-body {% block body_class %}{% endblock %}">
     <a class="learning-skip" href="#learning-main">تجاوز إلى المحتوى</a>

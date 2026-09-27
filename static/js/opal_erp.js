@@ -54,25 +54,9 @@ document.addEventListener("DOMContentLoaded", function () {
   function applyTheme(mode) {
     const resolved = normalize(mode);
     const root = document.documentElement;
-    const body = document.body;
-
     root.setAttribute("data-opal-theme", resolved);
 
-    root.classList.remove(
-      "opal-dark-mode",
-      "opal-green-mode",
-      "opal-light-mode"
-    );
-    root.classList.add("opal-" + resolved + "-mode");
-
-    if (body) {
-      body.classList.remove(
-        "opal-dark-mode",
-        "opal-green-mode",
-        "opal-light-mode"
-      );
-      body.classList.add("opal-" + resolved + "-mode");
-    }
+    // Theme appearance is owned exclusively by opal_theme_system.css via data-opal-theme.
 
     const button = document.getElementById("opal-theme-toggle");
     if (!button) return;
@@ -121,6 +105,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 })();
+
+/* OPAL theme token reader: JavaScript consumes visual tokens; it does not define them. */
+window.OPALTheme = window.OPALTheme || {};
+window.OPALTheme.color = function (name, fallback) {
+  try {
+    const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    return value || fallback || "";
+  } catch (_) {
+    return fallback || "";
+  }
+};
 
 /* ===== OPAL PythonAnywhere Reload Center V1 ===== */
 (function () {
@@ -1327,4 +1322,41 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         initSidebarGroups();
     }
+})();
+
+
+/* ===== OPAL Update 131.7 R131 - Responsive Viewport & Mobile Navigation Polish ===== */
+(function () {
+    "use strict";
+
+    function ready(callback) {
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", callback, {once: true});
+        } else {
+            callback();
+        }
+    }
+
+    ready(function () {
+        /* Keep one visually selected operational card at a time without changing navigation behaviour. */
+        document.addEventListener("click", function (event) {
+            const card = event.target.closest("[data-opal-card-link].opal-clickable-card");
+            if (!card) return;
+            document.querySelectorAll("[data-opal-card-link].opal-clickable-card.is-selected").forEach(function (item) {
+                if (item !== card) item.classList.remove("is-selected");
+            });
+            card.classList.add("is-selected");
+        }, {passive: true});
+
+        /* Highlight the current profile/home destination when the fixed bar is visible. */
+        const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+        document.querySelectorAll("[data-opal-bottom-link]").forEach(function (link) {
+            const href = (link.getAttribute("href") || "").split("#")[0].replace(/\/$/, "") || "/";
+            if (href === currentPath) {
+                link.classList.add("is-current");
+            } else if (href !== "/") {
+                link.classList.remove("is-current");
+            }
+        });
+    });
 })();

@@ -3,55 +3,6 @@
 {% block page_title %}مواصلات الأبناء{% endblock %}
 {% block page_subtitle %}موقع الأبناء والجولة الحالية{% endblock %}
 {% block content %}
-<style>
-  body.opal-transport-map-open { overflow: hidden !important; }
-  #parent-map-wrap.opal-map-fullscreen {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    max-width: none !important;
-    max-height: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #000;
-    z-index: 2147483647 !important;
-    overflow: hidden !important;
-    border-radius: 0 !important;
-  }
-  #parent-map-wrap.opal-map-fullscreen #parent-map {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 100vh !important;
-    min-height: 100dvh !important;
-    border-radius: 0 !important;
-  }
-
-  .opal-map-viewport-layer {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #000 !important;
-    z-index: 2147483647 !important;
-    overflow: hidden !important;
-    border-radius: 0 !important;
-  }
-  .opal-map-viewport-layer > #parent-map {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 100dvh !important;
-    border-radius: 0 !important;
-  }
-</style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <div class="container-fluid py-4" dir="rtl">
   <div class="row g-4">
@@ -89,8 +40,8 @@
             <div class="small text-muted mt-2">أبناؤك على الرحلة: {% for student in active_trip_payload.students %}<strong>{{ student.name }}</strong>{% if not forloop.last %}، {% endif %}{% endfor %}</div>
             {% endif %}
             <div id="parent-map-wrap" class="position-relative mt-3">
-              <div id="parent-map" style="height:440px;border-radius:14px;overflow:hidden;"></div>
-              <div class="position-absolute top-0 start-0 p-2 d-flex gap-1" style="z-index:1000;">
+              <div id="parent-map"></div>
+              <div class="position-absolute top-0 start-0 p-2 d-flex gap-1 opal-map-controls">
                 <button type="button" class="btn btn-sm btn-light shadow" id="parent-map-plus">＋</button>
                 <button type="button" class="btn btn-sm btn-light shadow" id="parent-map-minus">−</button>
                 <button type="button" class="btn btn-sm btn-light shadow" id="parent-map-fullscreen">⛶ تكبير الخريطة</button>

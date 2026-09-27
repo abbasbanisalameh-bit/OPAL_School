@@ -6,7 +6,7 @@
 <section class="learning-page-hero teacher ai-page"><div class="learning-container"><span>مساحة المدرّس</span><h1>أدوات إعداد المحتوى</h1><p>أنشئ ملخصات وخطط دروس وأسئلة مراجعة وواجبات بالاستناد إلى محتوى دوراتك، ثم راجعها يدويًا قبل أي نشر.</p></div></section>
 <section class="learning-section learning-ai-section"><div class="learning-container learning-ai-layout teacher-layout">
     <aside class="learning-ai-sidebar">
-        <div class="learning-ai-usage"><span>الاستخدام اليومي</span><strong>{{ usage.used }} / {{ usage.limit }}</strong><i><em style="width:{% widthratio usage.used usage.limit 100 %}%"></em></i><small>متبقٍ {{ usage.remaining }} طلبًا</small></div>
+        <div class="learning-ai-usage"><span>الاستخدام اليومي</span><strong>{{ usage.used }} / {{ usage.limit }}</strong><i><em data-opal-progress="{% widthratio usage.used usage.limit 100 %}%"></em></i><small>متبقٍ {{ usage.remaining }} طلبًا</small></div>
         <div class="learning-ai-mode {% if provider.configured and governance.external_provider_enabled %}external{% else %}local{% endif %}"><strong>{% if provider.configured and governance.external_provider_enabled %}مزود خارجي منضبط{% else %}مرجع محلي من المحتوى{% endif %}</strong><small>كل ناتج يُحفظ كمسودة ولا يُنشر تلقائيًا.</small></div>
         <div class="learning-ai-history"><h2>المسودات</h2>{% for draft in drafts %}<a class="{% if selected_draft.pk == draft.pk %}active{% endif %}" href="{% url 'learning_platform:teacher_ai_workspace' %}?draft={{ draft.pk }}"><strong>{{ draft.title }}</strong><span>{{ draft.course.title }} · {{ draft.get_status_display }}</span><small>{{ draft.updated_at|date:"m/d H:i" }}</small></a>{% empty %}<p>لم تُنشأ مسودات بعد.</p>{% endfor %}</div>
     </aside>

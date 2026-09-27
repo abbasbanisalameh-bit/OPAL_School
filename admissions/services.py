@@ -105,7 +105,7 @@ def find_existing_siblings(*, phone="", father_name="", family_name="", mother_n
     We deliberately do not infer siblings from matching names or phone numbers,
     because that can connect unrelated students.
     """
-    
+
     identity = normalize_identifier(guardian_identity_number)
     if not identity:
         return Student.objects.none()

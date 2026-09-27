@@ -37,7 +37,7 @@
                             <span>#</span>
                             <div>
                                 <strong>{{ card.get_duration_display }}</strong>
-                                <small>{% if card.grants_all_subjects %}جميع المواد{% else %}{% for subject in card.subjects.all %}<span style="{% subject_style subject %}">{{ subject.name }}</span>{% if not forloop.last %}، {% endif %}{% empty %}باقة مواد{% endfor %}{% endif %}</small>
+                                <small>{% if card.grants_all_subjects %}جميع المواد{% else %}{% for subject in card.subjects.all %}<span data-opal-subject-color="{% subject_style subject %}">{{ subject.name }}</span>{% if not forloop.last %}، {% endif %}{% empty %}باقة مواد{% endfor %}{% endif %}</small>
                                 <em>{{ card.get_status_display }}</em>
                             </div>
                             <time>{% if card.expires_at %}تنتهي {{ card.expires_at|date:"Y/m/d" }}{% else %}غير مفعلة{% endif %}</time>
@@ -63,7 +63,7 @@
                         <div class="learning-course-card-body">
                             <span>{{ plan.get_duration_display }}</span>
                             <h3>{{ plan.name }}</h3>
-                            <p>{% if plan.grants_all_subjects %}وصول إلى جميع المواد{% else %}{% for subject in plan.subjects.all %}<span style="{% subject_style subject %}">{{ subject.name }}</span>{% if not forloop.last %}، {% endif %}{% empty %}لا مواد محددة{% endfor %}{% endif %}</p>
+                            <p>{% if plan.grants_all_subjects %}وصول إلى جميع المواد{% else %}{% for subject in plan.subjects.all %}<span data-opal-subject-color="{% subject_style subject %}">{{ subject.name }}</span>{% if not forloop.last %}، {% endif %}{% empty %}لا مواد محددة{% endfor %}{% endif %}</p>
                             <strong>{{ plan.price }} {{ plan.currency }}</strong>
                             {% if payment_status.configured %}
                                 <a class="learning-button learning-button-small" href="{% url 'learning_platform:payment_checkout_plan' plan.pk %}">إنشاء طلب دفع</a>

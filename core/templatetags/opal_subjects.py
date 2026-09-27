@@ -5,7 +5,6 @@ from typing import Any
 import re
 
 from django import template
-from django.utils.html import format_html
 
 from core.subject_colors import canonical_subject_color, canonical_subject_color_from_value
 
@@ -14,7 +13,7 @@ register = template.Library()
 
 @register.simple_tag
 def subject_style(subject: Any) -> str:
-    return format_html("--opal-subject-color:{};", canonical_subject_color(subject))
+    return canonical_subject_color(subject)
 
 
 _STRICT_HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")

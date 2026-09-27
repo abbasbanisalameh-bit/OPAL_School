@@ -213,17 +213,27 @@ def audit_receipt_print_contract(root: Path | None = None) -> list[AuditIssue]:
             ('{% extends "base/base.html" %}', False, "الإيصال يرث قشرة النظام العامة."),
             ('{% include "includes/sidebar.html" %}', False, "الإيصال يضم القائمة الجانبية."),
             ('{% include "includes/topbar.html" %}', False, "الإيصال يضم الشريط العلوي."),
+            ('{% load static %}', True, "الإيصال المستقل لا يحمّل مكتبة static."),
             ("{% for copy_title in receipt_copies %}", True, "حلقة النسختين غير موجودة."),
-            ("size:A4 landscape", True, "حجم الطباعة ليس A4 أفقيًا."),
-            ("grid-template-columns:1fr 1fr", True, "النسختان لا تظهران جنبًا إلى جنب."),
-            (".screen-toolbar{display:none!important}", True, "شريط الأزرار لا يختفي عند الطباعة."),
-            ("width:297mm", True, "عرض صفحة A4 الأفقي غير مثبت."),
-            ("height:210mm", True, "ارتفاع صفحة A4 الأفقي غير مثبت."),
         )
         for token, required, message in checks:
             present = token in text
             if present != required:
                 issues.append(AuditIssue("receipt_print_contract", message, relative))
+
+    css, read_issues = _read(root, "static/css/opal_theme_system.css")
+    issues.extend(read_issues)
+    for token, message in (
+        ("size:A4 landscape", "حجم الطباعة ليس A4 أفقيًا."),
+        ("grid-template-columns:1fr 1fr", "النسختان لا تظهران جنبًا إلى جنب."),
+        ("display:none!important", "شريط الأزرار لا يختفي عند الطباعة."),
+        ("width:297mm", "عرض صفحة A4 الأفقي غير مثبت."),
+        ("height:210mm", "ارتفاع صفحة A4 الأفقي غير مثبت."),
+        (".opal-standalone-opal_school_templates_admissions_registration_receipt_html .receipt-sheet", "تنسيق إيصال التسجيل غير منشور في سلطة CSS."),
+        (".opal-standalone-opal_school_templates_admissions_fee_payment_receipt_html .receipt-sheet", "تنسيق إيصال الدفعات غير منشور في سلطة CSS."),
+    ):
+        if token not in css:
+            issues.append(AuditIssue("receipt_print_contract", message, "static/css/opal_theme_system.css"))
 
     views, read_issues = _read(root, "admissions/views.py")
     issues.extend(read_issues)

@@ -20,6 +20,11 @@ class Update1311PostConsolidationStabilityContractTests(unittest.TestCase):
         ):
             self.assertNotIn(token, notifications)
 
+    def test_global_identity_context_resolves_academic_state_read_only(self):
+        context = source("core/context_processors.py")
+        self.assertIn("request_academic_context(request, persist=False)", context)
+        self.assertNotIn("request_academic_context(request, persist=True)", context)
+
     def test_management_topbar_uses_compact_school_status(self):
         context = source("timetable/context_processors.py")
         self.assertIn("school_live_status", context)

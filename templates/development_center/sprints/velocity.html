@@ -26,6 +26,11 @@
 const labels = {{ labels|safe }};
 const completedمهمةs = {{ completed_tasks|safe }};
 const totalمهمةs = {{ total_tasks|safe }};
+const chartColor = (name) => window.OPALTheme.color(name);
+const chartText = chartColor('--opal-chart-text');
+const chartGrid = chartColor('--opal-chart-grid');
+const chartPrimary = chartColor('--opal-chart-line');
+const chartSecondary = chartColor('--opal-chart-secondary');
 
 new Chart(document.getElementById("velocityChart"), {
   type: "bar",
@@ -35,12 +40,16 @@ new Chart(document.getElementById("velocityChart"), {
       {
         label: "إجمالي المهام",
         data: totalمهمةs,
-        borderWidth: 1
+        borderWidth: 1,
+        backgroundColor: chartPrimary,
+        borderColor: chartPrimary
       },
       {
         label: "المهام المنجزة",
         data: completedمهمةs,
-        borderWidth: 1
+        borderWidth: 1,
+        backgroundColor: chartSecondary,
+        borderColor: chartSecondary
       }
     ]
   },
@@ -48,18 +57,18 @@ new Chart(document.getElementById("velocityChart"), {
     responsive: true,
     plugins: {
       legend: {
-        labels: { color: "#fff" }
+        labels: { color: chartText }
       }
     },
     scales: {
       x: {
-        ticks: { color: "#fff" },
-        grid: { color: "rgba(255,255,255,0.1)" }
+        ticks: { color: chartText },
+        grid: { color: chartGrid }
       },
       y: {
         beginAtZero: true,
-        ticks: { color: "#fff" },
-        grid: { color: "rgba(255,255,255,0.1)" }
+        ticks: { color: chartText },
+        grid: { color: chartGrid }
       }
     }
   }

@@ -28,7 +28,7 @@
     </div>
   </div>
   <div class="progress mt-3 opal-inline-r124-3" role="progressbar" aria-label="تقدم تهيئة النظام" aria-valuenow="{{ setup_progress }}" aria-valuemin="0" aria-valuemax="100">
-    <div class="progress-bar" style="width:{{ setup_progress }}%"></div>
+    <div class="progress-bar" data-opal-progress="{{ setup_progress }}%"></div>
   </div>
   {% if setup_next_step %}
   <div class="opal-inner-panel mt-3 d-flex flex-wrap justify-content-between align-items-center gap-3">

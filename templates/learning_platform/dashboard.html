@@ -21,12 +21,12 @@
             <div class="learning-enrollment-list">
                 {% for enrollment in enrollments %}
                     <article>
-                        <div class="learning-enrollment-symbol" style="--course-color:{{ enrollment.course.cover_color }}; {% subject_style enrollment.course.subject %}">{{ enrollment.course.subject.name|slice:":1" }}</div>
+                        <div class="learning-enrollment-symbol" data-opal-course-color="{{ enrollment.course.cover_color }}" data-opal-subject-color="{% subject_style enrollment.course.subject %}">{{ enrollment.course.subject.name|slice:":1" }}</div>
                         <div class="learning-enrollment-info">
-                            <span style="{% subject_style enrollment.course.subject %}">{{ enrollment.course.subject.name }}</span> · {{ enrollment.get_status_display }}
+                            <span data-opal-subject-color="{% subject_style enrollment.course.subject %}">{{ enrollment.course.subject.name }}</span> · {{ enrollment.get_status_display }}
                             <h3>{{ enrollment.course.title }}</h3>
                             <small>بإشراف {{ enrollment.course.teacher.full_name }}</small>
-                            <div class="learning-progress"><i><em style="width:{{ enrollment.progress_percent }}%"></em></i><b>{{ enrollment.progress_percent }}%</b></div>
+                            <div class="learning-progress"><i><em data-opal-progress="{{ enrollment.progress_percent }}%"></em></i><b>{{ enrollment.progress_percent }}%</b></div>
                         </div>
                         {% if enrollment.active_certificate %}
                             <a href="{% url 'learning_platform:certificate_detail' enrollment.course.slug %}">الشهادة ←</a>
@@ -46,13 +46,13 @@
 
         {% if managed_student %}
         <div class="learning-dashboard-heading"><div><span>صفّي وموادي</span><h2>المحتوى المتاح لصفك</h2></div><a href="{% url 'learning_platform:course_list' %}">عرض جميع محتوى صفك ←</a></div>
-        {% if available_courses %}<div class="learning-enrollment-list">{% for course in available_courses %}<article><div class="learning-enrollment-symbol" style="--course-color:{{ course.cover_color }}; {% subject_style course.subject %}">{{ course.subject.name|slice:":1" }}</div><div class="learning-enrollment-info"><span>{{ course.academic_section|default:course.grade_label }} · <span style="{% subject_style course.subject %}">{{ course.subject.name }}</span></span><h3>{{ course.title }}</h3><small>{{ course.lesson_count }} درسًا · {{ course.teacher.full_name }}</small></div><a href="{% url 'learning_platform:course_detail' course.slug %}">فتح الدورة ←</a></article>{% endfor %}</div>{% else %}<div class="learning-inline-empty"><span>لا يوجد محتوى منشور لصفك وشعبتك حاليًا.</span></div>{% endif %}
+        {% if available_courses %}<div class="learning-enrollment-list">{% for course in available_courses %}<article><div class="learning-enrollment-symbol" data-opal-course-color="{{ course.cover_color }}" data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name|slice:":1" }}</div><div class="learning-enrollment-info"><span>{{ course.academic_section|default:course.grade_label }} · <span data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name }}</span></span><h3>{{ course.title }}</h3><small>{{ course.lesson_count }} درسًا · {{ course.teacher.full_name }}</small></div><a href="{% url 'learning_platform:course_detail' course.slug %}">فتح الدورة ←</a></article>{% endfor %}</div>{% else %}<div class="learning-inline-empty"><span>لا يوجد محتوى منشور لصفك وشعبتك حاليًا.</span></div>{% endif %}
         {% endif %}
 
         <div class="learning-dashboard-heading"><div><span>الوصول</span><h2>اشتراكاتي الفعالة</h2></div><a href="{% url 'learning_platform:subscriptions' %}">إدارة الاشتراكات ←</a></div>
         {% if active_cards %}
             <div class="learning-subscription-grid">
-                {% for card in active_cards %}<article><span>#</span><div><strong>{{ card.get_duration_display }}</strong><small>{% if card.grants_all_subjects %}جميع المواد{% else %}{% for subject in card.subjects.all %}<span style="{% subject_style subject %}">{{ subject.name }}</span>{% if not forloop.last %}، {% endif %}{% empty %}باقة محددة{% endfor %}{% endif %}</small></div><time>حتى {{ card.expires_at|date:"Y/m/d" }}</time></article>{% endfor %}
+                {% for card in active_cards %}<article><span>#</span><div><strong>{{ card.get_duration_display }}</strong><small>{% if card.grants_all_subjects %}جميع المواد{% else %}{% for subject in card.subjects.all %}<span data-opal-subject-color="{% subject_style subject %}">{{ subject.name }}</span>{% if not forloop.last %}، {% endif %}{% empty %}باقة محددة{% endfor %}{% endif %}</small></div><time>حتى {{ card.expires_at|date:"Y/m/d" }}</time></article>{% endfor %}
             </div>
         {% else %}
             <div class="learning-inline-empty"><span>لا يوجد اشتراك فعال.</span><a href="{% url 'learning_platform:subscriptions' %}">تفعيل بطاقة اشتراك</a></div>

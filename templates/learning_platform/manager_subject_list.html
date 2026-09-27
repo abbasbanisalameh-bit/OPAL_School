@@ -13,8 +13,8 @@
         <div class="learning-manager-card-grid">
             {% for subject in subjects %}
                 <article>
-                    <span style="{% subject_style subject %}">{{ subject.name|slice:":1" }}</span>
-                    <div><h2 style="{% subject_style subject %}">{{ subject.name }}</h2><small>{{ subject.slug }}</small><p>{{ subject.course_count }} دورة · {{ subject.published_course_count }} منشورة</p></div>
+                    <span data-opal-subject-color="{% subject_style subject %}">{{ subject.name|slice:":1" }}</span>
+                    <div><h2 data-opal-subject-color="{% subject_style subject %}">{{ subject.name }}</h2><small>{{ subject.slug }}</small><p>{{ subject.course_count }} دورة · {{ subject.published_course_count }} منشورة</p></div>
                     <b class="learning-state {% if subject.is_active %}active{% else %}inactive{% endif %}">{% if subject.is_active %}فعالة{% else %}معطلة{% endif %}</b>
                     <a href="{% url 'learning_platform:manager_subject_update' subject.pk %}">تعديل</a>
                 </article>

@@ -15,6 +15,9 @@ def live_schedule(request):
     """
     if not getattr(getattr(request, "user", None), "is_authenticated", False):
         return {}
+    cached_status = getattr(request, "_opal_live_schedule", None)
+    if cached_status is not None:
+        return {"opal_live_schedule": cached_status}
     if is_management(request.user):
         school = request_school(request)
         status = school_live_status(school) if school else None

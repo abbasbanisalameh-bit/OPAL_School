@@ -1,7 +1,7 @@
-const CACHE_NAME = 'opal-learning-r20-public-shell-v2';
+const CACHE_NAME = 'opal-learning-r125-css-authority-v1';
 const PUBLIC_SHELL = [
   '/learning/',
-  '/static/learning_platform/css/platform.css',
+  '/static/css/opal_theme_system.css?v=opal-131.7-r125-css-sovereignty-clean',
   '/static/learning_platform/js/platform.js',
   '/static/learning_platform/icons/opal-learning-icon.svg',
   '/static/learning_platform/icons/icon-192.png',
@@ -27,7 +27,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 
-  const isLearningStatic = url.pathname.startsWith('/static/learning_platform/');
+  const isLearningStatic = url.pathname.startsWith('/static/learning_platform/') || url.pathname === '/static/css/opal_theme_system.css';
   if (isLearningStatic) {
     event.respondWith(
       caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {

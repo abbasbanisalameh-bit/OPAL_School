@@ -4,16 +4,16 @@
 {% block title %}{{ course.title }} | منصة أوبال التعليمية{% endblock %}
 
 {% block content %}
-<section class="learning-course-hero" style="--course-color:{{ course.cover_color }}">
+<section class="learning-course-hero" data-opal-course-color="{{ course.cover_color }}">
     <div class="learning-container learning-course-hero-grid">
         <div>
-            <span style="{% subject_style course.subject %}">{{ course.subject.name }}{% if course.grade_label %} · {{ course.grade_label }}{% endif %}</span>
+            <span data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name }}{% if course.grade_label %} · {{ course.grade_label }}{% endif %}</span>
             <h1>{{ course.title }}</h1>
             <p>{{ course.summary|default:"دورة تعليمية منظمة ضمن منصة أوبال التعليمية." }}</p>
             <div><small>المدرّس</small><strong>{{ course.teacher.full_name }}</strong></div>
         </div>
         <aside>
-            <span style="{% subject_style course.subject %}">{{ course.subject.name|slice:":1" }}</span>
+            <span data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name|slice:":1" }}</span>
             <strong>{{ lessons|length }} درسًا منشورًا</strong>
             {% if learning_account and learning_account.role == 'learner' %}
                 {% if enrollment and enrollment.status != 'cancelled' and entitlement %}

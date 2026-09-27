@@ -20,9 +20,9 @@
         <div class="learning-manager-course-grid">
         {% for course in courses %}
             <article>
-                <div class="learning-manager-course-cover" style="--course-color:{{ course.cover_color }}"><span style="{% subject_style course.subject %}">{{ course.subject.name|slice:":1" }}</span><b>{{ course.get_status_display }}</b></div>
+                <div class="learning-manager-course-cover" data-opal-course-color="{{ course.cover_color }}"><span data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name|slice:":1" }}</span><b>{{ course.get_status_display }}</b></div>
                 <div class="learning-manager-course-body">
-                    <small><span style="{% subject_style course.subject %}">{{ course.subject.name }}</span> · {{ course.teacher.full_name }}</small>
+                    <small><span data-opal-subject-color="{% subject_style course.subject %}">{{ course.subject.name }}</span> · {{ course.teacher.full_name }}</small>
                     <h2>{{ course.title }}</h2>
                     <p>{{ course.summary|default:"لا يوجد ملخص للدورة."|truncatechars:120 }}</p>
                     <div class="learning-manager-course-stats"><span>{{ course.lesson_count }} درس</span><span>{{ course.published_lesson_count }} منشور</span><span>{{ course.assessment_count }} تقييم</span><span>{{ course.learner_count }} متعلم</span></div>

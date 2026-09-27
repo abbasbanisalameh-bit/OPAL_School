@@ -332,6 +332,8 @@ def portal_dashboard(request):
     snapshot = tpi["snapshot"]
     from timetable.workflow import build_horizontal_schedule_matrix
     timetable_matrix = build_horizontal_schedule_matrix(timetable, school=teacher.school)
+    live_status = teacher_live_status(teacher)
+    request._opal_live_schedule = live_status
     return render(request, "teachers/portal_dashboard.html", {
         "teacher": teacher,
         "assignments": assignments,
@@ -341,7 +343,7 @@ def portal_dashboard(request):
         "latest_homework": latest_homework,
         "open_exams": open_exams,
         "submitted_exams": submitted_exams,
-        "live_status": teacher_live_status(teacher),
+        "live_status": live_status,
         "tpi": tpi,
         "tpi_components": snapshot.components.get("components", []) if snapshot else [],
         "workload": teacher_workload_summary(teacher),

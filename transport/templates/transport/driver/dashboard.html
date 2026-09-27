@@ -3,55 +3,6 @@
 {% block page_title %}المواصلات{% endblock %}
 {% block page_subtitle %}جولاتك اليومية والتتبع الحالي{% endblock %}
 {% block content %}
-<style>
-  body.opal-transport-map-open { overflow: hidden !important; }
-  #driver-map-wrap.opal-map-fullscreen {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    max-width: none !important;
-    max-height: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #000;
-    z-index: 2147483647 !important;
-    overflow: hidden !important;
-    border-radius: 0 !important;
-  }
-  #driver-map-wrap.opal-map-fullscreen #driver-map {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 100vh !important;
-    min-height: 100dvh !important;
-    border-radius: 0 !important;
-  }
-
-  .opal-map-viewport-layer {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #000 !important;
-    z-index: 2147483647 !important;
-    overflow: hidden !important;
-    border-radius: 0 !important;
-  }
-  .opal-map-viewport-layer > #driver-map {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 100dvh !important;
-    border-radius: 0 !important;
-  }
-</style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <div class="container-fluid py-4" dir="rtl">
   <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
@@ -70,8 +21,8 @@
         {% endif %}
       </div>
       <div id="driver-map-wrap" class="mt-3 position-relative">
-        <div id="driver-map" style="height:420px;border-radius:14px;overflow:hidden;"></div>
-        <div class="position-absolute top-0 start-0 p-2 d-flex gap-1 flex-wrap" style="z-index:1000;">
+        <div id="driver-map"></div>
+        <div class="position-absolute top-0 start-0 p-2 d-flex gap-1 flex-wrap opal-map-controls">
           <button type="button" class="btn btn-sm btn-light shadow" id="driver-map-plus" title="تكبير الخريطة">＋</button>
           <button type="button" class="btn btn-sm btn-light shadow" id="driver-map-minus" title="تصغير الخريطة">−</button>
           <button type="button" class="btn btn-sm btn-light shadow" id="driver-map-fullscreen">⛶ تكبير الخريطة</button>

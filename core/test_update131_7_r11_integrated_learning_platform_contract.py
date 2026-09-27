@@ -44,7 +44,7 @@ class IntegratedLearningPlatformContractTests(SimpleTestCase):
         self.assertNotIn('includes/sidebar.html', combined)
         self.assertNotIn('includes/topbar.html', combined)
         self.assertNotIn('css/opal_erp.css', combined)
-        self.assertIn("learning_platform/css/platform.css", combined)
+        self.assertIn("css/opal_theme_system.css", combined)
 
     def test_registration_courses_and_subscription_cards_are_real_routes(self):
         urls = source("learning_platform/urls.py")

@@ -29,7 +29,7 @@ class R36LearningMobileBrandingContractTests(SimpleTestCase):
 
     def test_web_learning_platform_uses_same_approved_logo(self):
         base = self.source("templates/learning_platform/base.html")
-        css = self.source("static/learning_platform/css/platform.css")
+        css = self.source("static/css/opal_theme_system.css")
         self.assertIn("opal-learning-logo.png", base)
         self.assertIn("تعلّم · تقدّم · تألّق", base)
         self.assertIn("learning-brand-logo", css)

@@ -28,7 +28,7 @@
     <div class="learning-dashboard-heading"><div><span>الأداء حسب الدورة</span><h2>التسجيل والإكمال والتقييم</h2></div></div>
     {% if course_rows %}<div class="learning-manager-table-wrap"><table class="learning-manager-table">
         <thead><tr><th>الدورة</th><th>التسجيلات</th><th>المكتملة</th><th>الإكمال</th><th>متوسط التقدم</th><th>بانتظار التصحيح</th><th>نجاح التقييم</th></tr></thead>
-        <tbody>{% for row in course_rows %}<tr><td><strong>{{ row.course.title }}</strong><small><span style="{% subject_style row.course.subject %}">{{ row.course.subject.name }}</span> · {{ row.course.teacher.full_name }}</small></td><td>{{ row.enrollments }}</td><td>{{ row.completed }}</td><td>{{ row.completion_rate }}%</td><td>{{ row.average_progress }}%</td><td>{{ row.pending_submissions }}</td><td>{{ row.pass_rate }}%</td></tr>{% endfor %}</tbody>
+        <tbody>{% for row in course_rows %}<tr><td><strong>{{ row.course.title }}</strong><small><span data-opal-subject-color="{% subject_style row.course.subject %}">{{ row.course.subject.name }}</span> · {{ row.course.teacher.full_name }}</small></td><td>{{ row.enrollments }}</td><td>{{ row.completed }}</td><td>{{ row.completion_rate }}%</td><td>{{ row.average_progress }}%</td><td>{{ row.pending_submissions }}</td><td>{{ row.pass_rate }}%</td></tr>{% endfor %}</tbody>
     </table></div>{% else %}<div class="learning-inline-empty"><span>لا توجد دورات ضمن المرشح المحدد.</span></div>{% endif %}
 
     <div class="learning-manager-columns report-columns">
