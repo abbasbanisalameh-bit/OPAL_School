@@ -1,11 +1,12 @@
 from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import LoginView
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.static import serve
 from django.views.generic import RedirectView
+from django.contrib.auth.decorators import login_required
 from core import views as core_views
 from config.url_groups import CORE_URLPATTERNS, PRIMARY_URLPATTERNS, SCHOOL_URLPATTERNS
 
@@ -53,8 +54,14 @@ if settings.OPAL_ENABLE_DEVELOPMENT_CENTER:
 
 # OPAL production media delivery
 #
-# The live deployment does not rely on a separate web-server mapping for
-# MEDIA_ROOT. Keep the same /media/ contract available in production so
-# uploaded school, student, teacher, and driver images can be rendered by
-# authenticated OPAL pages. Static files remain managed separately.
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# django.conf.urls.static.static() intentionally returns no route when
+# DEBUG=False, so it cannot be used as the production media bridge here.
+# OPAL serves uploaded media through Django itself and keeps the endpoint
+# authenticated so school/student/teacher/driver images are not public.
+urlpatterns += [
+    re_path(
+        r"^media/(?P<path>.*)$",
+        login_required(serve),
+        {"document_root": settings.MEDIA_ROOT},
+    ),
+]

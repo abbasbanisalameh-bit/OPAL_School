@@ -1,0 +1,10 @@
+templates/base/base.html
+ templates/includes/topbar.html
+ templates/includes/bottom_nav.html (behavior controlled globally; markup preserved)
+ dashboard/templates/dashboard/home.html
+ static/css/opal_theme_system.css
+ static/js/opal_erp.js
+ OPAL_RELEASE_NAME.txt
+ OPAL_UPDATE_MANIFEST.json
+ OPAL_UPDATE_131_7_R135_RELEASE_NOTES_AR.md
+ INSTALL_OPAL_UPDATE_131_7_R135_AR.md

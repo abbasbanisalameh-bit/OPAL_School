@@ -26,10 +26,15 @@
     {% endif %}
 
     <div class="opal-topbar-main">
-        <div class="top-left opal-global-search-wrap">
+        <div class="opal-header-page-meta" id="opal-header-page-meta" aria-label="معلومات الصفحة"></div>
+
+        <div class="opal-global-search-wrap" aria-label="البحث في النظام">
+            <div class="opal-topbar-academic-year" aria-label="العام الدراسي المعتمد">
+                العام الدراسي {{ opal_academic_year.name|default:"الحالي" }}
+            </div>
             <label class="opal-global-search-box" for="opal-global-operation-search">
                 <i class="bi bi-search" aria-hidden="true"></i>
-                <input id="opal-global-operation-search" class="search-box" placeholder="ابحث عن عملية أو صفحة..." autocomplete="off" aria-label="البحث في عمليات النظام">
+                <input id="opal-global-operation-search" class="search-box" type="search" placeholder="ابحث عن عملية أو صفحة..." autocomplete="off" aria-label="البحث في عمليات النظام" aria-expanded="false">
                 <kbd>Ctrl K</kbd>
             </label>
             <div id="opal-global-operation-results" class="opal-global-operation-results d-none" role="listbox" aria-label="نتائج البحث"></div>

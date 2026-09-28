@@ -2224,15 +2224,31 @@ a.dashboard-card:hover {
 }
 
 .opal-table,.table {
-  border-collapse:separate!important;border-spacing:0 6px!important
+  width:100%!important;
+  border-collapse:separate!important;
+  border-spacing:0 5px!important;
 }
 
 .opal-table tbody tr,.table tbody tr {
-  background:rgba(255,255,255,.025)
+  background:color-mix(in srgb,var(--opal-glass-bg-strong) 58%,transparent)!important;
+  box-shadow:inset 0 1px color-mix(in srgb,var(--opal-glass-border) 64%,transparent),
+             inset 0 -1px color-mix(in srgb,var(--opal-glass-border) 42%,transparent);
 }
 
 .opal-table td,.table td {
-  border-top:1px solid rgba(255,255,255,.055);border-bottom:1px solid rgba(255,255,255,.055)
+  background:transparent!important;
+  border-top:0!important;
+  border-bottom:0!important;
+}
+
+.opal-table tbody tr td:first-child,.table tbody tr td:first-child {
+  border-inline-start:1px solid color-mix(in srgb,var(--opal-glass-border) 78%,transparent)!important;
+  border-radius:0 12px 12px 0;
+}
+
+.opal-table tbody tr td:last-child,.table tbody tr td:last-child {
+  border-inline-end:1px solid color-mix(in srgb,var(--opal-glass-border) 78%,transparent)!important;
+  border-radius:12px 0 0 12px;
 }
 
 .opal-table td:first-child,.table td:first-child {
@@ -4532,9 +4548,9 @@ textarea:focus {
 .opal-table-wrap {
   border-radius:var(--opal-ui-radius-md);
   overflow:auto;
-  border:1px solid rgba(13,35,64,.08);
-  background:var(--opal-ui-surface-strong);
-  box-shadow:0 10px 28px rgba(13,35,64,.07);
+  border:1px solid color-mix(in srgb,var(--opal-glass-border) 88%,transparent);
+  background:color-mix(in srgb,var(--opal-glass-bg) 46%,transparent);
+  box-shadow:inset 0 1px var(--opal-glass-highlight),0 10px 28px rgba(13,35,64,.07);
 }
 
 .table {
@@ -5868,12 +5884,12 @@ html[data-opal-theme="green"] .opal-main :where(table thead th,table thead td,.o
 
 html[data-opal-theme="green"] .opal-main :where(table tbody th,table tbody td,.opal-table td,.table td) {
   color:var(--opal-text) !important;
-  background:var(--opal-surface) !important;
+  background:transparent !important;
   border-color:var(--opal-border) !important;
 }
 
 html[data-opal-theme="green"] .opal-main :where(table tbody tr:nth-child(even) th,table tbody tr:nth-child(even) td) {
-  background:var(--opal-surface-soft) !important;
+  background:transparent !important;
 }
 
 .tooltip {
@@ -8354,17 +8370,17 @@ body {
   width:100%!important;
   max-width:none!important;
   display:grid!important;
-  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
   gap:.18rem!important;
   box-sizing:border-box!important;
   padding:.42rem max(.55rem,env(safe-area-inset-left)) max(.42rem,env(safe-area-inset-bottom))!important;
   border:1px solid color-mix(in srgb,var(--opal-primary) 20%,var(--opal-border))!important;
   border-bottom:0!important;
   border-radius:20px 20px 0 0!important;
-  background:color-mix(in srgb,var(--opal-surface) 94%,transparent)!important;
-  backdrop-filter:blur(20px)!important;
+  background:color-mix(in srgb,var(--opal-glass-bg-strong,var(--opal-surface)) 88%,transparent)!important;
+  backdrop-filter:blur(24px) saturate(145%)!important;
   -webkit-backdrop-filter:blur(20px)!important;
-  box-shadow:0 -10px 34px color-mix(in srgb,var(--opal-bg) 30%,transparent),0 -1px 0 color-mix(in srgb,var(--opal-primary) 16%,transparent)!important;
+  box-shadow:var(--opal-glass-shadow,0 -10px 34px rgba(0,0,0,.25)), inset 0 1px var(--opal-glass-highlight,rgba(255,255,255,.08)), 0 -1px 0 color-mix(in srgb,var(--opal-primary) 18%,transparent)!important;
 }
 
 .opal-bottom-nav a,.opal-bottom-nav button {
@@ -8400,6 +8416,24 @@ body {
 
 .opal-bottom-nav .is-current i {
   color:var(--opal-primary)!important
+}
+
+.opal-bottom-nav.is-hidden {
+  transform:translateY(calc(100% + env(safe-area-inset-bottom)))!important;
+  opacity:.22!important;
+  pointer-events:none!important;
+}
+
+.opal-bottom-nav {
+  transition:transform .24s cubic-bezier(.2,.75,.25,1), opacity .2s ease, box-shadow .2s ease!important;
+}
+
+.opal-bottom-nav [data-opal-bottom-link="settings"] i {
+  color:var(--opal-glass-accent-2,var(--opal-primary))!important;
+}
+
+.opal-bottom-nav [data-opal-bottom-link="settings"].is-current {
+  background:color-mix(in srgb,var(--opal-glass-accent-2,var(--opal-primary)) 12%,transparent)!important;
 }
 
 .opal-bottom-nav a:hover,.opal-bottom-nav button:hover {
@@ -8460,7 +8494,7 @@ body {
   }
 
   .opal-bottom-nav {
-    grid-template-columns:repeat(5,minmax(0,1fr))!important;padding-top:.38rem!important
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;padding-top:.38rem!important
   }
 
   .opal-bottom-nav a,.opal-bottom-nav button {
@@ -8520,12 +8554,12 @@ body {
 
 @media (min-width:768px) {
   .opal-bottom-nav {
-    display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;max-width:none!important
+    display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;max-width:none!important
   }
 }
 
 .opal-bottom-nav {
-  grid-template-columns:repeat(5,minmax(0,1fr))!important
+  grid-template-columns:repeat(6,minmax(0,1fr))!important
 }
 
 .opal-bottom-nav .opal-bottom-search i {
@@ -13730,4 +13764,1093 @@ html[data-opal-theme] body.opal-standalone-opal_school_templates_admissions_fee_
     height: 48px;
     min-width: 48px;
   }
+}
+
+/* ===== OPAL Update 131.7 R135 - Navigation Clarity & Dynamic Mobile Bar ===== */
+/* R135: remove the boxed page context and keep a simple, clickable home path. */
+.opal-page-context {
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:.75rem;
+  width:100%;
+  margin:.55rem 0 .15rem;
+  padding:0;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+  direction:rtl;
+}
+
+.opal-page-context .opal-dynamic-back {
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  padding:.15rem .2rem;
+  border:0;
+  background:transparent;
+  color:var(--opal-primary);
+  font:inherit;
+  font-weight:800;
+  white-space:nowrap;
+  cursor:pointer;
+  box-shadow:none;
+}
+
+.opal-page-context .opal-dynamic-back:hover,
+.opal-page-context .opal-dynamic-back:focus-visible {
+  color:var(--opal-primary-strong);
+  transform:none;
+  box-shadow:none;
+}
+
+/* R135: academic year sits immediately above the global search field. */
+.opal-global-search-wrap {
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch !important;
+  gap:.25rem !important;
+}
+
+.opal-topbar-academic-year {
+  align-self:flex-start;
+  padding-inline:.15rem;
+  color:var(--opal-ink-soft);
+  font-size:.72rem;
+  font-weight:800;
+  line-height:1.25;
+  letter-spacing:.01em;
+  white-space:nowrap;
+}
+
+/* R135: brighten the school image without washing out the text. */
+.opal-dashboard-hero-image {
+  opacity:1 !important;
+  filter:brightness(1.13) contrast(1.04) saturate(1.08) !important;
+}
+
+.opal-dashboard-hero::after {
+  background:linear-gradient(90deg,rgba(4,28,48,.08),rgba(5,30,52,.42) 48%,rgba(3,22,40,.70)) !important;
+}
+
+.opal-dashboard-motivation {
+  display:block;
+  margin-top:.48rem;
+  max-width:34rem;
+  color:#fff7cf !important;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(.84rem,1.45vw,1.08rem) !important;
+  font-weight:700 !important;
+  line-height:1.55 !important;
+  letter-spacing:.01em;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.25),
+    0 3px 10px rgba(0,0,0,.55),
+    0 0 18px rgba(255,220,100,.18);
+  transform:perspective(420px) rotateX(1deg);
+}
+
+/* R135: bottom navigation hides while scrolling down and returns when scrolling up. */
+.opal-bottom-nav {
+  transition:transform .28s ease, opacity .22s ease, box-shadow .22s ease !important;
+  will-change:transform,opacity;
+}
+
+.opal-bottom-nav.opal-nav-hidden {
+  transform:translateY(110%) !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+@media (min-width:768px) {
+  .opal-bottom-nav.opal-nav-hidden {
+    transform:translate(-50%,110%) !important;
+  }
+}
+
+/* R135: stronger but controlled text clarity across the shared shell. */
+html,
+body {
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.opal-main :where(p,li,td,th,label,.form-label,.nav-link,.dropdown-item,.btn),
+.opal-main :where(input,textarea,select,.form-control,.form-select) {
+  letter-spacing:normal;
+}
+
+.opal-main :where(p,li,td,th,label,.form-label) {
+  line-height:1.58;
+}
+
+.opal-main :where(h1,h2,h3,h4,h5,h6,.card-title,.dashboard-card-title) {
+  text-rendering:optimizeLegibility;
+}
+
+@media (max-width:767.98px) {
+  .opal-page-context {
+    margin:.35rem 0 .05rem;
+    gap:.6rem;
+  }
+
+  .opal-page-context .opal-dynamic-back { font-size:.86rem; }
+  .opal-topbar-academic-year { font-size:.68rem; }
+  .opal-dashboard-motivation { font-size:.82rem !important; max-width:80%; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .opal-bottom-nav { transition:none !important; }
+}
+
+/* =====================================================================
+   OPAL Update 131.7 R138 — Glass Luxury Header & Surface Refinement
+   Refines the existing R137 glass system in-place; no second theme layer.
+   Same geometry across dark, green and light themes; palette only changes.
+   ===================================================================== */
+
+html[data-opal-theme="dark"] {
+  --opal-glass-bg: rgba(10, 31, 52, .56);
+  --opal-glass-bg-strong: rgba(10, 36, 60, .70);
+  --opal-glass-border: rgba(122, 221, 255, .30);
+  --opal-glass-highlight: rgba(255,255,255,.11);
+  --opal-glass-accent: #63ddff;
+  --opal-glass-accent-2: #d9b55b;
+  --opal-glass-shadow: 0 20px 55px rgba(0, 7, 20, .28);
+  --opal-glass-text: #f7fcff;
+  --opal-glass-muted: #bfd3df;
+}
+
+html[data-opal-theme="green"] {
+  --opal-glass-bg: rgba(16, 67, 53, .48);
+  --opal-glass-bg-strong: rgba(14, 78, 60, .64);
+  --opal-glass-border: rgba(123, 235, 196, .30);
+  --opal-glass-highlight: rgba(255,255,255,.14);
+  --opal-glass-accent: #63e4b7;
+  --opal-glass-accent-2: #d9b55b;
+  --opal-glass-shadow: 0 20px 55px rgba(4, 55, 38, .18);
+  --opal-glass-text: #f6fff9;
+  --opal-glass-muted: #c5ded3;
+}
+
+html[data-opal-theme="light"] {
+  --opal-glass-bg: rgba(255, 255, 255, .42);
+  --opal-glass-bg-strong: rgba(255, 255, 255, .64);
+  --opal-glass-border: rgba(29, 122, 151, .28);
+  --opal-glass-highlight: rgba(255,255,255,.86);
+  --opal-glass-accent: #168eae;
+  --opal-glass-accent-2: #aa7c18;
+  --opal-glass-shadow: 0 20px 50px rgba(29, 91, 116, .13);
+  --opal-glass-text: #123b52;
+  --opal-glass-muted: #456b7b;
+}
+
+body {
+  min-width: 0;
+  background:
+    radial-gradient(circle at 12% 4%, color-mix(in srgb, var(--opal-glass-accent) 13%, transparent), transparent 28%),
+    radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--opal-glass-accent-2) 8%, transparent), transparent 24%),
+    linear-gradient(145deg, var(--opal-bg), var(--opal-bg-alt)) fixed !important;
+}
+
+.opal-layout {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 72% 8%, color-mix(in srgb, var(--opal-glass-accent) 10%, transparent), transparent 30%),
+    transparent !important;
+}
+
+.opal-sidebar {
+  width: 286px;
+  padding: 18px 15px;
+  background: color-mix(in srgb, var(--opal-glass-bg-strong) 88%, transparent) !important;
+  border-left: 1px solid var(--opal-glass-border) !important;
+  box-shadow: var(--opal-glass-shadow);
+  backdrop-filter: blur(26px) saturate(140%);
+  -webkit-backdrop-filter: blur(26px) saturate(140%);
+}
+
+.opal-brand {
+  padding: 8px 8px 15px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--opal-glass-border);
+}
+
+.opal-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 17px;
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--opal-glass-accent) 22%, transparent), inset 0 1px var(--opal-glass-highlight);
+}
+
+.opal-menu a,
+.opal-menu-items a {
+  min-height: 44px;
+  margin-bottom: 6px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--opal-glass-bg) 82%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--opal-glass-border) 78%, transparent) !important;
+  box-shadow: inset 0 1px var(--opal-glass-highlight);
+  backdrop-filter: blur(14px);
+}
+
+.opal-menu a.active {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--opal-glass-accent) 18%, var(--opal-glass-bg-strong)),
+    color-mix(in srgb, var(--opal-glass-accent-2) 8%, var(--opal-glass-bg-strong))) !important;
+  border-color: color-mix(in srgb, var(--opal-glass-accent) 46%, var(--opal-glass-border)) !important;
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--opal-glass-accent) 11%, transparent), inset 0 1px var(--opal-glass-highlight);
+}
+
+.opal-main {
+  width: 100%;
+  max-width: 1540px;
+  margin-inline: auto;
+  padding: 18px 22px 104px;
+}
+
+.opal-topbar-shell {
+  margin-bottom: 11px;
+  border: 1px solid var(--opal-glass-border) !important;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--opal-glass-bg) 88%, transparent) !important;
+  box-shadow: var(--opal-glass-shadow), inset 0 1px var(--opal-glass-highlight);
+  backdrop-filter: blur(28px) saturate(145%);
+  -webkit-backdrop-filter: blur(28px) saturate(145%);
+}
+
+.opal-topbar-ribbon {
+  border-bottom-color: color-mix(in srgb, var(--opal-glass-accent-2) 24%, transparent) !important;
+}
+
+.opal-topbar-main {
+  min-height: 68px;
+  padding: 9px 13px;
+  display:grid;
+  grid-template-columns:minmax(220px,.78fr) minmax(260px,1.18fr) auto;
+  align-items:center;
+  gap:12px;
+}
+
+.opal-topbar-academic-year {
+  margin-bottom: 5px;
+  color: var(--opal-glass-text) !important;
+  font-size: .70rem;
+  font-weight: 900;
+  opacity: .94;
+}
+
+.opal-global-search-box {
+  border-color: var(--opal-glass-border) !important;
+  background: color-mix(in srgb, var(--opal-glass-bg-strong) 64%, transparent) !important;
+  box-shadow: inset 0 1px var(--opal-glass-highlight) !important;
+  border-radius: 14px !important;
+}
+
+.opal-global-search-box:focus-within {
+  border-color: color-mix(in srgb, var(--opal-glass-accent) 72%, transparent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--opal-glass-accent) 12%, transparent), inset 0 1px var(--opal-glass-highlight) !important;
+}
+
+.opal-topbar-actions {
+  background: color-mix(in srgb, var(--opal-glass-bg-strong) 62%, transparent) !important;
+  border-color: var(--opal-glass-border) !important;
+  box-shadow: inset 0 1px var(--opal-glass-highlight);
+}
+
+.opal-topbar-actions .icon-btn,
+.opal-profile-link {
+  border: 1px solid transparent;
+  transition: .18s ease;
+}
+
+.opal-topbar-actions .icon-btn:hover,
+.opal-profile-link:hover {
+  border-color: var(--opal-glass-border);
+  background: color-mix(in srgb, var(--opal-glass-accent) 9%, transparent);
+}
+
+.opal-header-page-meta {
+  min-width:0;
+  display:flex;
+  align-items:center;
+  direction:rtl;
+}
+
+.opal-header-page-meta .opal-page-meta-source {
+  min-width:0;
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:.55rem;
+}
+
+.opal-header-page-meta .opal-page-context {
+  flex:0 0 auto;
+  width:auto;
+  margin:0 !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+
+.opal-header-page-meta .opal-dynamic-back {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:34px;
+  height:34px;
+  padding:0 !important;
+  border:1px solid var(--opal-glass-border) !important;
+  border-radius:11px !important;
+  background:color-mix(in srgb,var(--opal-glass-bg-strong) 72%,transparent) !important;
+  color:var(--opal-glass-accent) !important;
+  box-shadow:inset 0 1px var(--opal-glass-highlight),0 7px 18px rgba(0,0,0,.10) !important;
+}
+
+.opal-header-page-meta .opal-dynamic-back span {
+  display:none;
+}
+
+.opal-header-page-meta .page-heading {
+  min-width:0;
+  flex:1 1 auto;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+.opal-header-page-meta .page-heading h1 {
+  margin:0 !important;
+  font-size:clamp(1rem,1.6vw,1.38rem) !important;
+  font-weight:950 !important;
+  line-height:1.25 !important;
+  letter-spacing:-.02em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.opal-header-page-meta .page-heading p {
+  margin:.08rem 0 0 !important;
+  font-size:.66rem !important;
+  color:var(--opal-glass-muted) !important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.opal-header-page-meta .page-heading .opal-current-operation {
+  display:flex;
+  align-items:center;
+  gap:.28rem;
+  margin:.18rem 0 0 !important;
+  min-width:0;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  font-size:.62rem !important;
+  color:var(--opal-glass-muted) !important;
+  white-space:nowrap;
+  overflow:hidden;
+}
+
+.opal-header-page-meta .page-heading .opal-current-operation strong {
+  color:var(--opal-glass-text) !important;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.opal-global-search-wrap {
+  position:relative;
+  max-width:520px !important;
+  justify-self:center;
+  width:100%;
+}
+
+.opal-topbar-academic-year {
+  margin-bottom:.1rem;
+  font-size:.62rem;
+  line-height:1.2;
+  text-align:right;
+}
+
+.opal-global-search-box {
+  height:38px !important;
+  min-height:38px !important;
+  border-radius:12px !important;
+}
+
+.opal-global-search-box .search-box {
+  height:34px !important;
+  font-size:.78rem !important;
+}
+
+.opal-page-meta-source:not(.is-mounted) {
+  display:none;
+}
+
+/* Existing shared surfaces: one glass treatment, no additional overlay layer. */
+.opal-main :where(.card,.opal-card,.panel,.dashboard-panel,.dashboard-card,.opal-module-card,
+  .opal-dashboard-section,.opal-dashboard-feature,.opal-dashboard-mini-panel,.opal-dashboard-more,
+  .opal-settings-section,.opal-form-section,.opal-table-card,.opal-list-card,.opal-detail-card,
+  .opal-crystal-card,.modal-content,.dropdown-menu,.alert,.accordion-item,.list-group-item,
+  .offcanvas,.popover,.toast) {
+  background: linear-gradient(145deg,
+    color-mix(in srgb, var(--opal-glass-bg-strong) 78%, transparent),
+    color-mix(in srgb, var(--opal-glass-bg) 72%, transparent)) !important;
+  border: 1px solid color-mix(in srgb, var(--opal-glass-border) 96%, transparent) !important;
+  box-shadow: 0 18px 42px rgba(2,12,27,.15),
+    inset 0 1px var(--opal-glass-highlight),
+    0 0 22px color-mix(in srgb, var(--opal-glass-accent) 5%, transparent) !important;
+  backdrop-filter: blur(24px) saturate(145%);
+  -webkit-backdrop-filter: blur(24px) saturate(145%);
+  border-radius: 20px;
+}
+
+.opal-main :where(.card,.opal-card,.panel,.dashboard-panel,.dashboard-card,.opal-module-card) {
+  overflow: hidden;
+}
+
+.opal-main :where(.form-control,.form-select,textarea,input:not([type=checkbox]):not([type=radio]),select,.input-group-text) {
+  background:color-mix(in srgb,var(--opal-glass-bg-strong) 58%,transparent)!important;
+  color:var(--opal-glass-text)!important;
+  border-color:var(--opal-glass-border)!important;
+  box-shadow:inset 0 1px var(--opal-glass-highlight),0 8px 22px rgba(2,12,27,.07)!important;
+  backdrop-filter:blur(12px) saturate(125%);
+  -webkit-backdrop-filter:blur(12px) saturate(125%);
+}
+
+.opal-main :where(.btn-outline-primary,.btn-outline-secondary,.btn-outline-info,.btn-outline-success,.btn-outline-warning,.btn-outline-danger) {
+  background:color-mix(in srgb,var(--opal-glass-bg-strong) 42%,transparent)!important;
+  border-color:color-mix(in srgb,var(--opal-glass-accent) 44%,var(--opal-glass-border))!important;
+  box-shadow:inset 0 1px var(--opal-glass-highlight),0 8px 20px rgba(2,12,27,.08)!important;
+}
+
+.opal-main :where(.nav-tabs,.nav-pills) {
+  background:color-mix(in srgb,var(--opal-glass-bg) 58%,transparent)!important;
+  border-color:var(--opal-glass-border)!important;
+  border-radius:16px;
+  padding:.22rem;
+  backdrop-filter:blur(14px) saturate(130%);
+}
+
+.opal-main :where(.nav-tabs .nav-link,.nav-pills .nav-link) {
+  color:var(--opal-glass-muted)!important;
+  border-radius:12px!important;
+}
+
+.opal-main :where(.nav-tabs .nav-link.active,.nav-pills .nav-link.active) {
+  color:var(--opal-glass-text)!important;
+  background:color-mix(in srgb,var(--opal-glass-accent) 14%,var(--opal-glass-bg-strong))!important;
+  border-color:color-mix(in srgb,var(--opal-glass-accent) 38%,var(--opal-glass-border))!important;
+  box-shadow:inset 0 1px var(--opal-glass-highlight),0 8px 20px color-mix(in srgb,var(--opal-glass-accent) 10%,transparent);
+}
+
+html[data-opal-theme="light"] .opal-main :where(.form-control,.form-select,textarea,input:not([type=checkbox]):not([type=radio]),select,.input-group-text) {
+  background:color-mix(in srgb,#ffffff 72%,var(--opal-glass-bg-strong))!important;
+}
+
+.opal-reference-dashboard {
+  width: 100%;
+  max-width: 1500px;
+  margin-inline: auto;
+  gap: .78rem !important;
+}
+
+.opal-dashboard-hero {
+  min-height: 218px !important;
+  border-radius: 22px !important;
+  border-color: var(--opal-glass-border) !important;
+  box-shadow: var(--opal-glass-shadow), inset 0 1px rgba(255,255,255,.16) !important;
+  overflow: hidden;
+}
+
+.opal-dashboard-hero::after {
+  background: linear-gradient(90deg, rgba(4,16,28,.10), rgba(4,16,28,.28) 46%, rgba(4,16,28,.70)) !important;
+}
+
+.opal-dashboard-hero-overlay {
+  padding: 1.05rem 1.15rem !important;
+}
+
+.opal-dashboard-hero-brand {
+  gap: .25rem;
+  padding: .35rem;
+  max-width: 78%;
+}
+
+.opal-dashboard-hero-brand img,
+.opal-school-identity-logo {
+  border-radius: 50%;
+  filter: drop-shadow(0 8px 18px color-mix(in srgb, var(--opal-glass-accent) 18%, transparent));
+}
+
+.opal-dashboard-hero-brand strong {
+  font-size: clamp(1.2rem, 2.1vw, 1.85rem) !important;
+}
+
+.opal-dashboard-motivation {
+  color: #fff !important;
+  text-shadow: 0 2px 12px rgba(0,0,0,.42);
+}
+
+.opal-dashboard-section {
+  background: color-mix(in srgb, var(--opal-glass-bg) 94%, transparent) !important;
+  border-color: var(--opal-glass-border) !important;
+  box-shadow: var(--opal-glass-shadow), inset 0 1px var(--opal-glass-highlight) !important;
+  padding: .82rem !important;
+}
+
+.opal-dashboard-kpi-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: .62rem !important;
+}
+
+.opal-dashboard-kpi {
+  min-height: 98px !important;
+  border-color: color-mix(in srgb, var(--opal-glass-border) 92%, transparent) !important;
+  color: var(--opal-glass-text) !important;
+  background: color-mix(in srgb, var(--opal-glass-bg-strong) 84%, transparent) !important;
+  box-shadow: 0 14px 32px rgba(0,0,0,.12), inset 0 1px var(--opal-glass-highlight) !important;
+  backdrop-filter: blur(14px) saturate(130%);
+}
+
+.opal-dashboard-kpi.kpi-fees,
+.opal-dashboard-kpi.kpi-students,
+.opal-dashboard-kpi.kpi-attendance,
+.opal-dashboard-kpi.kpi-teachers {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--opal-kpi-accent) 15%, var(--opal-glass-bg-strong)),
+      color-mix(in srgb, var(--opal-kpi-accent) 5%, var(--opal-glass-bg))) !important;
+  border-color: color-mix(in srgb, var(--opal-kpi-accent) 32%, var(--opal-glass-border)) !important;
+}
+
+.opal-dashboard-kpi.kpi-fees { --opal-kpi-accent:#d99a3e; }
+.opal-dashboard-kpi.kpi-students { --opal-kpi-accent:#2ccf86; }
+.opal-dashboard-kpi.kpi-attendance { --opal-kpi-accent:#9a69e8; }
+.opal-dashboard-kpi.kpi-teachers { --opal-kpi-accent:#4e9de8; }
+
+.opal-kpi-icon {
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
+  background: color-mix(in srgb, var(--opal-kpi-accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--opal-kpi-accent) 34%, var(--opal-glass-border));
+  box-shadow: inset 0 1px var(--opal-glass-highlight), 0 8px 18px color-mix(in srgb, var(--opal-kpi-accent) 12%, transparent);
+}
+
+.opal-kpi-icon i {
+  color: var(--opal-kpi-accent) !important;
+  text-shadow: 0 0 14px color-mix(in srgb, var(--opal-kpi-accent) 32%, transparent);
+}
+
+.opal-kpi-copy strong,
+.opal-kpi-copy b,
+.opal-kpi-copy small {
+  color: var(--opal-glass-text) !important;
+}
+
+.opal-kpi-copy small { color: var(--opal-glass-muted) !important; }
+
+.opal-dashboard-quick-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: .55rem !important;
+}
+
+.opal-quick-tile,
+.opal-dashboard-quick-grid > .opal-quick-tile:nth-child(n) {
+  position:relative;
+  overflow:hidden;
+  min-height: 82px !important;
+  border-color: var(--opal-glass-border) !important;
+  color: var(--opal-glass-text) !important;
+  background: color-mix(in srgb, var(--opal-glass-bg-strong) 82%, transparent) !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,.10), inset 0 1px var(--opal-glass-highlight) !important;
+  backdrop-filter: blur(16px) saturate(130%);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+}
+
+.opal-quick-tile::before,
+.opal-dashboard-kpi::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.09),transparent 34%,transparent 70%,rgba(255,255,255,.025));
+}
+
+.opal-quick-tile > *,
+.opal-dashboard-kpi > * {
+  position:relative;
+  z-index:1;
+}
+
+.opal-quick-tile:hover,
+.opal-quick-tile.is-active {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--opal-glass-accent) 62%, var(--opal-glass-border)) !important;
+  background: color-mix(in srgb, var(--opal-glass-accent) 10%, var(--opal-glass-bg-strong)) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--opal-glass-accent) 10%, transparent), 0 16px 34px rgba(0,0,0,.13), inset 0 1px var(--opal-glass-highlight) !important;
+}
+
+.opal-quick-tile i {
+  color: var(--opal-glass-accent) !important;
+  filter: drop-shadow(0 3px 8px color-mix(in srgb, var(--opal-glass-accent) 25%, transparent));
+}
+
+.opal-quick-tile span {
+  color: var(--opal-glass-text) !important;
+  font-size: .78rem;
+}
+
+.opal-dashboard-feature-grid {
+  grid-template-columns: 1.08fr 1fr .92fr !important;
+  gap: .72rem !important;
+}
+
+.opal-dashboard-feature,
+.opal-dashboard-mini-panel,
+.opal-dashboard-more {
+  background: color-mix(in srgb, var(--opal-glass-bg) 92%, transparent) !important;
+  border-color: var(--opal-glass-border) !important;
+}
+
+.opal-dashboard-teacher-row,
+.opal-satisfaction-card,
+.opal-mini-status-card {
+  background: color-mix(in srgb, var(--opal-glass-bg-strong) 64%, transparent) !important;
+  border-color: color-mix(in srgb, var(--opal-glass-border) 84%, transparent) !important;
+  backdrop-filter: blur(12px);
+}
+
+.opal-main :where(.table,.opal-table) { font-size: .84rem; }
+
+.opal-main :where(.table thead th,.opal-table th) {
+  background: color-mix(in srgb, var(--opal-glass-bg-strong) 88%, var(--opal-glass-accent)) !important;
+  color: var(--opal-glass-text) !important;
+  border-color: var(--opal-glass-border) !important;
+}
+
+.opal-main :where(.table tbody td,.table tbody th,.opal-table td) {
+  background: color-mix(in srgb, var(--opal-glass-bg) 70%, transparent) !important;
+  color: var(--opal-text) !important;
+  border-color: color-mix(in srgb, var(--opal-glass-border) 72%, transparent) !important;
+}
+
+.opal-main :where(.form-control,.form-select,textarea,select,input:not([type=checkbox]):not([type=radio]):not([type=range])) {
+  min-height: 42px;
+  border-radius: 13px !important;
+  border-color: var(--opal-glass-border) !important;
+  background: color-mix(in srgb, var(--opal-glass-bg-strong) 68%, transparent) !important;
+  color: var(--opal-text) !important;
+  box-shadow: inset 0 1px var(--opal-glass-highlight) !important;
+}
+
+.opal-main :where(.btn) { border-radius: 12px; font-weight: 850; }
+
+.opal-bottom-nav {
+  background: color-mix(in srgb, var(--opal-glass-bg-strong) 88%, transparent) !important;
+  border-color: var(--opal-glass-border) !important;
+  box-shadow: 0 18px 48px rgba(0,0,0,.22), inset 0 1px var(--opal-glass-highlight) !important;
+  backdrop-filter: blur(26px) saturate(145%);
+  -webkit-backdrop-filter: blur(26px) saturate(145%);
+}
+
+.opal-bottom-nav a,
+.opal-bottom-nav button { color: var(--opal-glass-muted) !important; }
+.opal-bottom-nav i { color: var(--opal-glass-accent) !important; }
+.opal-bottom-nav .is-current {
+  color: var(--opal-glass-text) !important;
+  background: color-mix(in srgb, var(--opal-glass-accent) 12%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--opal-glass-accent) 26%, transparent);
+}
+.opal-bottom-nav .is-current i { color: var(--opal-glass-accent) !important; }
+
+@media (max-width:1100px) {
+  .opal-main { padding-inline: 16px; }
+  .opal-dashboard-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .opal-dashboard-quick-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .opal-dashboard-feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+@media (max-width:767.98px) {
+  .opal-main { padding: 9px 10px 88px !important; }
+  .opal-topbar-shell { margin-bottom: 8px; border-radius: 15px; }
+  .opal-topbar-main {
+    min-height:58px;
+    padding:7px 9px;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) auto;
+    grid-template-areas:"meta search actions";
+    gap:6px 8px;
+  }
+  .opal-header-page-meta { grid-area:meta; }
+  .opal-global-search-wrap {
+    grid-area:search;
+    max-width:none !important;
+    justify-self:stretch;
+  }
+  .opal-topbar-actions { grid-area:actions; }
+  .opal-header-page-meta .page-heading h1 { font-size:.98rem !important; }
+  .opal-header-page-meta .page-heading p { display:none; }
+  .opal-header-page-meta .page-heading .opal-current-operation { font-size:.58rem !important; }
+  .opal-header-page-meta .opal-dynamic-back { width:32px; height:32px; }
+  .opal-topbar-academic-year { font-size:.60rem !important; margin-bottom:.1rem; }
+  .opal-global-search-box { height:37px !important; min-height:37px !important; border-radius:11px !important; }
+  .opal-global-search-box .search-box { height:33px !important; font-size:.74rem !important; }
+  .opal-reference-dashboard { gap: .62rem !important; }
+  .opal-dashboard-hero { min-height: 170px !important; border-radius: 16px !important; }
+  .opal-dashboard-hero-overlay { padding: .75rem; }
+  .opal-dashboard-hero-brand { display:flex !important; align-items:flex-start; min-width:0; max-width:76%; text-align:right; }
+  .opal-dashboard-hero-brand img,
+  .opal-school-identity-logo { width:52px; height:52px; }
+  .opal-dashboard-hero-brand strong { font-size:1.08rem !important; }
+  .opal-dashboard-hero-brand small { font-size:.60rem; }
+  .opal-dashboard-motivation { font-size:.62rem !important; line-height:1.5; }
+  .opal-dashboard-section { padding:.62rem !important; border-radius:15px !important; }
+  .opal-dashboard-kpi-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:.5rem !important; }
+  .opal-dashboard-kpi { min-height:88px !important; padding:.62rem .68rem !important; gap:.5rem; border-radius:15px !important; }
+  .opal-kpi-icon { width:40px; height:40px; flex-basis:40px; }
+  .opal-kpi-icon i { font-size:1.15rem; }
+  .opal-kpi-copy strong { font-size:.70rem; }
+  .opal-kpi-copy b { font-size:1.15rem; }
+  .opal-kpi-copy small { font-size:.58rem; }
+  .opal-dashboard-quick-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:.48rem !important; }
+  .opal-quick-tile { min-height:70px !important; padding:.55rem !important; gap:.3rem; border-radius:14px !important; }
+  .opal-quick-tile i { font-size:1.25rem; }
+  .opal-quick-tile span { font-size:.66rem; }
+  .opal-dashboard-feature-grid { grid-template-columns:1fr !important; gap:.55rem !important; }
+  .opal-dashboard-feature,
+  .opal-dashboard-mini-panel,
+  .opal-dashboard-more { border-radius:15px !important; padding:.65rem !important; }
+  .opal-main :where(.table,.opal-table) { font-size:.76rem; }
+  .opal-main :where(.btn) { min-height:39px; font-size:.74rem; }
+  .opal-main :where(.form-control,.form-select,textarea,select,input:not([type=checkbox]):not([type=radio]):not([type=range])) { min-height:40px; font-size:.78rem; }
+  .opal-bottom-nav { left:7px !important; right:7px !important; bottom:max(7px,env(safe-area-inset-bottom)) !important; padding:.34rem !important; border-radius:16px !important; }
+  .opal-bottom-nav a,
+  .opal-bottom-nav button { min-height:46px; border-radius:11px; }
+  .opal-bottom-nav i { font-size:.98rem; }
+  .opal-bottom-nav span { font-size:.56rem; }
+  .opal-bottom-nav.opal-nav-hidden { transform:translateY(calc(100% + 18px)); }
+}
+
+@media (min-width:768px) {
+  .opal-bottom-nav { width:min(540px,calc(100% - 44px)); right:22px; bottom:16px; }
+}
+
+@media (max-width:430px) {
+  .opal-header-page-meta .page-heading h1 { font-size:.92rem !important; }
+  .opal-header-page-meta .page-heading .opal-current-operation { max-width:100%; }
+  .opal-quick-tile { min-height:76px !important; border-radius:15px !important; }
+}
+
+.opal-bottom-nav { transition:transform .24s ease,opacity .20s ease,box-shadow .20s ease; }
+
+@media (prefers-reduced-motion:reduce) {
+  .opal-bottom-nav { transition:none !important; }
+}
+
+@media print {
+  .opal-main :where(.card,.opal-card,.panel,.dashboard-panel,.dashboard-card,.opal-module-card,
+    .opal-dashboard-section,.opal-dashboard-feature,.opal-dashboard-mini-panel,.opal-dashboard-more) {
+    background:#fff !important;
+    box-shadow:none !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+  }
+}
+
+/* =====================================================================
+   OPAL Update 131.7 R140 — Unified Glass Light, Table Surface & Guardian Statement
+   Corrective layer only: removes the accidental top search field, eliminates
+   Bootstrap white table gutters, and gives the guardian statement a proper
+   report surface without changing business data or creating a parallel theme.
+   ===================================================================== */
+
+/* One consistent luminous glass language for the shared application shell. */
+.opal-main :where(
+  .opal-card,.card,.panel,.stat-card,.dashboard-card,.dashboard-panel,
+  .opal-module-card,.opal-settings-section,.opal-form-section,.opal-table-card,
+  .opal-list-card,.opal-detail-card,.opal-crystal-card,.opal-dashboard-section,
+  .opal-dashboard-feature,.opal-dashboard-mini-panel,.opal-dashboard-more,
+  .opal-compact-metric-card,.opal-finance-kpis > div,.opal-check-card,
+  .opal-data-chip,.opal-mini-status-card,.opal-satisfaction-card
+) {
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb,var(--opal-glass-bg-strong) 82%,transparent),
+      color-mix(in srgb,var(--opal-glass-bg) 72%,transparent)) !important;
+  border:1px solid color-mix(in srgb,var(--opal-glass-border) 94%,transparent) !important;
+  box-shadow:
+    0 20px 48px rgba(0,8,24,.18),
+    inset 0 1px var(--opal-glass-highlight),
+    inset 0 -1px rgba(0,0,0,.06) !important;
+  backdrop-filter:blur(24px) saturate(145%);
+  -webkit-backdrop-filter:blur(24px) saturate(145%);
+}
+
+.opal-main :where(
+  .opal-card,.card,.panel,.stat-card,.dashboard-card,.dashboard-panel,
+  .opal-module-card,.opal-settings-section,.opal-form-section,.opal-table-card,
+  .opal-list-card,.opal-detail-card,.opal-crystal-card,.opal-dashboard-section,
+  .opal-dashboard-feature,.opal-dashboard-mini-panel,.opal-dashboard-more
+)::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  border-radius:inherit;
+  background:
+    linear-gradient(118deg,rgba(255,255,255,.105),transparent 28%,transparent 70%,rgba(255,255,255,.025));
+  opacity:.9;
+}
+
+.opal-main :where(
+  .opal-card,.card,.panel,.stat-card,.dashboard-card,.dashboard-panel,
+  .opal-module-card,.opal-settings-section,.opal-form-section,.opal-table-card,
+  .opal-list-card,.opal-detail-card,.opal-crystal-card,.opal-dashboard-section,
+  .opal-dashboard-feature,.opal-dashboard-mini-panel,.opal-dashboard-more
+) > * { position:relative; z-index:1; }
+
+/* Never let Bootstrap's legacy white table wrapper leak through the glass UI. */
+.opal-main :where(.table-responsive,.opal-table-wrap,.table-wrap) {
+  background:color-mix(in srgb,var(--opal-glass-bg-strong) 74%,transparent) !important;
+  border:1px solid color-mix(in srgb,var(--opal-glass-border) 88%,transparent) !important;
+  border-radius:16px !important;
+  box-shadow:inset 0 1px var(--opal-glass-highlight),0 12px 28px rgba(0,8,24,.10) !important;
+  backdrop-filter:blur(16px) saturate(130%);
+  -webkit-backdrop-filter:blur(16px) saturate(130%);
+}
+
+.opal-main :where(.table,.opal-table) {
+  --bs-table-bg:transparent !important;
+  --bs-table-color:var(--opal-glass-text) !important;
+  --bs-table-border-color:var(--opal-glass-border) !important;
+  background:transparent !important;
+}
+
+.opal-main :where(.table > :not(caption) > * > *, .opal-table > :not(caption) > * > *) {
+  background-color:color-mix(in srgb,var(--opal-glass-bg) 76%,transparent) !important;
+}
+
+.opal-main :where(.table thead th,.opal-table thead th) {
+  background:linear-gradient(135deg,
+    color-mix(in srgb,var(--opal-glass-accent) 13%,var(--opal-glass-bg-strong)),
+    color-mix(in srgb,var(--opal-glass-bg-strong) 92%,transparent)) !important;
+  color:var(--opal-glass-text) !important;
+  border-color:var(--opal-glass-border) !important;
+  box-shadow:inset 0 1px var(--opal-glass-highlight);
+}
+
+.opal-main :where(.table tbody tr:hover > *, .opal-table tbody tr:hover > *) {
+  background:color-mix(in srgb,var(--opal-glass-accent) 8%,var(--opal-glass-bg-strong)) !important;
+}
+
+/* The top bar keeps only page context + academic year + actions. Search lives in the bottom action. */
+.opal-topbar-main {
+  grid-template-columns:minmax(0,1fr) auto minmax(0,auto) !important;
+}
+
+.opal-topbar-academic-year {
+  align-self:center;
+  margin:0 !important;
+  padding:.35rem .7rem;
+  color:var(--opal-glass-text) !important;
+  font-size:.70rem;
+  font-weight:900;
+  white-space:nowrap;
+  border-inline-start:1px solid color-mix(in srgb,var(--opal-glass-border) 75%,transparent);
+}
+
+.opal-topbar-actions {
+  min-width:0;
+}
+
+.opal-operation-search-modal .modal-dialog { max-width:min(720px,calc(100% - 22px)); }
+.opal-operation-search-modal .modal-content {
+  border:1px solid var(--opal-glass-border) !important;
+  background:color-mix(in srgb,var(--opal-glass-bg-strong) 92%,transparent) !important;
+  box-shadow:0 28px 80px rgba(0,6,20,.34),inset 0 1px var(--opal-glass-highlight) !important;
+  backdrop-filter:blur(28px) saturate(150%);
+  -webkit-backdrop-filter:blur(28px) saturate(150%);
+}
+.opal-operation-search-modal .modal-header,
+.opal-operation-search-modal .modal-body { border-color:var(--opal-glass-border) !important; }
+.opal-operation-search-modal-box {
+  display:flex !important;
+  width:100% !important;
+  max-width:none !important;
+  min-height:52px;
+  background:color-mix(in srgb,var(--opal-glass-bg) 82%,transparent) !important;
+  border:1px solid var(--opal-glass-border) !important;
+}
+.opal-operation-search-modal-box .search-box { width:100%; }
+
+/* Guardian statement: clean report, readable on screen and on paper; no black background. */
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html {
+  min-height:100vh;
+  margin:0;
+  padding:18px;
+  background:#eef4f8 !important;
+  color:#17324a !important;
+  font-family:Tahoma,Arial,sans-serif;
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > button {
+  display:block;
+  margin:0 auto 14px;
+  border:0;
+  border-radius:12px;
+  padding:10px 18px;
+  background:#0f6f91;
+  color:#fff;
+  font-weight:900;
+  box-shadow:0 8px 20px rgba(15,111,145,.20);
+  cursor:pointer;
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > header,
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > .stats,
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > h2,
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > table,
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > .signatures {
+  width:min(1180px,100%);
+  margin-inline:auto;
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  padding:20px 24px;
+  background:linear-gradient(135deg,#123f5b,#176d83);
+  color:#fff;
+  border:1px solid rgba(22,110,139,.35);
+  border-radius:20px 20px 0 0;
+  box-shadow:0 16px 36px rgba(24,67,94,.18);
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > header h1 {
+  margin:0 0 5px;
+  font-size:1.45rem;
+  font-weight:950;
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > header h2 {
+  margin:0 0 4px;
+  font-size:1rem;
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > .stats {
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:10px;
+  padding:14px 16px;
+  background:#fff;
+  border:1px solid #d6e4eb;
+  border-top:0;
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > .stats .box {
+  padding:12px 10px;
+  border:1px solid #d6e4eb;
+  border-radius:13px;
+  background:#f5fafc;
+  text-align:center;
+  color:#557084;
+  font-size:.75rem;
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > .stats .box b {
+  display:block;
+  margin-top:5px;
+  color:#123b52;
+  font-size:1.12rem;
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > h2 {
+  margin-top:16px;
+  margin-bottom:8px;
+  padding:0 4px;
+  color:#17324a;
+  font-size:1.05rem;
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > table {
+  border-collapse:separate;
+  border-spacing:0;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid #d6e4eb;
+  border-radius:14px;
+  box-shadow:0 10px 28px rgba(24,67,94,.07);
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > table th {
+  background:#173b5d;
+  color:#fff;
+  padding:10px 8px;
+  font-size:.74rem;
+  border-bottom:1px solid #d6e4eb;
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > table td {
+  background:#fff;
+  color:#24445a;
+  padding:9px 8px;
+  font-size:.74rem;
+  border-bottom:1px solid #e1ebf0;
+}
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > table tr:last-child td { border-bottom:0; }
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > table tbody tr:nth-child(even) td { background:#f7fbfd; }
+body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > .signatures {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:18px;
+  padding:16px;
+  background:#fff;
+  border:1px solid #d6e4eb;
+  border-radius:14px;
+  color:#466274;
+  font-size:.78rem;
+}
+
+@media (max-width:900px) {
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > .stats { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+@media (max-width:767.98px) {
+  .opal-topbar-main {
+    grid-template-columns:minmax(0,1fr) auto !important;
+    grid-template-areas:"meta actions" "year year" !important;
+    gap:5px 8px !important;
+  }
+  .opal-header-page-meta { grid-area:meta; }
+  .opal-topbar-actions { grid-area:actions; }
+  .opal-topbar-academic-year {
+    grid-area:year;
+    justify-self:end;
+    width:100%;
+    padding:.22rem .2rem 0;
+    border-inline-start:0;
+    border-top:1px solid color-mix(in srgb,var(--opal-glass-border) 65%,transparent);
+    text-align:right;
+  }
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html { padding:10px; }
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > header { padding:15px; align-items:flex-start; }
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > header h1 { font-size:1.08rem; }
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > table { display:block; overflow-x:auto; white-space:nowrap; }
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > .signatures { grid-template-columns:1fr; }
+}
+
+@media print {
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html {
+    padding:0;
+    background:#fff !important;
+  }
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > button { display:none !important; }
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > header,
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > .stats,
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > table,
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > .signatures {
+    box-shadow:none !important;
+  }
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > header { break-inside:avoid; }
+  body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > table { break-inside:auto; }
 }

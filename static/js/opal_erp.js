@@ -1360,3 +1360,54 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 })();
+
+/* ===== OPAL Update 131.7 R135: self-hiding bottom navigation ===== */
+(function () {
+    "use strict";
+    function ready(callback) {
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", callback, {once: true});
+        } else {
+            callback();
+        }
+    }
+
+    ready(function () {
+        const nav = document.querySelector(".opal-bottom-nav");
+        if (!nav) return;
+
+        let lastY = Math.max(window.scrollY || 0, document.documentElement.scrollTop || 0);
+        let ticking = false;
+        const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        function syncNav() {
+            ticking = false;
+            const currentY = Math.max(window.scrollY || 0, document.documentElement.scrollTop || 0);
+            const delta = currentY - lastY;
+            const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
+            if (currentY <= 36 || currentY >= maxY - 36 || Math.abs(delta) < 4) {
+                nav.classList.remove("opal-nav-hidden");
+            } else if (delta > 0) {
+                nav.classList.add("opal-nav-hidden");
+            } else {
+                nav.classList.remove("opal-nav-hidden");
+            }
+            lastY = currentY;
+        }
+
+        function schedule() {
+            if (ticking) return;
+            ticking = true;
+            if (reduced) syncNav();
+            else window.requestAnimationFrame(syncNav);
+        }
+
+        window.addEventListener("scroll", schedule, {passive: true});
+        window.addEventListener("pageshow", function () {
+            lastY = Math.max(window.scrollY || 0, document.documentElement.scrollTop || 0);
+            nav.classList.remove("opal-nav-hidden");
+        });
+        nav.classList.remove("opal-nav-hidden");
+    });
+})();

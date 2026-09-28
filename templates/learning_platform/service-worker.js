@@ -1,7 +1,7 @@
-const CACHE_NAME = 'opal-learning-r125-css-authority-v1';
+const CACHE_NAME = 'opal-learning-r137-css-authority-v1';
 const PUBLIC_SHELL = [
   '/learning/',
-  '/static/css/opal_theme_system.css?v=opal-131.7-r125-css-sovereignty-clean',
+  '/static/css/opal_theme_system.css?v=opal-131.7-r137-glass-luxury',
   '/static/learning_platform/js/platform.js',
   '/static/learning_platform/icons/opal-learning-icon.svg',
   '/static/learning_platform/icons/icon-192.png',

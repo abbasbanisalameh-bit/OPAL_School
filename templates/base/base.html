@@ -10,7 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <!-- OPAL CSS AUTHORITY: the only active shared OPAL stylesheet -->
-    <link href="{% static 'css/opal_theme_system.css' %}?v=opal-131.7-r131-responsive-mobile-ui" rel="stylesheet">
+    <link href="{% static 'css/opal_theme_system.css' %}?v=opal-131.7-r139-glass-luxury" rel="stylesheet">
     <!-- OPAL R78: one global CSS authority -->
 
 </head>
@@ -42,18 +42,20 @@
 
         {% include "includes/topbar.html" %}
 
-        <div class="opal-page-navigation">
-            <button type="button" class="btn btn-outline-warning opal-dynamic-back" data-fallback-url="{% url 'dashboard:home' %}" title="العودة"><i class="bi bi-arrow-right-circle-fill"></i> العودة</button>
-            <div class="opal-page-academic-year" aria-label="العام الدراسي المعتمد">
-                العام الدراسي {{ opal_academic_year.name|default:"الحالي" }}
+        <div class="opal-page-meta-source" id="opal-page-meta-source">
+            <div class="opal-page-context" aria-label="العودة">
+                <button type="button" class="opal-dynamic-back" data-fallback-url="{% url 'dashboard:home' %}" title="العودة" aria-label="العودة">
+                    <i class="bi bi-arrow-right-circle-fill" aria-hidden="true"></i>
+                    <span>العودة</span>
+                </button>
             </div>
-        </div>
-        <div class="page-heading">
+            <div class="page-heading">
             <h1>{% block page_title %}لوحة التحكم{% endblock %}</h1>
             <p>{% block page_subtitle %}{% endblock %}</p>
             {% if opal_current_operation %}
             <div class="opal-current-operation"><i class="bi bi-{{ opal_current_operation.icon }}"></i><span>{{ opal_current_gateway.label|default:opal_current_operation.module_label }}</span><i class="bi bi-chevron-left"></i><strong>{{ opal_current_operation.label }}</strong></div>
             {% endif %}
+            </div>
         </div>
 
             {% if opal_module_subnav %}
@@ -100,20 +102,65 @@
 
 <script>
 (function(){
+  function mountPageMeta(){
+    const slot=document.getElementById("opal-header-page-meta");
+    const source=document.getElementById("opal-page-meta-source");
+    if(!slot || !source){return;}
+    slot.appendChild(source);
+    source.classList.add("is-mounted");
+    const backLabel=source.querySelector(".opal-dynamic-back span");
+    if(backLabel){backLabel.remove();}
+  }
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded",mountPageMeta,{once:true});
+  }else{
+    mountPageMeta();
+  }
+})();
+(function(){
+  const nav=document.querySelector(".opal-bottom-nav");
+  let lastY=window.scrollY || 0;
+  let ticking=false;
+  function syncBottomNav(){
+    if(!nav){return;}
+    const y=window.scrollY || 0;
+    const delta=y-lastY;
+    if(y < 32 || delta < -8){
+      nav.classList.remove("is-hidden");
+    }else if(delta > 8){
+      nav.classList.add("is-hidden");
+    }
+    lastY=y;
+    ticking=false;
+  }
+  window.addEventListener("scroll",function(){
+    if(ticking){return;}
+    ticking=true;
+    window.requestAnimationFrame(syncBottomNav);
+  },{passive:true});
+  window.addEventListener("pointermove",function(event){
+    if(nav && window.innerHeight-event.clientY < 96){nav.classList.remove("is-hidden");}
+  },{passive:true});
+  const settingsLink=nav && nav.querySelector('[data-opal-bottom-link="settings"]');
+  if(settingsLink && window.location.pathname.indexOf("/settings") !== -1){
+    settingsLink.classList.add("is-current");
+  }
+})();
+(function(){
   const menuBtn=document.getElementById("opal-bottom-menu");
   if(menuBtn){menuBtn.addEventListener("click",function(){const modalEl=document.getElementById("opal-quick-access-modal");if(modalEl && window.bootstrap){bootstrap.Modal.getOrCreateInstance(modalEl).show();}});}
   const searchBtn=document.getElementById("opal-bottom-search");
   if(searchBtn){searchBtn.addEventListener("click",function(){
     const input=document.getElementById("opal-global-operation-search");
-    if(!input)return;
-    const wrap=input.closest(".opal-global-search-wrap");
-    if(wrap){wrap.scrollIntoView({behavior:"smooth",block:"nearest"});}
-    window.setTimeout(function(){input.focus();},120);
+    if(!input){return;}
+    input.focus();
+    input.select();
+    input.scrollIntoView({behavior:"smooth",block:"nearest"});
   });}
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{% static 'js/opal_erp.js' %}?v=opal-131.7-r131-responsive-mobile-ui"></script>
+<script src="{% static 'js/opal_erp.js' %}?v=opal-131.7-r139-glass-luxury"></script>
 <script>(function(){const el=document.getElementById('opal-event-countdown');if(!el)return;let s=parseInt(el.dataset.seconds||'0',10);function draw(){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;el.textContent=(h?h+':':'')+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0');if(s>0)s--;else window.location.reload();}draw();setInterval(draw,1000);})();</script>
 {% include "enterprise_ops/_monthly_evaluation_prompt.html" %}
 {% block extra_js %}{% endblock %}

@@ -1,0 +1,14 @@
+OPAL Update 131.7 R139 — Changed Files
+
+- templates/includes/bottom_nav.html
+  إضافة رابط إعدادات النظام إلى الشريط السفلي.
+- templates/base/base.html
+  تثبيت آلية تركيب رأس الصفحة وإزالة نص زر العودة، وإضافة سلوك الإخفاء/الإظهار للشريط السفلي، وتحديث cache-busting إلى R139.
+- static/css/opal_theme_system.css
+  توسيع اللمسة الزجاجية المضيئة على الأسطح المشتركة، تحسين الشريط السفلي، إضافة إعدادات، ودعم الإخفاء/الإظهار.
+- OPAL_VERSION.txt
+  يبقى 131.7 حسب عقد المشروع.
+- OPAL_RELEASE_NAME.txt
+- OPAL_UPDATE_MANIFEST.json
+- OPAL_UPDATE_131_7_R139_RELEASE_NOTES_AR.md
+- INSTALL_OPAL_UPDATE_131_7_R139_AR.md

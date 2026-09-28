@@ -3,13 +3,13 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>كشف حساب ولي الأمر</title>
-
-
-<link rel="stylesheet" href="{% static 'css/opal_theme_system.css' %}?v=opal-131.7-r125-css-sovereignty-clean">
+  <link rel="stylesheet" href="{% static 'css/opal_theme_system.css' %}?v=opal-131.7-r140-glass-corrective">
 </head>
 <body class="opal-standalone-opal_school_templates_parent_portal_family_statement_print_html">
-  <button onclick="window.print()">طباعة</button>
+  <button type="button" onclick="window.print()"><i class="bi bi-printer"></i> طباعة كشف الحساب</button>
+
   <header>
     <div>
       <h1>كشف حساب ولي الأمر</h1>
@@ -18,6 +18,7 @@
     </div>
     <div>تاريخ الطباعة: {% now "Y-m-d H:i" %}</div>
   </header>
+
   <div class="stats">
     <div class="box">الأبناء<br><b>{{ totals.students_count }}</b></div>
     <div class="box">رسوم {{ totals.current_year.name|default:"السنة الحالية" }}<br><b>{{ totals.total|floatformat:2 }}</b></div>
@@ -26,20 +27,27 @@
     <div class="box">متبقيات السنوات السابقة<br><b>{{ totals.previous_debt|floatformat:2 }}</b></div>
     <div class="box">الإجمالي المطلوب<br><b>{{ totals.combined_remaining|floatformat:2 }}</b></div>
   </div>
+
   <h2>ملخص الأبناء</h2>
   <table>
-    <tr><th>الطالب</th><th>الصف</th><th>رسوم السنة الحالية</th><th>مدفوع السنة الحالية</th><th>متبقي السنة الحالية</th><th>متبقيات السنوات السابقة</th><th>الإجمالي المطلوب</th><th>الحالة الحالية</th></tr>
+    <thead><tr><th>الطالب</th><th>الصف</th><th>رسوم السنة الحالية</th><th>مدفوع السنة الحالية</th><th>متبقي السنة الحالية</th><th>متبقيات السنوات السابقة</th><th>الإجمالي المطلوب</th><th>الحالة الحالية</th></tr></thead>
+    <tbody>
     {% for card in cards %}
     <tr><td>{{ card.student.full_name }}</td><td>{{ card.student.class_display }}</td><td>{{ card.total|floatformat:2 }}</td><td>{{ card.paid|floatformat:2 }}</td><td>{{ card.remaining|floatformat:2 }}</td><td>{{ card.previous_debt.total|floatformat:2 }}</td><td>{{ card.combined_remaining|floatformat:2 }}</td><td>{{ card.status_label }}</td></tr>
-    {% endfor %}
+    {% empty %}<tr><td colspan="8">لا يوجد أبناء مرتبطون بهذا الحساب.</td></tr>{% endfor %}
+    </tbody>
   </table>
+
   <h2>الإيصالات</h2>
   <table>
-    <tr><th>الإيصال</th><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>المتبقي بعد العملية</th></tr>
+    <thead><tr><th>الإيصال</th><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>المتبقي بعد العملية</th></tr></thead>
+    <tbody>
     {% for p in payments %}
     <tr><td>{{ p.receipt_number }}</td><td>{{ p.created_at|date:"Y-m-d H:i" }}</td><td>{{ p.payment_period_label }} — {{ p.get_scope_display }}</td><td>{{ p.total_amount|floatformat:2 }}</td><td>{{ p.total_due_after|floatformat:2 }}</td></tr>
-    {% empty %}<tr><td colspan="5">لا توجد إيصالات</td></tr>{% endfor %}
+    {% empty %}<tr><td colspan="5">لا توجد إيصالات مسجلة.</td></tr>{% endfor %}
+    </tbody>
   </table>
+
   <div class="signatures"><div>توقيع ولي الأمر: __________________</div><div>توقيع المحاسب: __________________</div><div>ختم المدرسة: __________________</div></div>
 </body>
 </html>
