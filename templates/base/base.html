@@ -45,10 +45,8 @@
         <div class="opal-page-navigation">
             <button type="button" class="btn btn-outline-warning opal-dynamic-back" data-fallback-url="{% url 'dashboard:home' %}" title="العودة"><i class="bi bi-arrow-right-circle-fill"></i> العودة</button>
             <div class="opal-page-academic-year" aria-label="العام الدراسي المعتمد">
-                <i class="bi bi-calendar2-week-fill" aria-hidden="true"></i>
-                <span>{% if opal_academic_year %}{{ opal_academic_year.name }}{% else %}العام الدراسي الحالي{% endif %}</span>
+                العام الدراسي {{ opal_academic_year.name|default:"الحالي" }}
             </div>
-            <nav class="opal-breadcrumbs" aria-label="مسار الصفحة"><a href="{% url 'dashboard:home' %}"><i class="bi bi-house-door-fill"></i> الرئيسية</a>{% if opal_current_operation %}{% if opal_current_gateway and opal_current_gateway.label != opal_current_operation.label %}<i class="bi bi-chevron-left"></i><span>{{ opal_current_gateway.label|default:opal_current_operation.module_label }}</span>{% endif %}<i class="bi bi-chevron-left"></i><strong>{% block breadcrumb_current_label %}{{ opal_current_operation.label }}{% endblock %}</strong>{% elif request.resolver_match %}<i class="bi bi-chevron-left"></i><strong>{% block breadcrumb_label %}الصفحة الحالية{% endblock %}</strong>{% endif %}</nav>
         </div>
         <div class="page-heading">
             <h1>{% block page_title %}لوحة التحكم{% endblock %}</h1>

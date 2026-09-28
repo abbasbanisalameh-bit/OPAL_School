@@ -20,6 +20,9 @@
     </a>
     <div class="opal-dashboard-hero-overlay">
       <div class="opal-dashboard-hero-brand" aria-label="اسم المدرسة">
+        {% if opal_school and opal_school.logo %}
+        <img src="{{ opal_school.logo.url }}" alt="شعار {{ opal_school.name|default:'مدرسة أوبال الدولية' }}" class="opal-school-identity-logo">
+        {% endif %}
         <strong>{{ opal_school.name|default:"مدرسة أوبال الدولية" }}</strong>
         <small>Opal International School</small>
       </div>

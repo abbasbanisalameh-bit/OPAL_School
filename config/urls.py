@@ -51,5 +51,10 @@ if settings.OPAL_ENABLE_OPENEMIS:
 if settings.OPAL_ENABLE_DEVELOPMENT_CENTER:
     urlpatterns.append(path('development/', include('development_center.urls')))
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# OPAL production media delivery
+#
+# The live deployment does not rely on a separate web-server mapping for
+# MEDIA_ROOT. Keep the same /media/ contract available in production so
+# uploaded school, student, teacher, and driver images can be rendered by
+# authenticated OPAL pages. Static files remain managed separately.
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

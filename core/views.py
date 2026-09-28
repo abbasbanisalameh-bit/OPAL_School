@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 from .models import Branch, School
 from .forms import BranchForm, SchoolSettingsForm
 from enterprise_ops.permissions import is_management, management_required
+from .request_scope import request_school
 
 def can_manage_system(user):
     return is_management(user)
@@ -24,7 +25,7 @@ def system_settings(request):
     from admissions.models import TransportRoute
     from admissions.services import current_academic_year, get_registration_settings
 
-    school = School.objects.filter(is_active=True).first() or School.objects.create(name="مدرسة أوبال")
+    school = request_school(request) or School.objects.create(name="مدرسة أوبال")
     registration_settings = get_registration_settings(school)
     current_year = current_academic_year(school)
     from academics.models import Grade, Section, Subject

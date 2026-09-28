@@ -13686,3 +13686,48 @@ html[data-opal-theme] body.opal-standalone-opal_school_templates_admissions_fee_
   .opal-bottom-nav { display: none !important; }
   body, .opal-main { padding-bottom: 0 !important; }
 }
+
+
+/* ===== OPAL Update 131.7 R132 - School Identity, Media & Navigation Repair ===== */
+.opal-page-academic-year {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-weight: 800;
+}
+
+.opal-school-identity-logo,
+.opal-entity-photo {
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 2px solid color-mix(in srgb, var(--opal-primary) 35%, var(--opal-border));
+  background: var(--opal-surface);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--opal-primary-strong) 16%, transparent);
+}
+
+.opal-dashboard-hero-brand {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.opal-entity-photo-wrap {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 767.98px) {
+  .opal-school-identity-logo,
+  .opal-entity-photo {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+  }
+}
