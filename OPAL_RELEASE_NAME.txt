@@ -1,1 +1,1 @@
-OPAL Update 131.7 R141 - Header Search Restore & Full Glass Table Alignment
+OPAL Update 131.7 R143 - System UI Consistency & CSS Guard

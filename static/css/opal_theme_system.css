@@ -2583,10 +2583,13 @@ a.dashboard-card:hover {
               -webkit-overflow-scrolling: touch;
   }
 
+  /* R143: ordinary tables stay contained by their parent.
+     Complex wide tables opt in to horizontal scrolling through
+     dedicated wrapper/class rules later in this stylesheet. */
   .opal-main table {
-    width: max-content !important;
-              min-width: 680px;
-              max-width: none;
+    width: 100% !important;
+              min-width: 100%;
+              max-width: 100%;
   }
 
   .opal-main .page-heading,
@@ -4688,7 +4691,7 @@ textarea:focus {
 
 @media (max-width: 767.98px) {
   .table {
-    min-width: 680px; font-size: .84rem;
+    min-width: 100%; font-size: .84rem;
   }
 
   .table > :not(caption) > * > * {
@@ -5482,7 +5485,10 @@ img,svg,video,canvas {
 }
 
 @media (max-width:991.98px) {
-  .table:not(.table-stack-mobile) {
+  /* R143: do not impose a global wide minimum on ordinary tables.
+     Wide layouts must opt in explicitly. */
+  .table.opal-mobile-scroll-table,
+  .table.opal-table-scroll {
     min-width:var(--opal-table-min)
   }
 
@@ -14565,132 +14571,198 @@ html[data-opal-theme="light"] .opal-main :where(.form-control,.form-select,texta
 }
 
 /* =====================================================================
-   OPAL Update 131.7 R140 — Unified Glass Light, Table Surface & Guardian Statement
-   Corrective layer only: removes the accidental top search field, eliminates
-   Bootstrap white table gutters, and gives the guardian statement a proper
-   report surface without changing business data or creating a parallel theme.
+   OPAL Update 131.7 R142 — Search Surface & Full-Width Glass Tables
+   Consolidated corrective rules; this remains inside the single CSS authority.
    ===================================================================== */
 
-/* One consistent luminous glass language for the shared application shell. */
-.opal-main :where(
-  .opal-card,.card,.panel,.stat-card,.dashboard-card,.dashboard-panel,
-  .opal-module-card,.opal-settings-section,.opal-form-section,.opal-table-card,
-  .opal-list-card,.opal-detail-card,.opal-crystal-card,.opal-dashboard-section,
-  .opal-dashboard-feature,.opal-dashboard-mini-panel,.opal-dashboard-more,
-  .opal-compact-metric-card,.opal-finance-kpis > div,.opal-check-card,
-  .opal-data-chip,.opal-mini-status-card,.opal-satisfaction-card
-) {
+/* The label is the single glass search surface; the input itself is transparent. */
+.opal-topbar-main {
+  grid-template-columns:minmax(0,1fr) minmax(260px,1.18fr) auto !important;
+  align-items:center;
+}
+.opal-global-search-wrap {
   position:relative;
-  overflow:hidden;
-  background:
-    linear-gradient(135deg,
-      color-mix(in srgb,var(--opal-glass-bg-strong) 82%,transparent),
-      color-mix(in srgb,var(--opal-glass-bg) 72%,transparent)) !important;
-  border:1px solid color-mix(in srgb,var(--opal-glass-border) 94%,transparent) !important;
-  box-shadow:
-    0 20px 48px rgba(0,8,24,.18),
-    inset 0 1px var(--opal-glass-highlight),
-    inset 0 -1px rgba(0,0,0,.06) !important;
-  backdrop-filter:blur(24px) saturate(145%);
-  -webkit-backdrop-filter:blur(24px) saturate(145%);
+  width:100%;
+  max-width:620px !important;
+  min-width:0;
+  justify-self:center;
+  z-index:2;
+}
+.opal-topbar-academic-year {
+  margin:0 0 .18rem !important;
+  padding:0 .2rem;
+  color:var(--opal-glass-text) !important;
+  font-size:.68rem;
+  font-weight:900;
+  line-height:1.25;
+  text-align:right;
+  white-space:nowrap;
+}
+.opal-global-search-box {
+  display:flex;
+  align-items:center;
+  width:100%;
+  min-height:42px;
+  height:42px !important;
+  padding:0 12px;
+  gap:8px;
+  border:1px solid var(--opal-glass-border) !important;
+  border-radius:13px !important;
+  background:color-mix(in srgb,var(--opal-glass-bg-strong) 72%,transparent) !important;
+  box-shadow:inset 0 1px var(--opal-glass-highlight),0 8px 24px rgba(0,8,24,.10) !important;
+  backdrop-filter:blur(18px) saturate(135%);
+  -webkit-backdrop-filter:blur(18px) saturate(135%);
+}
+.opal-global-search-box:focus-within {
+  border-color:color-mix(in srgb,var(--opal-glass-accent) 72%,var(--opal-glass-border)) !important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--opal-glass-accent) 12%,transparent),inset 0 1px var(--opal-glass-highlight) !important;
+}
+.opal-global-search-box > i {
+  position:relative !important;
+  inset:auto !important;
+  flex:0 0 auto;
+  color:var(--opal-glass-accent) !important;
+  z-index:3;
+}
+.opal-global-search-box .search-box {
+  flex:1 1 auto;
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  padding:0 2px !important;
+  border:0 !important;
+  outline:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  color:var(--opal-glass-text) !important;
+  box-shadow:none !important;
+  appearance:none;
+}
+.opal-global-search-box .search-box::placeholder {
+  color:var(--opal-glass-muted) !important;
+  opacity:1;
+}
+.opal-global-search-box .search-box:focus {
+  outline:0 !important;
+  box-shadow:none !important;
+}
+.opal-global-search-box kbd {
+  position:static !important;
+  flex:0 0 auto;
+  border:1px solid color-mix(in srgb,var(--opal-glass-border) 70%,transparent) !important;
+  background:color-mix(in srgb,var(--opal-glass-bg) 72%,transparent) !important;
+  color:var(--opal-glass-muted) !important;
+  border-radius:7px;
+  padding:3px 7px;
+  font-size:10px;
+  direction:ltr;
 }
 
-.opal-main :where(
-  .opal-card,.card,.panel,.stat-card,.dashboard-card,.dashboard-panel,
-  .opal-module-card,.opal-settings-section,.opal-form-section,.opal-table-card,
-  .opal-list-card,.opal-detail-card,.opal-crystal-card,.opal-dashboard-section,
-  .opal-dashboard-feature,.opal-dashboard-mini-panel,.opal-dashboard-more
-)::before {
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  border-radius:inherit;
-  background:
-    linear-gradient(118deg,rgba(255,255,255,.105),transparent 28%,transparent 70%,rgba(255,255,255,.025));
-  opacity:.9;
-}
-
-.opal-main :where(
-  .opal-card,.card,.panel,.stat-card,.dashboard-card,.dashboard-panel,
-  .opal-module-card,.opal-settings-section,.opal-form-section,.opal-table-card,
-  .opal-list-card,.opal-detail-card,.opal-crystal-card,.opal-dashboard-section,
-  .opal-dashboard-feature,.opal-dashboard-mini-panel,.opal-dashboard-more
-) > * { position:relative; z-index:1; }
-
-/* Never let Bootstrap's legacy white table wrapper leak through the glass UI. */
+/* Continuous table surface: rows touch the table edges with no cell-spacing gaps. */
 .opal-main :where(.table-responsive,.opal-table-wrap,.table-wrap) {
-  background:color-mix(in srgb,var(--opal-glass-bg-strong) 74%,transparent) !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  padding:0 !important;
+  overflow-x:auto !important;
+  overflow-y:hidden;
   border:1px solid color-mix(in srgb,var(--opal-glass-border) 88%,transparent) !important;
   border-radius:16px !important;
+  background:color-mix(in srgb,var(--opal-glass-bg-strong) 74%,transparent) !important;
   box-shadow:inset 0 1px var(--opal-glass-highlight),0 12px 28px rgba(0,8,24,.10) !important;
   backdrop-filter:blur(16px) saturate(130%);
   -webkit-backdrop-filter:blur(16px) saturate(130%);
 }
-
 .opal-main :where(.table,.opal-table) {
+  width:100% !important;
+  min-width:100%;
+  margin:0 !important;
+  border-collapse:separate !important;
+  border-spacing:0 !important;
+  background:transparent !important;
   --bs-table-bg:transparent !important;
   --bs-table-color:var(--opal-glass-text) !important;
   --bs-table-border-color:var(--opal-glass-border) !important;
-  background:transparent !important;
 }
-
-.opal-main :where(.table > :not(caption) > * > *, .opal-table > :not(caption) > * > *) {
-  background-color:color-mix(in srgb,var(--opal-glass-bg) 76%,transparent) !important;
-}
-
 .opal-main :where(.table thead th,.opal-table thead th) {
   background:linear-gradient(135deg,
     color-mix(in srgb,var(--opal-glass-accent) 13%,var(--opal-glass-bg-strong)),
     color-mix(in srgb,var(--opal-glass-bg-strong) 92%,transparent)) !important;
   color:var(--opal-glass-text) !important;
-  border-color:var(--opal-glass-border) !important;
+  border-top:0 !important;
+  border-bottom:1px solid var(--opal-glass-border) !important;
+  padding:.78rem .72rem !important;
   box-shadow:inset 0 1px var(--opal-glass-highlight);
+  white-space:nowrap;
 }
-
-.opal-main :where(.table tbody tr:hover > *, .opal-table tbody tr:hover > *) {
+.opal-main :where(.table tbody td,.table tbody th,.opal-table tbody td,.opal-table tbody th) {
+  background:color-mix(in srgb,var(--opal-glass-bg) 76%,transparent) !important;
+  color:var(--opal-glass-text) !important;
+  border-top:0 !important;
+  border-bottom:1px solid color-mix(in srgb,var(--opal-glass-border) 55%,transparent) !important;
+  padding:.76rem .72rem !important;
+  vertical-align:middle;
+}
+.opal-main :where(.table tbody tr:last-child > *,.opal-table tbody tr:last-child > *) {
+  border-bottom:0 !important;
+}
+.opal-main :where(.table tbody tr:hover > *,.opal-table tbody tr:hover > *) {
   background:color-mix(in srgb,var(--opal-glass-accent) 8%,var(--opal-glass-bg-strong)) !important;
 }
+.opal-main :where(.table thead tr:first-child > *:first-child,.opal-table thead tr:first-child > *:first-child) { border-start-start-radius:13px; }
+.opal-main :where(.table thead tr:first-child > *:last-child,.opal-table thead tr:first-child > *:last-child) { border-start-end-radius:13px; }
+.opal-main :where(.table tbody tr:last-child > *:first-child,.opal-table tbody tr:last-child > *:first-child) { border-end-start-radius:13px; }
+.opal-main :where(.table tbody tr:last-child > *:last-child,.opal-table tbody tr:last-child > *:last-child) { border-end-end-radius:13px; }
 
-/* The top bar keeps only page context + academic year + actions. Search lives in the bottom action. */
-.opal-topbar-main {
-  grid-template-columns:minmax(0,1fr) auto minmax(0,auto) !important;
+@media (max-width:767.98px) {
+  .opal-topbar-main {
+    grid-template-columns:minmax(0,1fr) auto !important;
+    grid-template-areas:"meta actions" "year year" "search search" !important;
+    gap:5px 8px !important;
+    padding:7px 9px !important;
+  }
+  .opal-header-page-meta { grid-area:meta; }
+  .opal-topbar-actions { grid-area:actions; }
+  .opal-topbar-academic-year {
+    grid-area:year;
+    width:100%;
+    padding:.12rem .2rem 0;
+    border:0 !important;
+    border-top:1px solid color-mix(in srgb,var(--opal-glass-border) 55%,transparent) !important;
+    text-align:right;
+  }
+  .opal-global-search-wrap {
+    grid-area:search;
+    width:100%;
+    max-width:none !important;
+    justify-self:stretch;
+    margin-top:1px;
+  }
+  .opal-global-search-box {
+    min-height:38px;
+    height:38px !important;
+    border-radius:11px !important;
+    padding-inline:10px;
+  }
+  .opal-global-search-box .search-box { height:100% !important; font-size:.76rem !important; }
+  .opal-global-search-box kbd { display:none !important; }
+
+  .opal-main :where(.table-responsive > table,.opal-table-wrap > table,.table-wrap > table) {
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+  }
+  .opal-main :where(.opal-mobile-scroll-table > table,.opal-timetable-matrix-wrap > table,.opal-table-scroll > table) {
+    width:max-content !important;
+    min-width:680px !important;
+    max-width:none !important;
+  }
+  .opal-main :where(.table,.opal-table) { font-size:.76rem; }
+  .opal-main :where(.table thead th,.opal-table thead th) { padding:.66rem .52rem !important; font-size:.72rem; }
+  .opal-main :where(.table tbody td,.table tbody th,.opal-table tbody td,.opal-table tbody th) { padding:.64rem .52rem !important; }
 }
 
-.opal-topbar-academic-year {
-  align-self:center;
-  margin:0 !important;
-  padding:.35rem .7rem;
-  color:var(--opal-glass-text) !important;
-  font-size:.70rem;
-  font-weight:900;
-  white-space:nowrap;
-  border-inline-start:1px solid color-mix(in srgb,var(--opal-glass-border) 75%,transparent);
-}
-
-.opal-topbar-actions {
-  min-width:0;
-}
-
-.opal-operation-search-modal .modal-dialog { max-width:min(720px,calc(100% - 22px)); }
-.opal-operation-search-modal .modal-content {
-  border:1px solid var(--opal-glass-border) !important;
-  background:color-mix(in srgb,var(--opal-glass-bg-strong) 92%,transparent) !important;
-  box-shadow:0 28px 80px rgba(0,6,20,.34),inset 0 1px var(--opal-glass-highlight) !important;
-  backdrop-filter:blur(28px) saturate(150%);
-  -webkit-backdrop-filter:blur(28px) saturate(150%);
-}
-.opal-operation-search-modal .modal-header,
-.opal-operation-search-modal .modal-body { border-color:var(--opal-glass-border) !important; }
-.opal-operation-search-modal-box {
-  display:flex !important;
-  width:100% !important;
-  max-width:none !important;
-  min-height:52px;
-  background:color-mix(in srgb,var(--opal-glass-bg) 82%,transparent) !important;
-  border:1px solid var(--opal-glass-border) !important;
-}
-.opal-operation-search-modal-box .search-box { width:100%; }
+.opal-global-operation-results { z-index:1100 !important; }
 
 /* Guardian statement: clean report, readable on screen and on paper; no black background. */
 body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html {
@@ -14854,3 +14926,4 @@ body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_
   body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > header { break-inside:avoid; }
   body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_html > table { break-inside:auto; }
 }
+
