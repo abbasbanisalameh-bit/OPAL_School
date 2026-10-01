@@ -16125,3 +16125,752 @@ html,
    OPAL Update 131.4: live grade/section event matrix */
 
 
+
+/* ===== OPAL Update 131.7 R143 — targeted UI contracts =====
+   This remains inside the single OPAL CSS authority. No secondary stylesheet is introduced. */
+
+/* Readability: secondary text must remain legible in every OPAL theme. */
+html[data-opal-theme] .opal-main :where(.text-secondary,.text-muted,.form-text,.small.text-secondary) {
+  color: var(--opal-text-soft) !important;
+  opacity: 1 !important;
+}
+html[data-opal-theme] .opal-main :where(.text-secondary strong,.text-muted strong,.form-text strong) {
+  color: var(--opal-text) !important;
+}
+
+/* Search: one visible shell; the native input contributes no second surface. */
+html[data-opal-theme] .opal-global-search-box {
+  isolation: isolate !important;
+  overflow: hidden !important;
+}
+html[data-opal-theme] .opal-global-search-box .search-box,
+html[data-opal-theme] .opal-global-search-box .search-box:focus,
+html[data-opal-theme] .opal-global-search-box .search-box:active {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  color: var(--opal-text) !important;
+}
+html[data-opal-theme] .opal-global-search-box .search-box::-webkit-search-cancel-button,
+html[data-opal-theme] .opal-global-search-box .search-box::-webkit-search-decoration {
+  display: none !important;
+}
+
+/* Theme switch: the icon is always visible, including the green theme. */
+html[data-opal-theme] .opal-topbar-actions .opal-theme-toggle {
+  display: inline-grid !important;
+  place-items: center !important;
+  color: var(--opal-primary) !important;
+  background: color-mix(in srgb,var(--opal-primary) 12%,var(--opal-surface-soft)) !important;
+  border: 1px solid color-mix(in srgb,var(--opal-primary) 34%,var(--opal-border)) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+html[data-opal-theme] .opal-topbar-actions .opal-theme-toggle i {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: var(--opal-primary) !important;
+  text-shadow: 0 0 10px color-mix(in srgb,var(--opal-primary) 45%,transparent);
+}
+
+/* Bottom navigation: keep the whole bar inside the viewport and make the active item glow. */
+@media (max-width: 991.98px) {
+  .opal-bottom-nav {
+    left: 7px !important;
+    right: 7px !important;
+    width: calc(100vw - 14px) !important;
+    max-width: calc(100vw - 14px) !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+}
+.opal-bottom-nav a.is-current,
+.opal-bottom-nav button.is-current {
+  position: relative !important;
+  color: var(--opal-glass-text) !important;
+  background: color-mix(in srgb,var(--opal-primary) 18%,var(--opal-glass-bg-strong)) !important;
+  border-color: color-mix(in srgb,var(--opal-primary) 52%,var(--opal-glass-border)) !important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb,var(--opal-primary) 28%,transparent),
+    0 0 18px color-mix(in srgb,var(--opal-primary) 30%,transparent) !important;
+}
+.opal-bottom-nav a.is-current::after,
+.opal-bottom-nav button.is-current::after {
+  content: "";
+  position: absolute;
+  inset: 4px 12px;
+  border-radius: 13px;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 18%, color-mix(in srgb,var(--opal-primary) 40%,transparent), transparent 62%);
+  filter: blur(6px);
+  opacity: .9;
+}
+.opal-bottom-nav a.is-current i,
+.opal-bottom-nav button.is-current i {
+  position: relative;
+  z-index: 1;
+  color: var(--opal-primary) !important;
+  filter: drop-shadow(0 0 8px color-mix(in srgb,var(--opal-primary) 65%,transparent));
+}
+.opal-bottom-nav a.is-current span,
+.opal-bottom-nav button.is-current span {
+  position: relative;
+  z-index: 1;
+  color: var(--opal-text) !important;
+}
+
+/* OPAL R145 — Global table overflow authority.
+   Important: the table itself is NOT forced to fit the viewport.
+   The wrapper owns the horizontal scroll; the table may grow to its
+   natural/content width. This removes the previous width/min-width
+   restriction that compressed columns and wrapped Arabic text. */
+.opal-main :where(
+  .table-responsive,
+  .opal-table-wrap,
+  .table-wrap,
+  .opal-table-scroll,
+  .opal-mobile-scroll-table,
+  .learning-data-table-wrap,
+  .learning-manager-table-wrap,
+  .opal-timetable-matrix-wrap
+) {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-x: contain !important;
+  touch-action: pan-x pan-y !important;
+}
+
+.opal-main :where(
+  .table-responsive,
+  .opal-table-wrap,
+  .table-wrap,
+  .opal-table-scroll,
+  .opal-mobile-scroll-table,
+  .learning-data-table-wrap,
+  .learning-manager-table-wrap,
+  .opal-timetable-matrix-wrap
+) > table:not(.opal-mobile-card-table) {
+  /* Do NOT use width:100% or max-width:100% here. */
+  width: max-content !important;
+  min-width: max-content !important;
+  max-width: none !important;
+  table-layout: auto !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  margin: 0 !important;
+}
+
+.opal-main :where(
+  .table-responsive,
+  .opal-table-wrap,
+  .table-wrap,
+  .opal-table-scroll,
+  .opal-mobile-scroll-table,
+  .learning-data-table-wrap,
+  .learning-manager-table-wrap,
+  .opal-timetable-matrix-wrap
+) > table:not(.opal-mobile-card-table) > :where(thead,tbody,tfoot) > tr > :where(th,td) {
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
+  min-width: max-content !important;
+  border-inline: 0 !important;
+  border-block: 0 !important;
+  border-bottom: 1px solid color-mix(in srgb,var(--opal-table-border) 92%,transparent) !important;
+  color: var(--opal-text) !important;
+}
+
+/* Unified results-table visual language. */
+.opal-main :where(
+  .table-responsive,
+  .opal-table-wrap,
+  .table-wrap,
+  .opal-table-scroll,
+  .opal-mobile-scroll-table,
+  .learning-data-table-wrap,
+  .learning-manager-table-wrap,
+  .opal-timetable-matrix-wrap
+) > table:not(.opal-mobile-card-table) > thead > tr > th {
+  background: var(--opal-table-head) !important;
+  color: var(--opal-glass-text) !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+}
+
+.opal-main :where(
+  .table-responsive,
+  .opal-table-wrap,
+  .table-wrap,
+  .opal-table-scroll,
+  .opal-mobile-scroll-table,
+  .learning-data-table-wrap,
+  .learning-manager-table-wrap,
+  .opal-timetable-matrix-wrap
+) > table:not(.opal-mobile-card-table) > tbody > tr > td {
+  background: var(--opal-table-row, color-mix(in srgb,var(--opal-surface) 92%,var(--opal-primary) 8%)) !important;
+}
+
+.opal-main :where(
+  .table-responsive,
+  .opal-table-wrap,
+  .table-wrap,
+  .opal-table-scroll,
+  .opal-mobile-scroll-table,
+  .learning-data-table-wrap,
+  .learning-manager-table-wrap,
+  .opal-timetable-matrix-wrap
+) > table:not(.opal-mobile-card-table) > tbody > tr:nth-child(even) > td {
+  background: var(--opal-table-row-alt, color-mix(in srgb,var(--opal-surface-soft) 88%,var(--opal-primary) 12%)) !important;
+}
+
+/* Weekly timetable: each lesson is an independent colored item; empty cells stay compact. */
+.opal-timetable-grid tbody td {
+  height: auto !important;
+  min-height: 0 !important;
+  vertical-align: top !important;
+}
+.opal-timetable-grid .opal-timetable-entry {
+  min-height: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.opal-timetable-grid .opal-timetable-entry + .opal-timetable-entry {
+  margin-top: 6px !important;
+}
+.opal-timetable-grid .opal-timetable-empty {
+  min-height: 34px !important;
+}
+.opal-timetable-grid [data-opal-subject-color] {
+  --opal-subject-color: #64748b;
+}
+.opal-timetable-grid .opal-timetable-entry[data-opal-subject-color] {
+  border-inline-start-color: var(--opal-subject-color) !important;
+  background-image: linear-gradient(145deg,color-mix(in srgb,var(--opal-subject-color) 18%,transparent),transparent 72%) !important;
+}
+
+/* Live events: one complete horizontal table inside its own scrolling container. */
+.opal-live-events-matrix-wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  border: 1px solid color-mix(in srgb,var(--opal-glass-border) 72%,transparent);
+  border-radius: var(--opal-table-radius);
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+}
+.opal-live-events-matrix {
+  width: max-content !important;
+  min-width: 100% !important;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  table-layout: auto !important;
+}
+.opal-live-events-matrix th,
+.opal-live-events-matrix td {
+  min-width: 180px;
+  padding: 11px 12px !important;
+  color: var(--opal-text) !important;
+  background: color-mix(in srgb,var(--opal-surface) 88%,transparent) !important;
+  border: 1px solid color-mix(in srgb,var(--opal-glass-border) 70%,transparent) !important;
+  vertical-align: middle !important;
+}
+.opal-live-events-matrix .opal-live-axis-cell {
+  min-width: 120px !important;
+  width: 120px !important;
+  background: color-mix(in srgb,var(--opal-primary) 12%,var(--opal-surface-strong)) !important;
+  color: var(--opal-text) !important;
+  font-weight: 900 !important;
+  position: sticky !important;
+  inset-inline-start: 0 !important;
+  z-index: 5 !important;
+}
+.opal-live-event-chip,
+.opal-live-section-chip {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  max-width: 100%;
+  margin: 2px 4px 2px 0;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb,var(--opal-primary) 35%,var(--opal-border));
+  background: color-mix(in srgb,var(--opal-primary) 12%,var(--opal-surface));
+  color: var(--opal-text) !important;
+  font-size: .78rem;
+  font-weight: 800;
+}
+.opal-live-section-chip {
+  background: color-mix(in srgb,var(--opal-accent) 10%,var(--opal-surface));
+}
+
+/* Update Center: equal-width action cards and one visual workspace. */
+.opal-update-current-grid,
+.opal-update-workspace-head,
+.opal-update-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.opal-update-current-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+.opal-update-current-icon,
+.opal-update-action-title > i {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: var(--opal-primary);
+  background: color-mix(in srgb,var(--opal-primary) 12%,var(--opal-surface));
+  border: 1px solid color-mix(in srgb,var(--opal-primary) 28%,var(--opal-border));
+  box-shadow: 0 0 18px color-mix(in srgb,var(--opal-primary) 14%,transparent);
+}
+.opal-update-current-main h2 {
+  overflow-wrap: anywhere;
+}
+.opal-update-current-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+  min-width: 190px;
+}
+.opal-update-meta-grid,
+.opal-update-server-status-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 6px 16px;
+  color: var(--opal-text-soft);
+  font-size: .82rem;
+}
+.opal-update-meta-grid code,
+.opal-update-server-status-grid strong {
+  color: var(--opal-text) !important;
+}
+.opal-update-operation-messages {
+  margin-top: 18px;
+}
+.opal-update-workspace {
+  padding: 22px !important;
+}
+.opal-update-workspace-head {
+  align-items: flex-start;
+  padding-bottom: 18px;
+  border-bottom: 1px solid color-mix(in srgb,var(--opal-border) 60%,transparent);
+}
+.opal-update-source-switch {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 8px;
+  width: min(100%, 620px);
+}
+.opal-update-source-switch > form {
+  min-width: 0;
+}
+.opal-update-source-btn {
+  width: 100%;
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--opal-border);
+  border-radius: 13px;
+  background: var(--opal-surface-soft);
+  color: var(--opal-text);
+  font: inherit;
+  font-weight: 850;
+  cursor: pointer;
+  transition: .18s ease;
+}
+.opal-update-source-btn:hover,
+.opal-update-source-btn.is-active {
+  color: var(--opal-text) !important;
+  border-color: color-mix(in srgb,var(--opal-primary) 55%,var(--opal-border));
+  background: color-mix(in srgb,var(--opal-primary) 16%,var(--opal-surface));
+  box-shadow: 0 0 18px color-mix(in srgb,var(--opal-primary) 16%,transparent);
+}
+.opal-update-console-btn {
+  background: color-mix(in srgb,var(--opal-accent) 10%,var(--opal-surface-soft));
+}
+.opal-update-pane {
+  padding-top: 20px;
+}
+.opal-update-server-status {
+  display: grid;
+  grid-template-columns: minmax(180px,.7fr) minmax(0,1.3fr);
+  gap: 18px;
+  padding: 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb,var(--opal-surface-soft) 72%,transparent);
+  border: 1px solid color-mix(in srgb,var(--opal-border) 80%,transparent);
+}
+.opal-update-server-status > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.opal-update-action-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 16px;
+  margin-top: 16px;
+  align-items: stretch;
+}
+.opal-update-action-card {
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  border-radius: 17px;
+  background: var(--opal-surface);
+  border: 1px solid var(--opal-border);
+  box-shadow: var(--opal-shadow);
+}
+.opal-update-action-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.opal-update-action-title h4,
+.opal-update-section-head h4 {
+  margin: 0 0 4px;
+  color: var(--opal-text) !important;
+  font-weight: 900;
+}
+.opal-update-action-title p,
+.opal-update-section-head p {
+  margin: 0;
+  color: var(--opal-text-soft) !important;
+}
+.opal-update-action-card > form:last-child {
+  margin-top: auto;
+}
+.opal-update-saved-card {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 17px;
+  background: var(--opal-surface);
+  border: 1px solid var(--opal-border);
+}
+.opal-update-section-head {
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.opal-update-github-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+/* Full-screen console on the phone and desktop. */
+body:has(.opal-console-fullscreen) .opal-topbar-shell,
+body:has(.opal-console-fullscreen) .opal-page-meta-source,
+body:has(.opal-console-fullscreen) .opal-bottom-nav,
+body:has(.opal-console-fullscreen) .opal-copyright-footer {
+  display: none !important;
+}
+body:has(.opal-console-fullscreen) .opal-main {
+  max-width: none !important;
+  width: 100% !important;
+  padding: 0 !important;
+}
+.opal-console-fullscreen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: var(--opal-bg);
+}
+.opal-console-fullscreen-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--opal-surface);
+  border: 1px solid var(--opal-border);
+}
+.opal-console-fullscreen-head h2 {
+  margin: 0 0 3px;
+  color: var(--opal-text) !important;
+  font-size: 1.05rem;
+}
+.opal-console-fullscreen-head small {
+  color: var(--opal-text-soft) !important;
+}
+.opal-console-close {
+  width: 42px;
+  height: 42px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--opal-text) !important;
+  background: color-mix(in srgb,#ef4444 15%,var(--opal-surface));
+  border: 1px solid color-mix(in srgb,#ef4444 42%,var(--opal-border));
+  text-decoration: none;
+}
+.opal-console-warning {
+  margin-top: 10px;
+  padding: 9px 11px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border-radius: 12px;
+  background: color-mix(in srgb,#f59e0b 10%,var(--opal-surface));
+  border: 1px solid color-mix(in srgb,#f59e0b 30%,var(--opal-border));
+  color: var(--opal-text) !important;
+  font-size: .78rem;
+}
+.opal-console-output {
+  flex: 1 1 auto;
+  min-height: 48dvh;
+  margin: 10px 0;
+  padding: 14px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  font: 13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  direction: ltr;
+  text-align: left;
+  color: #e6edf3;
+  background: #050b12;
+  border: 1px solid #29445d;
+  border-radius: 14px;
+}
+.opal-console-command-bar {
+  padding: 10px;
+  border-radius: 14px;
+  background: var(--opal-surface);
+  border: 1px solid var(--opal-border);
+}
+.opal-console-command-row {
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  gap: 8px;
+  align-items: stretch;
+}
+.opal-console-prompt {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  border-radius: 10px;
+  background: #050b12;
+  color: #67e8f9;
+  font: 700 16px/1 ui-monospace,monospace;
+}
+.opal-console-command-row textarea {
+  min-height: 48px;
+  resize: vertical;
+  font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;
+  direction: ltr;
+  text-align: left;
+}
+
+@media (max-width: 767.98px) {
+  .opal-update-current-grid,
+  .opal-update-workspace-head,
+  .opal-update-section-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .opal-update-current-state {
+    align-items: flex-start;
+  }
+  .opal-update-meta-grid,
+  .opal-update-server-status-grid {
+    grid-template-columns: 1fr;
+  }
+  .opal-update-source-switch,
+  .opal-update-action-grid {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  .opal-update-source-btn {
+    min-height: 42px;
+  }
+  .opal-update-server-status {
+    grid-template-columns: 1fr;
+  }
+  .opal-update-workspace {
+    padding: 14px !important;
+  }
+  .opal-update-action-card,
+  .opal-update-saved-card {
+    padding: 14px;
+  }
+  .opal-live-events-matrix th,
+  .opal-live-events-matrix td {
+    min-width: 150px;
+  }
+  .opal-console-fullscreen {
+    padding: 6px;
+  }
+  .opal-console-fullscreen-head {
+    padding: 8px;
+  }
+  .opal-console-output {
+    min-height: 55dvh;
+    font-size: 12px;
+  }
+  .opal-console-command-row {
+    grid-template-columns: 34px minmax(0,1fr);
+  }
+  .opal-console-prompt {
+    width: 34px;
+  }
+  .opal-console-command-row .btn {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+
+
+/* ===== OPAL Update 131.7 R144 — unified table scroll/color authority + centered mobile nav =====
+   Screen-only authority. Keeps print rules and the mobile-card table contract untouched. */
+
+@media screen {
+  /* All standard OPAL tables use the same dense, readable visual language as the results table.
+     The table itself is allowed to become wider than the viewport; the wrapper scrolls horizontally.
+     This prevents forced column compression and Arabic text from breaking into artificial two-line cells. */
+  .opal-main :where(.table-responsive,.opal-table-wrap,.table-wrap,.opal-table-scroll,.opal-mobile-scroll-table,.learning-data-table-wrap,.learning-manager-table-wrap,.opal-timetable-matrix-wrap) {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-inline: contain !important;
+    touch-action: pan-x pan-y !important;
+    scrollbar-gutter: stable !important;
+    border-radius: var(--opal-table-radius) !important;
+  }
+
+  .opal-main :where(.table-responsive,.opal-table-wrap,.table-wrap,.opal-table-scroll,.opal-mobile-scroll-table,.learning-data-table-wrap,.learning-manager-table-wrap,.opal-timetable-matrix-wrap) > table:not(.opal-mobile-card-table) {
+    width: max-content !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    table-layout: auto !important;
+  }
+
+  .opal-main :where(.table-responsive,.opal-table-wrap,.table-wrap) > table:not(.opal-mobile-card-table) > :where(thead,tbody,tfoot) > tr > :where(th,td) {
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+    min-width: max-content !important;
+    border-inline: 0 !important;
+    border-block: 0 !important;
+    border-bottom: 1px solid color-mix(in srgb,var(--opal-table-border) 92%,transparent) !important;
+    color: var(--opal-text) !important;
+  }
+
+  .opal-main :where(.table-responsive,.opal-table-wrap,.table-wrap) > table:not(.opal-mobile-card-table) > thead > tr > th {
+    background: var(--opal-table-head) !important;
+    color: var(--opal-glass-text) !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+  }
+
+  .opal-main :where(.table-responsive,.opal-table-wrap,.table-wrap) > table:not(.opal-mobile-card-table) > tbody > tr > td {
+    background: var(--opal-table-row, color-mix(in srgb,var(--opal-surface) 92%,var(--opal-primary) 8%)) !important;
+  }
+
+  .opal-main :where(.table-responsive,.opal-table-wrap,.table-wrap) > table:not(.opal-mobile-card-table) > tbody > tr:nth-child(even) > td {
+    background: var(--opal-table-row-alt, color-mix(in srgb,var(--opal-surface-soft) 88%,var(--opal-primary) 12%)) !important;
+  }
+
+  .opal-main :where(.table-responsive,.opal-table-wrap,.table-wrap) > table:not(.opal-mobile-card-table) > tbody > tr:hover > td {
+    background: var(--opal-table-row-hover, color-mix(in srgb,var(--opal-primary) 13%,var(--opal-surface))) !important;
+  }
+
+  .opal-main :where(.table-responsive,.opal-table-wrap,.table-wrap) > table:not(.opal-mobile-card-table) > :where(thead,tbody,tfoot) > tr > :first-child {
+    border-inline-start: 0 !important;
+  }
+
+  .opal-main :where(.table-responsive,.opal-table-wrap,.table-wrap) > table:not(.opal-mobile-card-table) > :where(thead,tbody,tfoot) > tr > :last-child {
+    border-inline-end: 0 !important;
+  }
+
+  /* The same rule also covers tables rendered by components that add opal-table directly. */
+  .opal-main table:not(.opal-mobile-card-table) :where(.text-nowrap,.opal-subject-chip,.opal-data-chip) {
+    white-space: nowrap !important;
+  }
+
+  /* Mobile: fixed, centered navigation bar. No viewport-width overflow and no half-hidden left edge. */
+  @media (max-width: 991.98px) {
+    body {
+      padding-bottom: calc(var(--opal-mobile-nav-height) + 24px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .opal-bottom-nav {
+      position: fixed !important;
+      left: 50% !important;
+      right: auto !important;
+      bottom: max(8px, env(safe-area-inset-bottom, 0px)) !important;
+      width: min(540px, calc(100vw - 20px)) !important;
+      max-width: calc(100vw - 20px) !important;
+      min-width: 0 !important;
+      transform: translateX(-50%) !important;
+      box-sizing: border-box !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+      border-radius: 18px !important;
+      border-inline: 1px solid color-mix(in srgb,var(--opal-primary) 20%,var(--opal-border)) !important;
+      border-bottom: 1px solid color-mix(in srgb,var(--opal-primary) 14%,var(--opal-border)) !important;
+      padding-inline: .45rem !important;
+    }
+
+    .opal-bottom-nav a,
+    .opal-bottom-nav button {
+      min-width: 0 !important;
+      width: 100% !important;
+      overflow: hidden !important;
+    }
+
+    .opal-bottom-nav span {
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+    }
+
+    .opal-bottom-nav.opal-nav-hidden {
+      transform: translate(-50%, calc(100% + 18px)) !important;
+    }
+  }
+
+  /* Desktop/tablet keeps the same centered presentation when the bottom bar is enabled. */
+  @media (min-width: 992px) {
+    .opal-bottom-nav {
+      left: 50% !important;
+      right: auto !important;
+      width: min(540px, calc(100% - 44px)) !important;
+      max-width: 540px !important;
+      transform: translateX(-50%) !important;
+    }
+  }
+}

@@ -131,6 +131,7 @@ def system_updates(request):
         "core/system_updates.html",
         {
             "active_tab": active_tab,
+            "opal_update_center_page": True,
             "current_version": get_current_version(),
             "local_versions": list_local_versions(),
             "git_status": get_git_status(),

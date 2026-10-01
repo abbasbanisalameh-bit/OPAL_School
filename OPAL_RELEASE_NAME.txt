@@ -1,1 +1,1 @@
-OPAL Update 131.7 R142 - Unified CSS Authority Re-engineering
+OPAL Update 131.7 R145 - Global Table Horizontal Scroll Authority

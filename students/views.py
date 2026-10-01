@@ -1,4 +1,4 @@
-from django.db.models import Q, Prefetch
+from django.db.models import Prefetch
 from django.shortcuts import render, redirect, get_object_or_404
 from enterprise_ops.permissions import management_required
 from .models import Student
@@ -11,21 +11,11 @@ from admissions.financial_services import students_current_year_finance_snapshot
 
 @management_required
 def student_list(request):
-    q = request.GET.get("q", "").strip()
     status_filter = request.GET.get("status", "").strip()
 
     school = active_school()
     academic_year = current_academic_year(school)
     students = Student.objects.all().order_by("full_name")
-
-    if q:
-        students = students.filter(
-            Q(full_name__icontains=q)
-            | Q(student_number__icontains=q)
-            | Q(phone__icontains=q)
-            | Q(national_id__icontains=q)
-            | Q(guardian_name__icontains=q)
-        )
 
     if status_filter:
         students = students.filter(status=status_filter)
@@ -50,7 +40,6 @@ def student_list(request):
 
     return render(request, "students/student_list.html", {
         "students": students,
-        "q": q,
         "status_filter": status_filter,
         "status_choices": Student.STATUS_CHOICES,
         "current_year": academic_year,

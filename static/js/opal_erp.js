@@ -1254,7 +1254,8 @@ window.OPALTheme.color = function (name, fallback) {
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".opal-system-message").forEach(function (message) {
     var cls = message.className || "";
-    if (/alert-(danger|warning)/.test(cls) || /(error|danger|warning)/.test(cls)) return;
+    if (message.classList.contains("opal-persistent-system-message")) return;
+    if (/alert-(danger|warning)/.test(cls) || /\b(error|danger|warning)\b/.test(cls)) return;
     window.setTimeout(function () {
       if (!message.isConnected) return;
       if (window.bootstrap && bootstrap.Alert) bootstrap.Alert.getOrCreateInstance(message).close();
