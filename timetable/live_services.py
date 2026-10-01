@@ -437,16 +437,10 @@ def management_live_status(school, now=None):
 
     grade_rows = []
     for grade, values in by_grade.items():
-        states = defaultdict(list)
-        for item in values:
-            states[item["label"]].append(item["section"].name)
         grade_rows.append({
             "grade": grade,
-            "is_multiple": len(states) > 1,
-            "states": [
-                {"label": label, "sections": "، ".join(names)}
-                for label, names in states.items()
-            ],
+            "sections": values,
+            "section_count": len(values),
         })
 
     active_section_labels = {

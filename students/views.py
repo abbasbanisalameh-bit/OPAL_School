@@ -1,7 +1,9 @@
 from django.db.models import Prefetch
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.views.decorators.http import require_POST
 from enterprise_ops.permissions import management_required
-from .models import Student
+from .models import Student, StudentNote
 from .forms import StudentForm
 from .lifecycle import build_student_profile_context
 
@@ -85,3 +87,18 @@ def student_360(request, pk):
 def student_360_print(request, pk):
     student = get_object_or_404(Student, pk=pk)
     return render(request, "students/student_360_print.html", build_student_profile_context(student))
+
+
+@management_required
+@require_POST
+def student_note_create(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    content = (request.POST.get("content") or "").strip()
+    if not content:
+        messages.error(request, "اكتب نص الملاحظة أولًا.")
+        return redirect(request.POST.get("next") or "students:student_list")
+    note = StudentNote.objects.create(student=student, author=request.user, role="management", content=content)
+    from enterprise_ops.services import audit
+    audit(request, "create", "students.StudentNote", note.pk, f"إضافة ملاحظة إدارية للطالب {student.full_name}")
+    messages.success(request, "تم حفظ الملاحظة الإدارية للطالب.")
+    return redirect(request.POST.get("next") or "students:student_list")

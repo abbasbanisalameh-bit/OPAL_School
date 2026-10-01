@@ -8,6 +8,7 @@ from django.http import Http404, HttpResponse
 import csv
 
 from .models import Family, FamilyStudent, TeacherMonthlyEvaluation
+from students.models import StudentNote
 from .services import ensure_family_account, reset_family_password
 from .services import update_family_identity
 from .receipt_services import build_guardian_receipt_history
@@ -37,6 +38,8 @@ from enterprise_ops.permissions import management_required
 from enterprise_ops.services import audit
 from django.views.decorators.http import require_POST
 from django.utils import timezone
+from core.models import AcademicYear
+from exams.services import semester_report
 from django.core.exceptions import ValidationError
 from .duplicate_services import guardian_duplicate_groups, merge_guardian_group
 from timetable.live_services import student_live_status
@@ -128,16 +131,26 @@ def attendance(request):
     students = _normalized_students_for_user(request.user)
     if not students:
         return render(request, "parent_portal/no_profile.html")
-    student_id = request.GET.get("student", "")
-    date = request.GET.get("date", "")
-    selected_student = _student_or_403(request.user, student_id) if student_id else None
-    records = Attendance.objects.filter(student=selected_student) if selected_student else Attendance.objects.filter(student__in=students)
-    if date:
-        records = records.filter(date=date)
-    records = records.select_related("student").order_by("-date")[:120]
+    current_year = AcademicYear.objects.filter(is_current=True).order_by("-start_date").first()
+    records_by_student = {student.pk: [] for student in students}
+    counts_by_student = {student.pk: {"absent": 0, "departed": 0} for student in students}
+    if current_year:
+        records = Attendance.objects.filter(
+            student__in=students, academic_year=current_year, status__in=["absent", "departed"]
+        ).select_related("student").order_by("-date", "-departure_time")
+        for record in records:
+            records_by_student[record.student_id].append(record)
+            counts_by_student[record.student_id][record.status] += 1
+    children = []
+    for student in students:
+        children.append({
+            "student": student,
+            "records": records_by_student[student.pk],
+            "absent_count": counts_by_student[student.pk]["absent"],
+            "departed_count": counts_by_student[student.pk]["departed"],
+        })
     return render(request, "parent_portal/attendance.html", {
-        "records": records, "students": students, "selected_student": selected_student,
-        "student_id": student_id, "date": date,
+        "children": children, "current_year": current_year,
     })
 
 
@@ -148,32 +161,38 @@ def marks(request):
         return render(request, "parent_portal/no_profile.html")
     if not guardian_feature_allowed(_family_for_user(request.user), "marks"):
         return render(request, "parent_portal/financial_restriction.html", {"feature": "النتائج والشهادات"})
-    student_id = request.GET.get("student", "")
-    subject_id = request.GET.get("subject", "")
-    exam_key = request.GET.get("exam", "")
-    selected_student = _student_or_403(request.user, student_id) if student_id else None
-    matrix = student_marks_matrix(selected_student) if selected_student else None
-    selected_subject = None
-    subject_rows = []
-    selected_exam = None
-    exam_rows = []
-    if matrix:
-        if subject_id:
-            selected_subject = next((row["subject"] for row in matrix["by_subject"] if str(row["subject"].pk) == subject_id), None)
-            subject_rows = [row for row in matrix["by_subject"] if selected_subject and row["subject"].pk == selected_subject.pk]
-        if exam_key:
-            try:
-                semester_id, exam_type = exam_key.split(":", 1)
-            except ValueError:
-                semester_id = exam_type = ""
-            selected_exam = next((row for row in matrix["by_exam"] if str(row["semester"].pk) == semester_id and row["exam_type"]["key"] == exam_type), None)
-            exam_rows = selected_exam["rows"] if selected_exam else []
+    current_year = AcademicYear.objects.filter(is_current=True).order_by("-start_date").first()
+    selected_code = request.GET.get("semester", "first")
+    if selected_code not in {"first", "second"}:
+        selected_code = "first"
+    children = []
+    if current_year:
+        current_year.ensure_semesters()
+        semesters = {item.code: item for item in current_year.semesters.all()}
+        selected_semester = semesters.get(selected_code)
+        for student in students:
+            report = semester_report(student=student, academic_year=current_year, semester=selected_semester) if selected_semester else {"rows": [], "average": 0, "complete": False}
+            children.append({"student": student, "report": report})
     return render(request, "parent_portal/marks.html", {
-        "students": students, "selected_student": selected_student, "student_id": student_id,
-        "matrix": matrix, "subject_id": subject_id, "exam_key": exam_key,
-        "selected_subject": selected_subject, "subject_rows": subject_rows,
-        "selected_exam": selected_exam, "exam_rows": exam_rows,
+        "children": children, "current_year": current_year, "selected_semester": selected_code,
     })
+
+
+@parent_required
+def notes(request):
+    students = _normalized_students_for_user(request.user)
+    if not students:
+        return render(request, "parent_portal/no_profile.html")
+    notes = list(
+        StudentNote.objects.filter(student__in=students)
+        .select_related("student", "author", "subject")
+        .order_by("student__full_name", "-created_at")
+    )
+    grouped = {student.pk: [] for student in students}
+    for note in notes:
+        grouped[note.student_id].append(note)
+    children = [{"student": student, "notes": grouped[student.pk]} for student in students]
+    return render(request, "parent_portal/notes.html", {"children": children})
 
 
 @parent_required

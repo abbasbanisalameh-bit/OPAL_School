@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.db import transaction
+from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied
 from django.db.models import Avg, Count, DecimalField, ExpressionWrapper, F, Prefetch, Q, Value
 from decimal import Decimal
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,6 +11,7 @@ from django.views.decorators.http import require_POST
 
 from .forms import HomeworkForm, TeacherAccountCreateForm, TeacherAssignmentForm, TeacherForm
 from .models import Homework, Teacher, TeacherAssignment, TeacherPerformanceSnapshot
+from students.models import StudentNote
 from academics.models import Section, Subject
 from .account_services import create_teacher_account, reset_teacher_password
 from .tpi import (
@@ -397,11 +400,15 @@ def portal_workspace(request):
     if mode == "students" and section_id:
         section_assignment = next((a for a in assignments if str(a.section_id) == section_id), None)
         if section_assignment:
-            workspace_enrollments = Enrollment.objects.filter(
+            workspace_enrollments = list(Enrollment.objects.filter(
                 academic_year=section_assignment.academic_year,
                 section_id=section_id,
                 status="active",
-            ).select_related("student").order_by("student__full_name")
+            ).select_related("student").order_by("student__full_name"))
+            is_homeroom = section_assignment.section.homeroom_teacher_id == teacher.pk
+            for enrollment in workspace_enrollments:
+                enrollment.can_subject_note = bool(selected_assignment)
+                enrollment.can_homeroom_note = is_homeroom
     return render(request, "teachers/portal_workspace.html", {
         "teacher": teacher,
         "mode": mode,
@@ -685,3 +692,36 @@ def portal_marks(request, assignment_pk):
         return redirect("teachers:portal_dashboard")
     target = reverse("exams:exam_marks_bulk", args=[exam.pk])
     return redirect(f"{target}?assignment={assignment.pk}")
+
+
+@teacher_required
+@require_POST
+def portal_student_note_create(request):
+    teacher = request.user.teacher_profile
+    student_id = request.POST.get("student_id")
+    assignment_id = request.POST.get("assignment_id")
+    role = request.POST.get("role") or "subject"
+    content = (request.POST.get("content") or "").strip()
+    if not content:
+        messages.error(request, "اكتب نص الملاحظة أولًا.")
+        return redirect(request.POST.get("next") or "teachers:portal_workspace")
+    assignment = get_object_or_404(
+        teacher.assignments.select_related("academic_year", "section", "section__grade", "subject"),
+        pk=assignment_id, is_active=True,
+    )
+    enrollment = get_object_or_404(
+        Enrollment.objects.select_related("student", "section"),
+        student_id=student_id, academic_year=assignment.academic_year, section=assignment.section, status="active",
+    )
+    note_kwargs = {"student": enrollment.student, "author": request.user, "content": content}
+    if role == "homeroom":
+        if assignment.section.homeroom_teacher_id != teacher.pk:
+            raise PermissionDenied("إضافة ملاحظة مربي الصف متاحة لمربي الصف فقط.")
+        note_kwargs["role"] = "homeroom"
+    else:
+        note_kwargs["role"] = "subject"
+        note_kwargs["subject"] = assignment.subject
+    note = StudentNote.objects.create(**note_kwargs)
+    audit(request, "create", "students.StudentNote", note.pk, f"إضافة ملاحظة {note.get_role_display()} للطالب {enrollment.student.full_name}")
+    messages.success(request, "تم حفظ ملاحظة الطالب.")
+    return redirect(request.POST.get("next") or "teachers:portal_workspace")

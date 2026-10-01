@@ -3,7 +3,9 @@ import core.validators
 
 
 class Migration(migrations.Migration):
-    dependencies = [("students", "0010_alter_student_is_demo")]
+    dependencies = [
+        ("students", "0010_alter_student_is_demo"),
+    ]
 
     operations = [
         migrations.AlterField(

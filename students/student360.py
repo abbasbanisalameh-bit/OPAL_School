@@ -13,6 +13,8 @@ from admissions.models import FeePaymentAllocation
 from attendance_v2.analytics import build_student_attendance_snapshot
 from documents.models import StudentIssuedDocument
 from exams.models import StudentMark
+from exams.services import semester_report
+from exams.analytics import student_class_rank
 from parent_portal.models import FamilyStudent
 from timetable.models import TimetableEntry
 
@@ -320,6 +322,7 @@ def _assemble_student_360_context(
     finance,
     attendance,
     marks_profile,
+    marks_reports,
     documents_profile,
     timetable,
     timetable_matrix,
@@ -349,6 +352,7 @@ def _assemble_student_360_context(
         "marks": marks_profile["marks"],
         "mark_summary": marks_profile["summary"],
         "percentage_average": marks_profile["percentage_average"],
+        "marks_reports": marks_reports,
         "documents": documents_profile["documents"],
         "timetable": timetable,
         "timetable_matrix": timetable_matrix,
@@ -368,6 +372,14 @@ def build_student_360_context(student):
 
     attendance = _build_attendance_profile(student)
     marks_profile = _build_marks_profile(student)
+    marks_reports = {"first": None, "second": None}
+    if current_enrollment and current_enrollment.academic_year:
+        current_enrollment.academic_year.ensure_semesters()
+        for semester in current_enrollment.academic_year.semesters.all():
+            if semester.code in marks_reports:
+                marks_reports[semester.code] = semester_report(
+                    student=student, academic_year=current_enrollment.academic_year, semester=semester
+                )
     documents_profile = _build_documents_profile(student)
     finance = _build_finance_profile(
         student,
@@ -403,6 +415,7 @@ def build_student_360_context(student):
         finance=finance,
         attendance=attendance,
         marks_profile=marks_profile,
+        marks_reports=marks_reports,
         documents_profile=documents_profile,
         timetable=supporting_profile["timetable"],
         timetable_matrix=supporting_profile["timetable_matrix"],
@@ -421,6 +434,7 @@ def build_student_360_context(student):
         context["finance"]["remaining"] + context["previous_debt"]["total"]
     )
     current_year = current_enrollment.academic_year if current_enrollment else None
+    context["student_rank"] = student_class_rank(student)
     context["current_registration"] = (
         student.registrations.filter(academic_year=current_year).order_by("-created_at", "-pk").first()
         if current_year else None

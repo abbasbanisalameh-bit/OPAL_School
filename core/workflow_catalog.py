@@ -144,7 +144,6 @@ OPERATIONS = [
     _op("parent-timetable", "portal", "جداول الأبناء", "parent_portal:timetable", "الجدول حسب الابن واليوم والمادة.", roles=(PARENT,), icon="calendar3", keywords="جدول ابن", order=89),
     _op("parent-documents", "portal", "وثائق الأبناء", "parent_portal:documents", "الوثائق المتاحة للأسرة.", roles=(PARENT,), icon="file-earmark-text", keywords="وثيقة ابن", order=90),
     _op("parent-announcements", "portal", "إعلانات المدرسة", "parent_portal:announcements", "الإعلانات الفعالة الموجهة للمستخدمين.", roles=(PARENT,), icon="megaphone", keywords="إعلان مدرسة", order=91),
-    _op("parent-teacher-evaluations", "portal", "تقييم معلمي أبنائي", "parent_portal:teacher_evaluations", "تقييم شهري للمعلمين الذين يدرسون الأبناء فقط.", roles=(PARENT,), icon="star-fill", keywords="تقييم معلم", order=92),
     _op("parent-account", "portal", "حساب ولي الأمر", "parent_portal:account", "بيانات الحساب وملف ولي الأمر وكلمة المرور من مكان واحد.", roles=(PARENT,), icon="person-gear", keywords="حساب ولي أمر", order=93),
     _op("profile", "portal", "الملف الشخصي", "accounts:my_profile", "تحديث الاسم والصورة وبيانات المستخدم.", roles=(MANAGEMENT, TEACHER, AUTHENTICATED), icon="person-circle", keywords="ملف شخصي صورة", order=99),
 ]

@@ -11,4 +11,5 @@ urlpatterns = [
     path("<int:pk>/360/print/", views.student_360_print, name="student_360_print"),
     path("<int:pk>/update/", views.student_update, name="student_update"),
     path("<int:pk>/archive/", views.student_archive, name="student_archive"),
+    path("<int:pk>/notes/add/", views.student_note_create, name="student_note_create"),
 ]

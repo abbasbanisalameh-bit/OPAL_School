@@ -18,6 +18,7 @@ urlpatterns = [
     path("portal/homework/item/<int:pk>/edit/", views.portal_homework_update, name="portal_homework_update"),
     path("portal/homework/item/<int:pk>/delete/", views.portal_homework_delete, name="portal_homework_delete"),
     path("portal/marks/<int:assignment_pk>/", views.portal_marks, name="portal_marks"),
+    path("portal/students/notes/add/", views.portal_student_note_create, name="portal_student_note_create"),
     path("", views.dashboard, name="dashboard"),
     path("list/", views.teacher_list, name="teacher_list"),
     path("add/", views.teacher_create, name="teacher_create"),

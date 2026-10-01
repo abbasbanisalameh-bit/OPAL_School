@@ -41,7 +41,7 @@ def run_subject_ui_audit() -> dict[str, object]:
         ),
         "templates/students/student_360.html": (
             "opal-compact-action-row", "opal-compact-metric-grid",
-            "opal-compact-tabs", "subject_style row.exam.subject",
+            "opal-compact-tabs", "subject_style row.subject",
         ),
         "templates/exams/gradebook.html": (
             "opal-subject-card", "subject_style mark.exam.subject",

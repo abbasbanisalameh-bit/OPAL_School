@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
@@ -111,3 +112,48 @@ class Student(models.Model):
 
     def __str__(self):
         return self.full_name
+
+
+class StudentNote(models.Model):
+    ROLE_CHOICES = [
+        ("management", "ملاحظة الإدارة"),
+        ("homeroom", "ملاحظة مربي الصف"),
+        ("subject", "ملاحظة معلم المادة"),
+    ]
+
+    student = models.ForeignKey(
+        Student, on_delete=models.CASCADE, related_name="school_notes", verbose_name="الطالب"
+    )
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="student_notes", verbose_name="كاتب الملاحظة"
+    )
+    role = models.CharField("نوع الملاحظة", max_length=20, choices=ROLE_CHOICES)
+    subject = models.ForeignKey(
+        "academics.Subject", on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="student_notes", verbose_name="المادة"
+    )
+    content = models.TextField("الملاحظة", max_length=2000)
+    created_at = models.DateTimeField("تاريخ التسجيل", auto_now_add=True)
+    updated_at = models.DateTimeField("آخر تعديل", auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+        indexes = [
+            models.Index(fields=["student", "role", "created_at"], name="st_note_stu_role_created_idx"),
+            models.Index(fields=["author", "created_at"], name="st_note_author_created_idx"),
+        ]
+
+    def clean(self):
+        super().clean()
+        if self.role == "subject" and not self.subject_id:
+            raise ValidationError({"subject": "ملاحظة معلم المادة يجب أن ترتبط بمادة."})
+        if self.role != "subject" and self.subject_id:
+            raise ValidationError({"subject": "المادة تستخدم فقط لملاحظات معلم المادة."})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.student} — {self.get_role_display()}"

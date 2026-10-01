@@ -1,0 +1,29 @@
+{% extends "base/base.html" %}
+{% block title %}ملاحظات الأبناء{% endblock %}
+{% block page_title %}ملاحظات الأبناء{% endblock %}
+{% block page_subtitle %}ملاحظات الإدارة ومربي الصف ومعلمي المواد المسجلة على ملف كل ابن.{% endblock %}
+{% block content %}
+{% for child in children %}
+<details class="opal-card mb-3 opal-parent-child-accordion" {% if forloop.first %}open{% endif %}>
+  <summary><span><strong>{{ child.student.full_name }}</strong><small>{{ child.student.class_display }}</small></span><span class="badge bg-primary">{{ child.notes|length }} ملاحظة</span></summary>
+  <div class="mt-3">
+    {% for note in child.notes %}
+    <article class="opal-note-item mb-3">
+      <div class="d-flex justify-content-between gap-2 flex-wrap mb-2">
+        <strong>
+          {% if note.role == 'management' %}الإدارة{% elif note.role == 'homeroom' %}مربي الصف{% else %}معلم {{ note.subject.name|default:'المادة' }}{% endif %}
+        </strong>
+        <small class="text-secondary">{{ note.created_at|date:"Y-m-d H:i" }}</small>
+      </div>
+      <div class="small text-secondary mb-2">{% if note.author %}{{ note.author.get_full_name|default:note.author.username }}{% endif %}</div>
+      <p class="mb-0">{{ note.content }}</p>
+    </article>
+    {% empty %}
+    <div class="opal-empty-state"><p>لا توجد ملاحظات مسجلة لهذا الابن.</p></div>
+    {% endfor %}
+  </div>
+</details>
+{% empty %}
+<section class="opal-card opal-empty-state"><p>لا يوجد أبناء مرتبطون بهذا الحساب.</p></section>
+{% endfor %}
+{% endblock %}

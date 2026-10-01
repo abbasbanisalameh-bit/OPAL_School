@@ -16,7 +16,7 @@ from enterprise_ops.services import audit, transition_workflow
 from students.models import Student
 
 from admissions.services import active_school, current_academic_year
-from admissions.financial_services import search_students, students_current_year_finance_snapshots
+
 
 from .forms import (
     CanteenTransactionForm, DiscountRequestForm, ExpenseEntryForm, FeeCategoryForm, FinancialYearClosureForm,
@@ -47,20 +47,9 @@ from .workflow import (
 def finance_dashboard(request):
     school = active_school()
     context = collection_dashboard(school)
-    query = request.GET.get("q", "").strip()
-    students = list(search_students(query)) if query else []
-    academic_year = context.get("current_year")
-    snapshots = students_current_year_finance_snapshots(students, academic_year=academic_year) if students else {}
-    rows = []
-    for student in students:
-        finance = snapshots.get(student.pk, {"total": Decimal("0"), "paid": Decimal("0"), "remaining": Decimal("0")})
-        previous = student_previous_debt_snapshot(student, academic_year=academic_year) if academic_year else {"total": Decimal("0")}
-        rows.append({"student": student, "finance": finance, "previous": previous, "combined": finance["remaining"] + previous["total"]})
     combined_remaining = context.get("combined_remaining") or Decimal("0")
     previous_remaining = context.get("previous_remaining") or Decimal("0")
     context.update({
-        "finance_query": query,
-        "student_search_rows": rows,
         "previous_debt_share": (previous_remaining / combined_remaining * 100) if combined_remaining else Decimal("0"),
     })
     return render(request, "accounting/dashboard.html", context)

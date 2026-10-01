@@ -22,6 +22,7 @@ urlpatterns = [
     path("fees/", views.fees, name="fees"),
     path("attendance/", views.attendance, name="attendance"),
     path("marks/", views.marks, name="marks"),
+    path("notes/", views.notes, name="notes"),
     path("homework/", views.homework, name="homework"),
     path("teacher-evaluations/", views.teacher_evaluations, name="teacher_evaluations"),
     path("teacher-evaluations/submit-monthly/", views.submit_monthly_teacher_evaluations, name="submit_monthly_teacher_evaluations"),

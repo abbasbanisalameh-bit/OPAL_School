@@ -599,7 +599,7 @@ window.OPALTheme.color = function (name, fallback) {
         document.querySelectorAll("table[data-opal-instant-table], table.opal-table, table.table").forEach(function (table, index) {
             if (table.dataset.opalSearchReady === "1" || table.dataset.opalInstantTable === "off") return;
             const bodyRows = table.querySelectorAll("tbody tr");
-            if (bodyRows.length < 30 || table.querySelector("tbody [colspan]")) return;
+            if (!bodyRows.length || table.querySelector("tbody [colspan]")) return;
             table.dataset.opalSearchReady = "1";
             const wrapper = table.closest(".table-responsive, .table-wrap") || table.parentElement;
             if (!wrapper) return;

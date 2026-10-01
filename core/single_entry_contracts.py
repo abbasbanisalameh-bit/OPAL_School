@@ -290,7 +290,7 @@ def audit_canonical_visible_entries(root: Path | None = None) -> list[AuditIssue
         "parent_portal:attendance",
         "parent_portal:timetable",
         "parent_portal:documents",
-        "parent_portal:teacher_evaluations",
+        "parent_portal:notes",
         "parent_portal:announcements",
     ):
         if required not in parent_dashboard:
