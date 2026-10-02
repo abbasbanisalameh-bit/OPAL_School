@@ -16952,3 +16952,328 @@ body:has(.opal-console-fullscreen) .opal-main {
   background: color-mix(in srgb,var(--opal-glass-bg) 58%,transparent);
   box-shadow: inset 0 1px var(--opal-glass-highlight);
 }
+
+/* =========================================================
+   OPAL R147 — Two-axis table scrolling + timetable/finance layout
+   Built on R146. Screen-only authority; print rules remain unchanged.
+   ========================================================= */
+@media screen {
+  /* Any scrollable table wrapper may scroll in both directions.
+     Do not hide vertical overflow: this was the source of clipped mobile tables. */
+  .opal-main :where(
+    .table-responsive,
+    .opal-table-wrap,
+    .table-wrap,
+    .opal-table-scroll,
+    .opal-mobile-scroll-table,
+    .learning-data-table-wrap,
+    .learning-manager-table-wrap,
+    .opal-timetable-matrix-wrap,
+    .opal-live-events-matrix-wrap
+  ) {
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x pan-y !important;
+    overscroll-behavior: contain !important;
+    scrollbar-width: thin !important;
+  }
+
+  /* Large timetable matrices get a bounded viewport so both scrollbars can actually be used. */
+  .opal-main .opal-timetable-matrix-wrap {
+    max-height: min(68dvh, 760px) !important;
+    min-height: 180px;
+  }
+
+  .opal-main .opal-live-events-matrix-wrap {
+    max-height: min(58dvh, 620px) !important;
+    min-height: 120px;
+  }
+
+  /* Each grade is an independent matrix: no empty columns caused by another grade having
+     more sections. The grade title stays above its own horizontal section row. */
+  .opal-live-grade-block {
+    width: max-content;
+    min-width: 100%;
+    margin: 0 0 .7rem;
+  }
+  .opal-live-grade-block:last-child { margin-bottom: 0; }
+
+  .opal-live-events-matrix {
+    width: max-content !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    table-layout: auto !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+
+  .opal-live-events-matrix .opal-live-grade-title {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 8;
+    min-width: 100% !important;
+    width: 100%;
+    padding: .62rem .8rem !important;
+    background: linear-gradient(135deg,
+      color-mix(in srgb,var(--opal-primary) 26%,var(--opal-surface-strong)),
+      color-mix(in srgb,var(--opal-accent-2) 12%,var(--opal-surface-strong))) !important;
+    color: var(--opal-text) !important;
+    font-size: .9rem !important;
+    font-weight: 900 !important;
+    text-align: right !important;
+    border-bottom: 1px solid color-mix(in srgb,var(--opal-glass-border) 78%,transparent) !important;
+  }
+
+  .opal-live-events-matrix .opal-live-section-head {
+    position: sticky;
+    inset-block-start: 42px;
+    z-index: 7;
+    min-width: 150px !important;
+    background: color-mix(in srgb,var(--opal-glass-bg-strong) 94%,var(--opal-primary) 6%) !important;
+    color: var(--opal-text) !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+  }
+
+  .opal-live-events-matrix .opal-live-event-row td {
+    min-width: 150px !important;
+    height: 78px;
+    background: color-mix(in srgb,var(--opal-surface) 90%,var(--opal-primary) 10%) !important;
+  }
+
+  /* Finance dashboard: restore a deliberate hierarchy instead of browser-default summaries. */
+  .opal-domain-accordion {
+    display: grid;
+    gap: .75rem;
+  }
+
+  .opal-domain-summary {
+    list-style: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto !important;
+    align-items: center !important;
+    gap: .65rem 1rem !important;
+    cursor: pointer !important;
+    padding: .95rem 1rem !important;
+    margin: 0 !important;
+    border-radius: 14px !important;
+    background: color-mix(in srgb,var(--opal-surface-strong) 78%,var(--opal-primary) 22%) !important;
+    border: 1px solid color-mix(in srgb,var(--opal-glass-border) 82%,transparent) !important;
+  }
+  .opal-domain-summary::-webkit-details-marker { display: none; }
+  .opal-domain-summary::after {
+    content: '⌄';
+    color: var(--opal-accent-2);
+    font-size: 1rem;
+    transition: transform .18s ease;
+  }
+  details[open] > .opal-domain-summary::after { transform: rotate(180deg); }
+  .opal-domain-summary strong {
+    min-width: 0;
+    color: var(--opal-text) !important;
+    font-size: .95rem;
+    white-space: nowrap;
+  }
+  .opal-domain-summary span {
+    min-width: 0;
+    color: var(--opal-text-soft) !important;
+    font-size: .72rem;
+    line-height: 1.45;
+    text-align: start;
+  }
+
+  .opal-action-grid {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: .7rem;
+  }
+  .opal-action-grid .opal-settings-action {
+    min-width: 0 !important;
+    min-height: 76px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: .8rem !important;
+    grid-template-columns: none !important;
+  }
+  .opal-action-grid .opal-settings-action strong {
+    white-space: normal !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  .opal-main .opal-finance-kpis {
+    align-items: stretch;
+  }
+  .opal-main .opal-finance-kpis > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 72px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .opal-main .opal-timetable-matrix-wrap {
+    max-height: 62dvh !important;
+  }
+  .opal-main .opal-live-events-matrix-wrap {
+    max-height: 52dvh !important;
+  }
+  .opal-domain-summary {
+    grid-template-columns: minmax(0,1fr) auto !important;
+    gap: .45rem !important;
+  }
+  .opal-domain-summary strong { font-size: .84rem; }
+  .opal-domain-summary span {
+    grid-column: 1 / -1;
+    font-size: .65rem;
+  }
+  .opal-action-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+  .opal-main .opal-finance-kpis {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+}
+
+
+/* =========================================================
+   OPAL R148 — Global table sizing + RTL scroll correction
+   Built directly on the installed R147 source.
+   Screen-only authority: normal tables fill their container;
+   intentionally wide matrices keep two-axis scrolling.
+   ========================================================= */
+@media screen {
+  /* One scroll authority for all ordinary table containers.  Vertical overflow is
+     no longer hidden, and touch gestures can move in either direction. */
+  .opal-main :where(
+    .table-responsive,
+    .opal-table-wrap,
+    .table-wrap,
+    .opal-table-scroll,
+    .opal-mobile-scroll-table,
+    .learning-data-table-wrap,
+    .learning-manager-table-wrap,
+    .opal-timetable-matrix-wrap,
+    .opal-live-events-matrix-wrap
+  ) {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+    touch-action: pan-x pan-y !important;
+    scrollbar-width: thin !important;
+    scrollbar-gutter: stable both-edges !important;
+  }
+
+  /* Ordinary tables are containers' full width.  This removes the large empty
+     side area that appeared when RTL + width:max-content was applied to small tables. */
+  .opal-main :where(
+    .table-responsive,
+    .opal-table-wrap,
+    .table-wrap,
+    .opal-table-scroll,
+    .opal-mobile-scroll-table,
+    .learning-data-table-wrap,
+    .learning-manager-table-wrap
+  ) > table:not(.opal-mobile-card-table):not(.opal-timetable-grid) {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+  }
+
+  .opal-main :where(
+    .table-responsive,
+    .opal-table-wrap,
+    .table-wrap,
+    .opal-table-scroll,
+    .opal-mobile-scroll-table,
+    .learning-data-table-wrap,
+    .learning-manager-table-wrap
+  ) > table:not(.opal-mobile-card-table):not(.opal-timetable-grid) > :where(thead,tbody,tfoot) > tr > :where(th,td) {
+    border-inline: 0 !important;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+
+  /* Wide matrices intentionally remain wider than the viewport and scroll inside
+     their own container instead of creating page-level horizontal overflow. */
+  .opal-main .opal-timetable-matrix-wrap > .opal-timetable-grid {
+    width: max-content !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+  }
+
+  /* The live-events matrix is made of independent grade blocks.  Each block fills
+     the available width; only when the number of sections requires it does it grow
+     beyond the viewport and activate horizontal scrolling. */
+  .opal-main .opal-live-events-matrix-wrap {
+    direction: rtl;
+  }
+
+  .opal-main .opal-live-grade-block {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+  }
+
+  .opal-main .opal-live-events-matrix {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    direction: rtl !important;
+  }
+
+  .opal-main .opal-live-events-matrix .opal-live-section-head,
+  .opal-main .opal-live-events-matrix .opal-live-event-row td {
+    min-width: 150px !important;
+    width: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .opal-main .opal-live-events-matrix .opal-live-grade-title {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  /* Keep the official timetable vertically usable on phones and tablets. */
+  .opal-main .opal-timetable-matrix-wrap {
+    max-height: min(68dvh, 760px) !important;
+    min-height: 180px !important;
+    touch-action: pan-x pan-y !important;
+  }
+
+  .opal-main .opal-live-events-matrix-wrap {
+    max-height: min(58dvh, 620px) !important;
+    min-height: 120px !important;
+    touch-action: pan-x pan-y !important;
+  }
+
+  /* Finance tables with only a few columns should also occupy the complete card. */
+  .opal-main #outstanding-balances .table-responsive > table,
+  .opal-main #outstanding-balances .opal-table {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+  }
+}

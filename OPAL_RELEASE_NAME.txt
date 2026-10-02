@@ -1,1 +1,1 @@
-OPAL Update 131.7 R146 - Student, Guardian, Tables & Notes Unified
+OPAL Update 131.7 R148 - Global Table Width, RTL Scroll & Live Matrix Refinement
