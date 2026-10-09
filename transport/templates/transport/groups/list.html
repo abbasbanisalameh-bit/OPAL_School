@@ -38,14 +38,31 @@
 
       <div class="row g-3 mt-2">
         <div class="col-lg-7">
-          <div class="border rounded p-3 bg-light">
+          <div class="border rounded p-3 opal-transport-members-panel">
             <strong>الأبناء في المجموعة</strong>
-            <div class="row mt-2">
-              {% for member in group.members.all %}
-              <div class="col-md-6 mb-1">
-                <label class="small"><input type="checkbox" form="move-{{ group.pk }}" name="registration_ids" value="{{ member.registration_id }}"> {{ member.registration.student.full_name|default:member.registration.full_name }}</label>
-              </div>
-              {% empty %}<div class="text-muted small">لا يوجد أعضاء.</div>{% endfor %}
+            <div class="opal-universal-table-scroll" tabindex="0" role="region" aria-label="أعضاء مجموعة المواصلات القابلة للتمرير">
+              <table class="table table-sm align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th scope="col">تحديد</th>
+                    <th scope="col">الطالب</th>
+                    <th scope="col">رقم التسجيل</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for member in group.members.all %}
+                  <tr>
+                    <td>
+                      <input type="checkbox" form="move-{{ group.pk }}" name="registration_ids" value="{{ member.registration_id }}" aria-label="تحديد {{ member.registration.student.full_name|default:member.registration.full_name }}">
+                    </td>
+                    <td>{{ member.registration.student.full_name|default:member.registration.full_name }}</td>
+                    <td>{{ member.registration_id }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr><td colspan="3" class="text-muted small">لا يوجد أعضاء.</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

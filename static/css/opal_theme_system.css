@@ -17277,3 +17277,174 @@ body:has(.opal-console-fullscreen) .opal-main {
     border-spacing: 0 !important;
   }
 }
+
+/* =========================================================
+   OPAL R152 — Final Universal Table Authority
+   One rule for all on-screen tables:
+   - the scroll viewport owns both axes;
+   - the table fills the viewport when content is short;
+   - the table grows to content width when columns need more room;
+   - every row remains on one horizontal line;
+   - print/standalone layouts are intentionally excluded.
+   This block is the final cascade authority for screen tables.
+   ========================================================= */
+@media screen {
+  /* Every screen table viewport owns horizontal + vertical scrolling. */
+  body :where(
+    .opal-universal-table-scroll,
+    .opal-table-scroll,
+    .table-responsive,
+    .table-wrap,
+    .opal-table-wrap,
+    .opal-mobile-scroll-table,
+    .learning-data-table-wrap,
+    .learning-manager-table-wrap,
+    .opal-timetable-matrix-wrap,
+    .opal-live-events-matrix-wrap
+  ) {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+    touch-action: pan-x pan-y !important;
+    scrollbar-gutter: auto !important;
+    max-height: min(70dvh, 760px) !important;
+  }
+
+  /* Universal data-table sizing: 100% minimum, content-driven growth after that. */
+  body :where(
+    .opal-main table,
+    .opal-universal-table-scroll > table,
+    .opal-table-scroll > table,
+    .table-responsive > table,
+    .table-wrap > table,
+    .opal-table-wrap > table,
+    .opal-mobile-scroll-table > table,
+    .learning-data-table-wrap > table,
+    .learning-manager-table-wrap > table,
+    .opal-timetable-matrix-wrap > table,
+    .opal-live-events-matrix-wrap > table
+  ) {
+    display: table !important;
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+    box-sizing: border-box !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    table-layout: auto !important;
+  }
+
+  /* Every row is a single horizontal line; the inner scroll viewport reveals overflow. */
+  body :where(
+    .opal-main table,
+    .opal-universal-table-scroll > table,
+    .opal-table-scroll > table,
+    .table-responsive > table,
+    .table-wrap > table,
+    .opal-table-wrap > table,
+    .opal-mobile-scroll-table > table,
+    .learning-data-table-wrap > table,
+    .learning-manager-table-wrap > table,
+    .opal-timetable-matrix-wrap > table,
+    .opal-live-events-matrix-wrap > table
+  ) > :where(thead, tbody, tfoot) > tr > :where(th, td) {
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    width: auto !important;
+    box-sizing: border-box !important;
+    vertical-align: middle !important;
+  }
+
+  /* Do not re-introduce wrapping inside controls, links, badges, or text wrappers. */
+  body :where(
+    .opal-main table,
+    .opal-universal-table-scroll > table
+  ) > :where(thead, tbody, tfoot) > tr > :where(th, td) > :where(
+    strong, span, small, a, button, .btn, .badge, label, input, select, textarea
+  ) {
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  /* Sticky header stays inside the table viewport and never creates page scrolling. */
+  body :where(
+    .opal-universal-table-scroll,
+    .opal-table-scroll,
+    .table-responsive,
+    .table-wrap,
+    .opal-table-wrap,
+    .opal-mobile-scroll-table,
+    .learning-data-table-wrap,
+    .learning-manager-table-wrap,
+    .opal-timetable-matrix-wrap,
+    .opal-live-events-matrix-wrap
+  ) > table > thead > tr > :where(th, td) {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 2 !important;
+    background: inherit;
+  }
+
+  /* Transport groups: the member list uses exactly the same universal table rule. */
+  body .opal-transport-members-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  body .opal-transport-members-panel .opal-universal-table-scroll {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: min(52dvh, 460px) !important;
+    margin-top: .65rem !important;
+    border: 1px solid var(--opal-border) !important;
+    border-radius: .75rem !important;
+    background: var(--opal-surface) !important;
+  }
+
+  body .opal-transport-members-panel table {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+  }
+
+  body .opal-transport-members-panel th,
+  body .opal-transport-members-panel td {
+    white-space: nowrap !important;
+    padding: .55rem .7rem !important;
+    vertical-align: middle !important;
+  }
+
+  /* A checkbox column stays compact while the student/registration columns remain content-sized. */
+  body .opal-transport-members-panel :where(th, td):first-child {
+    width: 1% !important;
+  }
+}
+
+@media print {
+  /* R152 deliberately does not change print/table layout rules. */
+}
+
+
+/* R152 print compatibility for the standalone payment receipt wrapper. */
+@media print {
+  body.opal-standalone-opal_school_templates_admissions_fee_payment_receipt_html .receipt-allocations-scroll {
+    display: contents !important;
+    overflow: visible !important;
+    max-height: none !important;
+    border: 0 !important;
+  }
+}

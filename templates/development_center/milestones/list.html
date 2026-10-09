@@ -6,7 +6,7 @@
   <h3>🚩 المراحل</h3>
 </div>
 <div class="opal-card p-4">
-<table class="opal-table">
+<div class="opal-universal-table-scroll"><table class="opal-table">
 <thead><tr><th>#</th><th>المرحلة</th><th>الإصدار</th><th>التاريخ</th><th>الإنجاز</th><th>الإجراء</th></tr></thead>
 <tbody>
 {% for item in items %}
@@ -25,6 +25,6 @@
 <tr><td colspan="6" class="text-center text-muted">لا توجد مراحل.</td></tr>
 {% endfor %}
 </tbody>
-</table>
+</table></div>
 </div>
 {% endblock %}

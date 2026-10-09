@@ -39,16 +39,16 @@
   <div class="amount-box">{{ fee_payment.total_amount }} د.أ</div>
   <div class="balance-box">{% if previous_debt_receipt.is_previous_debt %}المتراكم السابق{% else %}متبقي السنة الحالية{% endif %} قبل الدفعة: {{ fee_payment.total_due_before }} د.أ &nbsp; | &nbsp; بعد الدفعة: {{ fee_payment.total_due_after }} د.أ</div>
   {% if previous_debt_receipt.is_previous_debt %}
-  <table class="allocations">
+  <div class="opal-universal-table-scroll receipt-allocations-scroll"><table class="allocations">
     <thead><tr><th>الطالب</th><th>العام</th><th>الصف</th><th>نوع الرسوم</th><th>قبل</th><th>الدفعة</th><th>بعد</th></tr></thead>
     <tbody>
     {% for row in previous_debt_receipt.rows %}
     <tr><td>{{ row.student.full_name }}</td><td>{{ row.academic_year.name }}</td><td>{{ row.grade_label }}{% if row.section_label %} / {{ row.section_label }}{% endif %}</td><td>{{ row.category.name }}</td><td>{{ row.remaining_before }}</td><td>{{ row.amount }}</td><td>{{ row.remaining_after }}</td></tr>
     {% empty %}<tr><td colspan="7">لا توجد تفاصيل رسوم سابقة مرتبطة بالإيصال.</td></tr>{% endfor %}
     </tbody>
-  </table>
+  </table></div>
   {% else %}
-  <table class="allocations">
+  <div class="opal-universal-table-scroll receipt-allocations-scroll"><table class="allocations">
     <thead><tr><th>الطالب</th><th>العام</th><th>الرسوم</th><th>المدفوع سابقًا</th><th>هذه الدفعة</th><th>المتبقي</th><th>الحالة</th></tr></thead>
     <tbody>
     {% for a in fee_payment.allocations.all %}
@@ -58,7 +58,7 @@
     </tr>
     {% empty %}<tr><td colspan="7">لا توجد توزيعات مرتبطة بالإيصال.</td></tr>{% endfor %}
     </tbody>
-  </table>
+  </table></div>
   {% endif %}
   <div class="signatures">
     <div><div class="sig-line"></div><strong>توقيع ولي الأمر</strong></div>

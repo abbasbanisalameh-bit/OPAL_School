@@ -231,30 +231,7 @@ window.OPALTheme.color = function (name, fallback) {
 })();
 
 // OPAL_TABLE_SCROLL_INIT_V4 — compatibility marker
-// OPAL_TABLE_SCROLL_LIGHT_V1
-(function () {
-    "use strict";
-
-    function initializeScrollableTables() {
-        document.querySelectorAll(".table-responsive, .table-wrap").forEach(function (container) {
-            if (!container.querySelector("table")) {
-                return;
-            }
-            container.classList.add("opal-table-scroll");
-            if (!container.hasAttribute("tabindex")) {
-                container.setAttribute("tabindex", "0");
-            }
-            container.setAttribute("role", "region");
-            container.setAttribute("aria-label", "جدول قابل للتمرير");
-        });
-    }
-
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initializeScrollableTables, {once: true});
-    } else {
-        initializeScrollableTables();
-    }
-})();
+// R152 consolidates all table enhancement into the universal R121 table enhancer below.
 
 /* ===== OPAL Audible Notifications V1 ===== */
 (function () {
@@ -1061,13 +1038,11 @@ window.OPALTheme.color = function (name, fallback) {
     });
 })();
 
-/* ===== OPAL Update 121: Mobile-first operational experience ===== */
+/* ===== OPAL Update 121 + R152: Unified on-screen table experience ===== */
 (function () {
     "use strict";
 
     const phoneQuery = window.matchMedia("(max-width: 575px)");
-    const complexTablePattern = /(calendar|matrix|gradebook|marks|schedule-grid|timetable-grid|print-table|opal-keep-grid)/i;
-    const actionHeaderPattern = /(إجراء|الإجراء|الإجراءات|تحكم|خيارات|عملية)/;
 
     function ready(callback) {
         if (document.readyState === "loading") {
@@ -1077,75 +1052,49 @@ window.OPALTheme.color = function (name, fallback) {
         }
     }
 
-    function normalizedText(node) {
-        return (node && node.textContent ? node.textContent : "").replace(/\s+/g, " ").trim();
-    }
-
-    function setVisualViewportMetrics() {
-        const viewport = window.visualViewport;
-        const height = Math.max(320, Math.round(viewport ? viewport.height : window.innerHeight));
-        document.documentElement.style.setProperty("--opal-visual-viewport-height", height + "px");
-        if (!document.body) return;
-        const keyboardOpen = Boolean(viewport && phoneQuery.matches && (window.innerHeight - viewport.height) > 150);
-        document.body.classList.toggle("opal-keyboard-open", keyboardOpen);
-    }
-
-    function isComplexTable(table, headers) {
-        const mode = table.dataset.opalMobileTable || "";
-        if (mode === "scroll" || table.classList.contains("opal-no-mobile-cards")) return true;
-        if (mode === "cards") return false;
-        const identity = [table.id, table.className, table.getAttribute("aria-label") || ""].join(" ");
-        if (complexTablePattern.test(identity)) return true;
-        if (table.querySelector("table")) return true;
-        if (table.querySelector("thead [rowspan]:not([rowspan='1']), thead [colspan]:not([colspan='1'])")) return true;
-        if (headers.length < 2 || headers.length > 9) return true;
-        return false;
-    }
+    const universalTableWrapperSelector = [
+        ".table-responsive",
+        ".opal-table-wrap",
+        ".table-wrap",
+        ".opal-table-scroll",
+        ".opal-mobile-scroll-table",
+        ".learning-data-table-wrap",
+        ".learning-manager-table-wrap",
+        ".opal-timetable-matrix-wrap",
+        ".opal-live-events-matrix-wrap",
+        ".opal-universal-table-scroll"
+    ].join(", ");
 
     function markScrollableTable(table) {
-        const wrapper = table.closest(".table-responsive, .opal-table-wrap, .table-wrap");
-        if (!wrapper) return;
-        wrapper.classList.add("opal-mobile-scroll-table");
-        if (wrapper.querySelector(":scope > .opal-mobile-scroll-hint")) return;
-        const hint = document.createElement("div");
-        hint.className = "opal-mobile-scroll-hint";
-        hint.setAttribute("aria-hidden", "true");
-        hint.innerHTML = '<i class="bi bi-arrows-expand" aria-hidden="true"></i><span>اسحب أفقيًا لعرض بقية الجدول</span>';
-        wrapper.insertBefore(hint, wrapper.firstChild);
+        let wrapper = table.closest(universalTableWrapperSelector);
+        if (!wrapper) {
+            wrapper = document.createElement("div");
+            wrapper.className = "opal-universal-table-scroll";
+            table.parentNode.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+        }
+        wrapper.classList.add("opal-table-scroll");
+        if (!wrapper.hasAttribute("tabindex")) wrapper.setAttribute("tabindex", "0");
+        wrapper.setAttribute("role", "region");
+        wrapper.setAttribute("aria-label", "جدول قابل للتمرير أفقيًا وعموديًا");
+        wrapper.dataset.opalTableScrollAuthority = "r152";
+        return wrapper;
     }
 
     function decorateTable(table) {
-        if (!(table instanceof HTMLTableElement) || table.dataset.opalMobileReady === "1") return;
+        if (!(table instanceof HTMLTableElement)) return;
+
+        /* R152 establishes one table rule for the whole system: no mobile-card
+           transformation. Every screen table remains a real table and scrolls
+           on both axes inside its own container. */
+        table.classList.remove("opal-mobile-card-table");
         table.dataset.opalMobileReady = "1";
-        const headerRow = table.tHead && table.tHead.rows ? table.tHead.rows[0] : null;
-        const headers = headerRow ? Array.from(headerRow.cells).map(normalizedText) : [];
-        if (isComplexTable(table, headers)) {
-            markScrollableTable(table);
-            return;
-        }
-
-        const body = table.tBodies && table.tBodies[0];
-        if (!body) return;
-        table.classList.add("opal-mobile-card-table");
-        const wrapper = table.closest(".table-responsive, .opal-table-wrap, .table-wrap");
-        if (wrapper) wrapper.classList.add("opal-mobile-card-table-wrap");
-
-        Array.from(body.rows).forEach(function (row) {
-            const cells = Array.from(row.cells || []);
-            const emptyState = cells.length === 1 && Number(cells[0].colSpan || 1) > 1;
-            row.classList.toggle("opal-mobile-empty-table-row", emptyState);
-            if (emptyState) return;
-            cells.forEach(function (cell, index) {
-                const label = headers[index] || "بيان";
-                cell.dataset.opalLabel = label;
-                if (actionHeaderPattern.test(label)) cell.classList.add("opal-mobile-actions-cell");
-            });
-        });
+        markScrollableTable(table);
     }
 
     function enhanceTables(root) {
         const scope = root && root.querySelectorAll ? root : document;
-        scope.querySelectorAll("table.opal-table, .table-responsive > table, .opal-table-wrap > table, .table-wrap > table, table[data-opal-mobile-table]").forEach(decorateTable);
+        scope.querySelectorAll("body table").forEach(decorateTable);
     }
 
     function enhanceMobileActionAreas(root) {
