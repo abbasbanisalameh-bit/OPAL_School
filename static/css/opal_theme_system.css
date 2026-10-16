@@ -17448,3 +17448,23 @@ body:has(.opal-console-fullscreen) .opal-main {
     border: 0 !important;
   }
 }
+
+/* OPAL R153 - Sticky header contrast on the R152 table authority */
+@media screen {
+  body :where(
+    .opal-universal-table-scroll,
+    .opal-table-scroll,
+    .table-responsive,
+    .table-wrap,
+    .opal-table-wrap,
+    .opal-mobile-scroll-table,
+    .learning-data-table-wrap,
+    .learning-manager-table-wrap,
+    .opal-timetable-matrix-wrap,
+    .opal-live-events-matrix-wrap
+  ) > table > thead > tr > :where(th, td) {
+    background: var(--opal-table-head) !important;
+    color: var(--opal-text) !important;
+    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--opal-primary) 35%, transparent);
+  }
+}

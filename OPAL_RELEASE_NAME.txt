@@ -1,1 +1,1 @@
-OPAL Update 131.7 R152 - Final Universal Table Authority
+OPAL Update 131.7 R153 - Sticky Table Header Contrast
