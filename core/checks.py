@@ -22,7 +22,7 @@ from .dashboard_truth_contracts import run_dashboard_truth_audit
 def _horizontal_timetable_matrix_issues():
     """Verify that the production matrix and mobile containment were deployed."""
     required_templates = (
-        "templates/timetable/dashboard.html",
+        "templates/timetable/overview.html",
         "templates/timetable/print.html",
         "templates/teachers/portal_timetable.html",
         "templates/teachers/portal_dashboard.html",
@@ -32,6 +32,29 @@ def _horizontal_timetable_matrix_issues():
     )
     root = Path(settings.BASE_DIR)
     issues = []
+
+    # R157 separates the timetable editor from the read-only matrix/live-events view.
+    # The runtime gate follows that canonical overview instead of requiring the matrix
+    # to remain embedded in the editor, which would make every valid R157+ release fail.
+    dashboard_path = root / "templates/timetable/dashboard.html"
+    if dashboard_path.is_file():
+        dashboard_source = dashboard_path.read_text(encoding="utf-8")
+        # The smart-builder may legitimately render its *proposed* plan matrix;
+        # only the official timetable matrix and live-events display must live in overview.
+        if "opal-live-events-matrix" in dashboard_source or "opal-print-timetable" in dashboard_source:
+            issues.append({
+                "code": "TIMETABLE_MATRIX_NOT_SEPARATED",
+                "message": "يجب عرض مصفوفة الجدول والأحداث الجارية في صفحة النظرة العامة المستقلة، لا داخل محرر الجدول.",
+                "path": "templates/timetable/dashboard.html",
+            })
+
+    overview_path = root / "templates/timetable/overview.html"
+    if not overview_path.is_file():
+        issues.append({
+            "code": "TIMETABLE_OVERVIEW_TEMPLATE_MISSING",
+            "message": "قالب عرض مصفوفة الجدول والأحداث الجارية غير موجود.",
+            "path": "templates/timetable/overview.html",
+        })
     for relative in required_templates:
         path = root / relative
         if not path.is_file():
@@ -55,7 +78,7 @@ def _horizontal_timetable_matrix_issues():
             })
 
     current_lesson_templates = (
-        "templates/timetable/dashboard.html",
+        "templates/timetable/overview.html",
         "templates/teachers/portal_timetable.html",
         "templates/teachers/portal_dashboard.html",
         "templates/teachers/teacher_detail.html",

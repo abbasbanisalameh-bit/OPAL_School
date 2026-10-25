@@ -1,163 +1,44 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>تسجيل الدخول | OPAL ERP</title>
+{% extends "registration/auth_base.html" %}
+{% block title %}تسجيل الدخول | OPAL ERP{% endblock %}
+{% block content %}
+<h1>OPAL ERP</h1>
+<p>تسجيل الدخول إلى نظام مدرسة أوبال الدولية</p>
 
+{% if form.errors %}
+  <div class="alert alert-danger opal-auth-error" role="alert">اسم المستخدم أو كلمة المرور غير صحيحة</div>
+{% endif %}
+{% if request.GET.csrf_retry %}
+  <div class="alert alert-warning opal-auth-error" role="status">تم تحديث جلسة الدخول لحمايتك. أدخل بياناتك مرة أخرى.</div>
+{% endif %}
 
-
-<link rel="stylesheet" href="{% static 'css/opal_theme_system.css?v=1792189444' %}?v=opal-131.7-r137-glass-luxury">
-</head>
-
-<body class="opal-standalone-opal_school_templates_registration_login_html">
-    <div class="login-card">
-        <div class="login-logo">🎓</div>
-
-        <h2>OPAL ERP</h2>
-        <p>تسجيل الدخول إلى نظام مدرسة أوبال الدولية</p>
-
-        {% if form.errors %}
-            <div class="alert">اسم المستخدم أو كلمة المرور غير صحيحة</div>
-        {% endif %}
-
-        {% if request.GET.csrf_retry %}
-            <div class="alert">تم تحديث جلسة الدخول لحمايتك. أدخل بياناتك مرة أخرى.</div>
-        {% endif %}
-
-        <form method="post" action="{% url 'login' %}" id="opalLoginForm" autocomplete="on">
-            {% csrf_token %}
-
-            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
-
-            <label>اسم المستخدم</label>
-            <input type="text" name="username" class="form-control" required autofocus>
-
-            <label>كلمة المرور</label>
-            <input type="password" name="password" class="form-control" required>
-
-            <button type="submit" class="btn-login">دخول</button>
-        </form>
-
-        <div class="footer">OPAL Education Platform</div>
-    </div>
+<form method="post" action="{% url 'login' %}" id="opalLoginForm" autocomplete="on">
+  {% csrf_token %}
+  {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+  <div class="mb-3">
+    <label for="opal-login-username">اسم المستخدم</label>
+    <input id="opal-login-username" type="text" name="username" class="form-control" autocomplete="username" required autofocus>
+  </div>
+  <div class="mb-3">
+    <label for="opal-login-password">كلمة المرور</label>
+    <input id="opal-login-password" type="password" name="password" class="form-control" autocomplete="current-password" required>
+  </div>
+  <div class="opal-auth-actions">
+    <button type="submit" class="btn btn-primary opal-auth-submit">دخول</button>
+  </div>
+</form>
+<p class="opal-auth-footer">OPAL Education Platform</p>
 <script>
-window.addEventListener("pageshow", function(event) {
-    const entries = window.performance && performance.getEntriesByType
-        ? performance.getEntriesByType("navigation")
-        : [];
-    const returnedFromHistory = entries.length && entries[0].type === "back_forward";
-    if (event.persisted || returnedFromHistory) {
-        window.location.reload();
-    }
-});
-
-document.getElementById("opalLoginForm").addEventListener("submit", function() {
-    const button = this.querySelector("button[type='submit']");
-    button.disabled = true;
-    button.textContent = "جاري الدخول...";
-});
-</script>
-
-<!-- OPAL_SCROLL_UNLOCKER_V1792189444 -->
-<style>
-
-/* === OPAL ERP: FULL VERTICAL & HORIZONTAL TABLE SCROLL FIX === */
-html, body {
-    height: auto !important;
-    min-height: 100% !important;
-    max-height: none !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-x pan-y !important;
-}
-
-.opal-table-scroll-wrap {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    max-height: 75vh !important;
-    overflow-x: auto !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-x pan-y !important;
-    overscroll-behavior: auto !important;
-    position: relative !important;
-    padding-bottom: 16px !important;
-}
-
-.opal-table-scroll-wrap table,
-table {
-    touch-action: pan-x pan-y !important;
-}
-
-.opal-table-scroll-wrap::-webkit-scrollbar {
-    width: 8px !important;
-    height: 8px !important;
-}
-.opal-table-scroll-wrap::-webkit-scrollbar-thumb {
-    background: #fbbf24 !important;
-    border-radius: 4px !important;
-}
-/* === END OPAL SCROLL FIX === */
-
-</style>
-<script>
-(function() {
-    function unlockAllTablesAndAncestors() {
-        document.documentElement.style.setProperty('overflow-y', 'auto', 'important');
-        document.documentElement.style.setProperty('height', 'auto', 'important');
-        document.body.style.setProperty('overflow-y', 'auto', 'important');
-        document.body.style.setProperty('height', 'auto', 'important');
-        document.body.style.setProperty('max-height', 'none', 'important');
-        document.body.style.setProperty('padding-bottom', '100px', 'important');
-
-        document.querySelectorAll('table').forEach(function(tbl) {
-            tbl.style.setProperty('touch-action', 'pan-x pan-y', 'important');
-
-            // تأمين الحاوية المباشرة للجدول للتمرير الأفقي والعمودي معاً
-            var wrapper = tbl.parentElement;
-            if (wrapper) {
-                wrapper.classList.add('opal-table-scroll-wrap');
-                wrapper.style.setProperty('overflow-x', 'auto', 'important');
-                wrapper.style.setProperty('overflow-y', 'auto', 'important');
-                wrapper.style.setProperty('max-height', '75vh', 'important');
-                wrapper.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
-                wrapper.style.setProperty('touch-action', 'pan-x pan-y', 'important');
-            }
-
-            // الصعود عبر كل الحاويات الأبوية فوق حاوية الجدول وإلغاء أي قص أو قفل ارتفاع
-            var ancestor = wrapper ? wrapper.parentElement : null;
-            while (ancestor && ancestor !== document.body && ancestor !== document.documentElement) {
-                var cs = window.getComputedStyle(ancestor);
-                if (cs.overflowY === 'hidden' || cs.overflowY === 'clip' || cs.overflow === 'hidden') {
-                    ancestor.style.setProperty('overflow-y', 'visible', 'important');
-                }
-                if (cs.maxHeight && cs.maxHeight !== 'none') {
-                    ancestor.style.setProperty('max-height', 'none', 'important');
-                }
-                if (cs.height && (ancestor.scrollHeight > ancestor.clientHeight + 5)) {
-                    ancestor.style.setProperty('height', 'auto', 'important');
-                }
-                ancestor = ancestor.parentElement;
-            }
-        });
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', unlockAllTablesAndAncestors);
-    } else {
-        unlockAllTablesAndAncestors();
-    }
-    window.addEventListener('load', unlockAllTablesAndAncestors);
-    setTimeout(unlockAllTablesAndAncestors, 500);
+(function () {
+  var form = document.getElementById('opalLoginForm');
+  if (!form) return;
+  form.addEventListener('submit', function () {
+    var button = form.querySelector('button[type="submit"]');
+    if (button) { button.disabled = true; button.textContent = 'جاري الدخول...'; }
+  });
+  window.addEventListener('pageshow', function (event) {
+    var entries = window.performance && performance.getEntriesByType ? performance.getEntriesByType('navigation') : [];
+    if (event.persisted || (entries.length && entries[0].type === 'back_forward')) window.location.reload();
+  });
 })();
 </script>
-
-</body>
-</html>
+{% endblock %}

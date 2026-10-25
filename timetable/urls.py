@@ -6,6 +6,7 @@ app_name = "timetable"
 
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
+    path("overview/", views.overview, name="overview"),
     path("smart-builder/", views.smart_builder, name="smart_builder"),
     path("schedule-settings/", views.schedule_settings, name="schedule_settings"),
     path("events/<int:pk>/delete/", views.event_delete, name="event_delete"),

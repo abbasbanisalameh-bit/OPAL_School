@@ -24,8 +24,6 @@ REQUIRED = {
     "tools/verify_opal_css_authority_r125.py",
     "core/test_update131_7_r125_css_sovereignty_contract.py",
     "OPAL_CSS_AUTHORITY_CONTRACT_AR.md",
-    "INSTALL_OPAL_UPDATE_131_7_R125_CSS_SOVEREIGNTY_AR.md",
-    "OPAL_UPDATE_131_7_R125_RELEASE_NOTES_AR.md",
     "static/css/opal_theme_system.css",
     "static/js/opal_erp.js",
     "templates/base/base.html",

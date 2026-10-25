@@ -17618,3 +17618,29 @@ table {
   }
   .opal-update-saved-card { padding: 12px; }
 }
+
+
+/* OPAL Update 131.7 R157 — Receipt, Login & Account UX Restoration
+   Shared authentication and account-session controls; keep all visual rules in the single OPAL CSS authority. */
+.opal-auth-shell h1 { margin: .15rem 0 .5rem; }
+.opal-auth-shell .opal-auth-error { border-radius: 12px; font-weight: 700; }
+.opal-auth-shell .opal-auth-submit {
+  width: 100%; min-height: 48px; border: 0; border-radius: 13px;
+  background: linear-gradient(135deg,#12304f,#087b70); color: #fff;
+  font-weight: 800; box-shadow: 0 10px 24px rgba(8,123,112,.18);
+}
+.opal-auth-shell .opal-auth-submit:hover { filter: brightness(1.06); }
+.opal-auth-shell .opal-auth-submit:disabled { opacity: .72; cursor: wait; }
+.opal-auth-footer { margin: 1rem 0 0; font-size: .82rem; text-align: center; color: #667085; }
+.opal-account-session-actions { border-color: color-mix(in srgb,#dc3545 28%,var(--opal-border)) !important; }
+.opal-quick-access-footer { justify-content: flex-start; border-top-color: var(--opal-border); }
+.opal-quick-logout { font-weight: 800; }
+
+
+/* OPAL R157: restore readable shared authentication form and full mobile viewport. */
+html.opal-auth-document { min-height: 100%; background: #071427; }
+body.opal-auth-page { min-height: 100vh; min-height: 100dvh; color: #142746; }
+.opal-auth-shell label { color: #142746; display: block; }
+.opal-auth-shell input, .opal-auth-shell .form-control { color: #142746; background-color: #fff; }
+.opal-auth-shell input::placeholder, .opal-auth-shell .form-control::placeholder { color: #667085; opacity: 1; }
+.opal-auth-shell .form-control:focus { border-color: #1596b3; box-shadow: 0 0 0 .2rem rgba(21,150,179,.18); }

@@ -62,6 +62,16 @@ def dashboard(request):
 
 
 @management_required
+def overview(request):
+    """Display the canonical timetable matrix and live school status outside the editor."""
+    return render(
+        request,
+        "timetable/overview.html",
+        build_timetable_dashboard_context(request),
+    )
+
+
+@management_required
 def smart_builder(request):
     """LEGACY/DEPRECATED for OPAL Update 131 only; no internal link may use it."""
     target = reverse("timetable:dashboard") + "#smart-builder"

@@ -7,7 +7,7 @@
     <title>{{ error_title }} | OPAL ERP</title>
 
 
-<link rel="stylesheet" href="{% static 'css/opal_theme_system.css?v=1792189444' %}?v=opal-131.7-r137-glass-luxury">
+<link rel="stylesheet" href="{% static 'css/opal_theme_system.css' %}?v=opal-131.7-r157-unified-ui-restoration">
 </head>
 <body class="opal-standalone-opal_school_templates_errors_error_html">
 <main>
@@ -16,102 +16,5 @@
     <p>{{ error_message }}</p>
     <a href="/">العودة</a>
 </main>
-
-<!-- OPAL_SCROLL_UNLOCKER_V1792189444 -->
-<style>
-
-/* === OPAL ERP: FULL VERTICAL & HORIZONTAL TABLE SCROLL FIX === */
-html, body {
-    height: auto !important;
-    min-height: 100% !important;
-    max-height: none !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-x pan-y !important;
-}
-
-.opal-table-scroll-wrap {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    max-height: 75vh !important;
-    overflow-x: auto !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-x pan-y !important;
-    overscroll-behavior: auto !important;
-    position: relative !important;
-    padding-bottom: 16px !important;
-}
-
-.opal-table-scroll-wrap table,
-table {
-    touch-action: pan-x pan-y !important;
-}
-
-.opal-table-scroll-wrap::-webkit-scrollbar {
-    width: 8px !important;
-    height: 8px !important;
-}
-.opal-table-scroll-wrap::-webkit-scrollbar-thumb {
-    background: #fbbf24 !important;
-    border-radius: 4px !important;
-}
-/* === END OPAL SCROLL FIX === */
-
-</style>
-<script>
-(function() {
-    function unlockAllTablesAndAncestors() {
-        document.documentElement.style.setProperty('overflow-y', 'auto', 'important');
-        document.documentElement.style.setProperty('height', 'auto', 'important');
-        document.body.style.setProperty('overflow-y', 'auto', 'important');
-        document.body.style.setProperty('height', 'auto', 'important');
-        document.body.style.setProperty('max-height', 'none', 'important');
-        document.body.style.setProperty('padding-bottom', '100px', 'important');
-
-        document.querySelectorAll('table').forEach(function(tbl) {
-            tbl.style.setProperty('touch-action', 'pan-x pan-y', 'important');
-
-            // تأمين الحاوية المباشرة للجدول للتمرير الأفقي والعمودي معاً
-            var wrapper = tbl.parentElement;
-            if (wrapper) {
-                wrapper.classList.add('opal-table-scroll-wrap');
-                wrapper.style.setProperty('overflow-x', 'auto', 'important');
-                wrapper.style.setProperty('overflow-y', 'auto', 'important');
-                wrapper.style.setProperty('max-height', '75vh', 'important');
-                wrapper.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
-                wrapper.style.setProperty('touch-action', 'pan-x pan-y', 'important');
-            }
-
-            // الصعود عبر كل الحاويات الأبوية فوق حاوية الجدول وإلغاء أي قص أو قفل ارتفاع
-            var ancestor = wrapper ? wrapper.parentElement : null;
-            while (ancestor && ancestor !== document.body && ancestor !== document.documentElement) {
-                var cs = window.getComputedStyle(ancestor);
-                if (cs.overflowY === 'hidden' || cs.overflowY === 'clip' || cs.overflow === 'hidden') {
-                    ancestor.style.setProperty('overflow-y', 'visible', 'important');
-                }
-                if (cs.maxHeight && cs.maxHeight !== 'none') {
-                    ancestor.style.setProperty('max-height', 'none', 'important');
-                }
-                if (cs.height && (ancestor.scrollHeight > ancestor.clientHeight + 5)) {
-                    ancestor.style.setProperty('height', 'auto', 'important');
-                }
-                ancestor = ancestor.parentElement;
-            }
-        });
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', unlockAllTablesAndAncestors);
-    } else {
-        unlockAllTablesAndAncestors();
-    }
-    window.addEventListener('load', unlockAllTablesAndAncestors);
-    setTimeout(unlockAllTablesAndAncestors, 500);
-})();
-</script>
-
 </body>
 </html>

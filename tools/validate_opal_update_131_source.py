@@ -517,6 +517,7 @@ def main() -> int:
     # 5) Consolidated timetable and one-release redirect only.
     timetable_views = require_file("timetable/views.py")
     timetable_dashboard = require_file("templates/timetable/dashboard.html")
+    timetable_overview = require_file("templates/timetable/overview.html")
     add_check(
         "smart_builder_embedded",
         'id="smart-builder"' in timetable_dashboard and 'value="builder_apply"' in timetable_dashboard,
@@ -725,7 +726,7 @@ def main() -> int:
         path="static/js/opal_erp.js",
     )
     add_check("search_threshold", "bodyRows.length < 30" in js, "General table instant search threshold is not 30 rows.", path="static/js/opal_erp.js")
-    add_check("timetable_search_off", 'data-opal-instant-table="off"' in timetable_dashboard, "Timetable instant search is not disabled.", path="templates/timetable/dashboard.html")
+    add_check("timetable_search_off", 'data-opal-instant-table="off"' in timetable_overview, "Timetable overview's instant search is not disabled.", path="templates/timetable/overview.html")
     grade_names = require_file("academics/grade_names.py")
     add_check(
         "section_name_contract",

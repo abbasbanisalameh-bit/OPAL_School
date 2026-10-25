@@ -1,3 +1,7 @@
+## OPAL Update 131.7 R157 — الحزمة الموحدة
+
+يجمع إصلاحات R157 وR158 في حزمة واحدة، مع توحيد هوية الإصدار إلى `131.7` ورقم مراجعة `157`. راجع `INSTALL_OPAL_UPDATE_131_7_R157_AR.md`.
+
 # OPAL ERP — Update 130.0
 
 حزمة تثبيت كاملة تجمع تحديثات 128–129.2 مع إصلاحات الاستقرار المطلوبة للاعتماد الفعلي.
@@ -19,3 +23,7 @@
 - Driver credential redirect uses transport:driver-credentials.
 - Transport center owns the route-management UI while persisting the canonical admissions.TransportRoute records.
 - Duplicate trip/driver action blocks and duplicate URL patterns were removed from the transport package.
+
+
+## OPAL Update 131.7 R157
+Restores the existing login/account UI, removes duplicated profile logout markup, and relocates the existing timetable matrix/live-events display to a canonical overview route linked from timetable navigation and quick access. See `INSTALL_OPAL_UPDATE_131_7_R157_AR.md`.

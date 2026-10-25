@@ -25,6 +25,7 @@ _EXPECTED_SIDEBAR_KEYS = {
         "subjects",
         "exams",
         "timetable",
+        "timetable-overview",
         "finance-dashboard",
         "transport-dashboard",
         "documents",
@@ -175,9 +176,13 @@ def audit_canonical_visible_entries(root: Path | None = None) -> list[AuditIssue
         "teachers:portal_marks": {"templates/teachers/portal_workspace.html"},
         "teachers:teacher_create": {"templates/teachers/dashboard.html"},
         "academics:subject_list": {"templates/academics/subject_form.html", "dashboard/templates/dashboard/home.html"},
-        "timetable:dashboard": {"templates/timetable/form.html", "dashboard/templates/dashboard/home.html"},
+        "timetable:dashboard": {
+            "templates/timetable/form.html",
+            "templates/timetable/overview.html",
+            "dashboard/templates/dashboard/home.html",
+        },
         "timetable:schedule_settings": set(),
-        "timetable:absence_center": {"templates/timetable/dashboard.html"},
+        "timetable:absence_center": {"templates/timetable/overview.html"},
         "exams:exam_list": {
             "templates/exams/exam_form.html",
             "templates/exams/exam_list.html",

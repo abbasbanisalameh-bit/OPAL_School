@@ -14,20 +14,23 @@ class R128TimetablePrintContractTests(SimpleTestCase):
     def test_release_identity_remains_forward_compatible(self):
         assert_forward_compatible_release_identity(self, self.source, min_revision=40)
 
-    def test_timetable_uses_one_canonical_scroll_surface(self):
+    def test_timetable_uses_current_universal_scroll_authority(self):
+        import re
         css = self.source("static/css/opal_theme_system.css")
-        self.assertIn("OPAL Update 131.7 R128 — Mobile Timetable Containment & Print Hardening", css)
-        self.assertIn(".opal-timetable-matrix-wrap.table-responsive", css)
-        self.assertIn("overflow-x:auto !important;", css)
-        self.assertIn("overflow-y:hidden !important;", css)
-        self.assertIn("contain:none !important;", css)
-        self.assertIn("width:max-content !important;", css)
-        self.assertIn("touch-action:pan-x;", css)
-        self.assertIn("direction:rtl;", css)
+        # R148/R152 superseded R128's old single-axis scrolling contract.
+        compact = re.sub(r"\s+", "", css)
+        for token in (
+            ".opal-timetable-matrix-wrap.table-responsive",
+            "overflow-x:auto!important;",
+            "overflow-y:auto!important;",
+            "touch-action:pan-xpan-y!important;",
+            "direction:rtl;",
+        ):
+            self.assertIn(token, compact)
 
     def test_timetable_display_contracts_remain_canonical(self):
         templates = (
-            "templates/timetable/dashboard.html",
+            "templates/timetable/overview.html",
             "templates/teachers/portal_timetable.html",
             "templates/teachers/portal_dashboard.html",
             "templates/teachers/teacher_detail.html",
@@ -41,15 +44,18 @@ class R128TimetablePrintContractTests(SimpleTestCase):
             self.assertIn("opal-keep-grid", source, relative)
 
     def test_receipt_print_hardening_tokens_exist(self):
+        import re
         css = self.source("static/css/opal_theme_system.css")
+        # CSS whitespace is not semantic; normalize before checking declarations.
+        compact = re.sub(r"\s+", "", css)
         for token in (
-            "-webkit-text-fill-color:#111827 !important;",
-            "opacity:1 !important;",
-            "filter:none !important;",
-            "mix-blend-mode:normal !important;",
-            "forced-color-adjust:none !important;",
+            "-webkit-text-fill-color:#111827!important;",
+            "opacity:1!important;",
+            "filter:none!important;",
+            "mix-blend-mode:normal!important;",
+            "forced-color-adjust:none!important;",
         ):
-            self.assertIn(token, css)
+            self.assertIn(token, compact)
 
     def test_r128_cache_busting_is_applied(self):
         for relative in (

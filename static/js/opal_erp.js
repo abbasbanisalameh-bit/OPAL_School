@@ -554,11 +554,18 @@ window.OPALTheme.color = function (name, fallback) {
     }
 
     function installLiveBoundaryRefresh() {
+        // A zero/expired boundary means the page has no future transition to wait
+        // for. Treating zero as a timer causes a reload loop when the server keeps
+        // returning an expired state. This function is the single refresh owner.
         const seconds = Array.from(document.querySelectorAll("[data-live-seconds]"))
-            .map(function (node) { return Number.parseInt(node.dataset.liveSeconds || "", 10); })
-            .filter(function (value) { return Number.isFinite(value) && value >= 0; });
-        if (!seconds.length) return;
-        const nearestBoundary = Math.min.apply(null, seconds);
+            .map(function (node) { return Number.parseInt(node.dataset.liveSeconds || "", 10); });
+        const countdown = document.getElementById("opal-event-countdown");
+        if (countdown) seconds.push(Number.parseInt(countdown.dataset.seconds || "", 10));
+        const futureBoundaries = seconds.filter(function (value) {
+            return Number.isFinite(value) && value > 0;
+        });
+        if (!futureBoundaries.length) return;
+        const nearestBoundary = Math.min.apply(null, futureBoundaries);
         window.setTimeout(function () { window.location.reload(); }, (nearestBoundary + 1) * 1000);
     }
 
