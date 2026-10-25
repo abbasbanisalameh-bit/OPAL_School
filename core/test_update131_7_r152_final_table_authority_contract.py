@@ -14,10 +14,11 @@ GROUPS = (ROOT / "transport/templates/transport/groups/list.html").read_text(enc
 R152_MARKER = "OPAL R152 — Final Universal Table Authority"
 
 
-def test_r152_metadata_is_sequential_and_based_on_r151():
-    assert MANIFEST["package_revision"] == 152
-    assert "R151" in MANIFEST["baseline"]
-    assert "R152" in RELEASE
+def test_r152_release_history_remains_present_and_current_release_identity_is_aligned():
+    history = ROOT / "OPAL_UPDATE_131_7_R152_RELEASE_NOTES_AR.md"
+    assert history.is_file()
+    assert MANIFEST["package_revision"] >= 152
+    assert "R154" in RELEASE
     assert MANIFEST["version_name"] == RELEASE
 
 
@@ -51,10 +52,10 @@ def test_r152_unifies_js_table_enhancement():
     assert JS.count("function initializeScrollableTables") == 0
 
 
-def test_r152_cache_busting():
-    token = "opal-131.7-r152-universal-table-authority"
-    assert token in BASE
-    assert token in PRINT
+def test_r152_cache_busting_and_print_template_compatibility():
+    assert "opal-131.7-r154-mobile-update-center" in BASE
+    # The standalone print surface is intentionally unchanged by this screen-only update.
+    assert "opal-131.7-r152-universal-table-authority" in PRINT
 
 
 def test_r152_transport_groups_use_same_universal_table_rule():

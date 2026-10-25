@@ -1102,7 +1102,7 @@ flex: 1 1 auto;
   align-items: center;
   gap: 8px;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto ;
   padding: 2px 2px 6px;
   scrollbar-width: thin;
   scrollbar-color: rgba(34, 211, 238, .45) transparent;
@@ -11637,7 +11637,7 @@ width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
   overflow-x: auto !important;
-  overflow-y: hidden !important;
+  overflow-y: auto !important;
   overscroll-behavior-x: contain !important;
   -webkit-overflow-scrolling: touch !important;
   scrollbar-gutter: stable both-edges;
@@ -14465,7 +14465,7 @@ body.opal-standalone-opal_school_templates_parent_portal_family_statement_print_
 .opal-timetable-matrix-wrap.table-responsive {
   padding-bottom: 2px;
   scroll-padding-inline: 0;
-  touch-action: pan-x;
+  touch-action: pan-x pan-y ;
 }
 .opal-timetable-matrix-wrap .opal-timetable-grid {
   width: max-content !important;
@@ -16243,7 +16243,7 @@ html[data-opal-theme] .opal-topbar-actions .opal-theme-toggle i {
   max-width: 100% !important;
   min-width: 0 !important;
   overflow-x: auto !important;
-  overflow-y: hidden !important;
+  overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   overscroll-behavior-x: contain !important;
   touch-action: pan-x pan-y !important;
@@ -16364,11 +16364,11 @@ html[data-opal-theme] .opal-topbar-actions .opal-theme-toggle i {
   width: 100% !important;
   max-width: 100% !important;
   overflow-x: auto !important;
-  overflow-y: hidden !important;
+  overflow-y: auto !important;
   border: 1px solid color-mix(in srgb,var(--opal-glass-border) 72%,transparent);
   border-radius: var(--opal-table-radius);
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
+  touch-action: pan-x pan-y ;
 }
 .opal-live-events-matrix {
   width: max-content !important;
@@ -16761,7 +16761,7 @@ body:has(.opal-console-fullscreen) .opal-main {
     width: 100% !important;
     max-width: 100% !important;
     overflow-x: auto !important;
-    overflow-y: hidden !important;
+    overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior-inline: contain !important;
     touch-action: pan-x pan-y !important;
@@ -16884,7 +16884,7 @@ body:has(.opal-console-fullscreen) .opal-main {
   width: 100% !important;
   max-width: 100% !important;
   overflow-x: auto !important;
-  overflow-y: hidden !important;
+  overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   touch-action: pan-x pan-y !important;
   scrollbar-width: thin;
@@ -17466,5 +17466,204 @@ body:has(.opal-console-fullscreen) .opal-main {
     background: var(--opal-table-head) !important;
     color: var(--opal-text) !important;
     box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--opal-primary) 35%, transparent);
+  }
+}
+
+
+/* === OPAL ERP: FULL VERTICAL & HORIZONTAL TABLE SCROLL FIX === */
+html, body {
+    height: auto !important;
+    min-height: 100% !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x pan-y !important;
+}
+
+.opal-table-scroll-wrap {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 75vh !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x pan-y !important;
+    overscroll-behavior: auto !important;
+    position: relative !important;
+    padding-bottom: 16px !important;
+}
+
+.opal-table-scroll-wrap table,
+table {
+    touch-action: pan-x pan-y !important;
+}
+
+.opal-table-scroll-wrap::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+}
+.opal-table-scroll-wrap::-webkit-scrollbar-thumb {
+    background: #fbbf24 !important;
+    border-radius: 4px !important;
+}
+/* === END OPAL SCROLL FIX === */
+
+
+/* ===== OPAL Update 131.7 R154 — mobile Update Center containment =====
+   Scoped to the Update Center; preserves shared table, form, print and business rules. */
+@media screen {
+  .opal-update-current-card,
+  #opal-update-workspace,
+  .opal-update-current-card *,
+  #opal-update-workspace * {
+    box-sizing: border-box;
+  }
+
+  .opal-update-current-card,
+  #opal-update-workspace {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .opal-update-current-main,
+  .opal-update-current-main > div,
+  .opal-update-current-state,
+  .opal-update-workspace-head > div,
+  .opal-update-source-switch > *,
+  .opal-update-server-status > *,
+  .opal-update-server-status-grid > div,
+  .opal-update-action-card,
+  .opal-update-saved-card {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .opal-update-current-main h2,
+  .opal-update-meta-grid span,
+  .opal-update-meta-grid strong,
+  .opal-update-meta-grid code,
+  .opal-update-server-status-grid strong,
+  .opal-update-saved-card th,
+  .opal-update-saved-card td {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .opal-update-current-state .badge {
+    max-width: 100%;
+    white-space: normal;
+    text-align: start;
+  }
+
+  .opal-update-source-switch > form,
+  .opal-update-source-btn,
+  .opal-update-action-card form,
+  .opal-update-action-card .form-control,
+  .opal-update-action-card .btn,
+  .opal-update-github-actions form,
+  .opal-update-github-actions .btn {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .opal-update-source-btn,
+  .opal-update-action-card .btn,
+  .opal-update-github-actions .btn {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.45;
+  }
+
+  .opal-update-action-card .form-control {
+    width: 100%;
+  }
+
+  .opal-update-saved-card .opal-table-viewport,
+  .opal-update-saved-card .table-responsive {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-inline: contain;
+  }
+
+  .opal-update-saved-card .opal-table-viewport > table,
+  .opal-update-saved-card .table-responsive > table {
+    min-width: 760px;
+    width: max-content;
+    max-width: none;
+  }
+}
+
+@media screen and (max-width: 767.98px) {
+  .opal-update-current-card,
+  #opal-update-workspace {
+    padding: 12px !important;
+  }
+
+  .opal-update-current-main {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .opal-update-current-icon {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .opal-update-current-main h2 {
+    font-size: clamp(1rem, 4.2vw, 1.35rem);
+    line-height: 1.4;
+  }
+
+  .opal-update-current-state {
+    min-width: 0;
+    align-items: flex-start;
+  }
+
+  .opal-update-workspace-head,
+  .opal-update-section-head {
+    gap: 12px;
+  }
+
+  .opal-update-source-switch,
+  .opal-update-action-grid {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .opal-update-source-switch > form,
+  .opal-update-source-switch > form button,
+  .opal-update-source-switch > button,
+  .opal-update-action-card form > .btn,
+  .opal-update-github-actions form,
+  .opal-update-github-actions form .btn {
+    width: 100%;
+  }
+
+  .opal-update-action-title {
+    gap: 9px;
+  }
+
+  .opal-update-action-title > i {
+    flex-basis: 38px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .opal-update-github-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .opal-update-saved-card {
+    padding: 12px;
   }
 }

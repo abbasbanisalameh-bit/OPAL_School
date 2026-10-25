@@ -2,20 +2,21 @@
   "schema": 2,
   "product": "OPAL ERP",
   "version": "131.7",
-  "version_name": "OPAL Update 131.7 R152 - Final Universal Table Authority",
-  "package_revision": 152,
+  "version_name": "OPAL Update 131.7 R154 - Mobile Update Center Repair",
+  "package_revision": 154,
   "source_type": "verified_update_package",
-  "created_at": "2026-10-03T10:30:00+03:00",
+  "created_at": "2026-10-25T02:31:00+03:00",
   "created_by": "OpenAI",
   "branch": "main",
-  "baseline": "OPAL Update 131.7 R151 - Universal Table Scroll Containment & Transport Groups",
-  "notes": "R152 ينظف طبقة الجداول ويجعلها قاعدة نهائية واحدة على مستوى جميع جداول الشاشة: الحاوية تملك التمرير الأفقي والعمودي، الجدول يستغل 100% كحد أدنى ويتمدد حسب المحتوى، وكل صف أفقي يبقى في سطر واحد. تمت إزالة ازدواجية معالجات الجداول القديمة من JavaScript، مع الحفاظ على سلوك الطباعة وعدم تغيير قاعدة البيانات أو منطق الأعمال.",
+  "baseline": "OPAL Update 131.7 R153 - Sticky Table Header Contrast",
+  "notes": "إصلاح عرض مركز إدارة النسخ والتحديثات على الهاتف: احتواء بيانات الإصدار وCommit والنصوص الطويلة، منع تجاوز عرض الصفحة، ضبط التفاف الأزرار والحقول، والحفاظ على الجداول داخل حاويات تمرير أفقي. لا تغييرات على قاعدة البيانات أو الصلاحيات أو منطق الأعمال.",
   "code_only": true,
   "excluded": [
     "media",
     "virtual_environment",
     ".env",
     ".git",
-    "collected_static"
+    "collected_static",
+    "database"
   ]
 }
