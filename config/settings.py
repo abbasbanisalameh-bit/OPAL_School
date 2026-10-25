@@ -32,9 +32,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -------------------------
 # الأمان
 # -------------------------
-SECRET_KEY = get_secret_key()
-
 DEBUG = env_bool("OPAL_DEBUG", False)
+SECRET_KEY = get_secret_key(debug=DEBUG, base_dir=BASE_DIR)
 
 # Existing modules remain enabled by default so no feature is hidden or deleted.
 # An environment may disable an optional foundation explicitly without removing its code.
@@ -102,6 +101,17 @@ STATIC_URL, STATICFILES_DIRS, STATIC_ROOT = build_static_paths(BASE_DIR)
 # ملفات الوسائط
 # -------------------------
 MEDIA_URL, MEDIA_ROOT = build_media_paths(BASE_DIR)
+
+# Create required runtime directories without deleting or modifying user files.
+# STATIC_ROOT is still populated by collectstatic during deployment.
+for _opal_runtime_dir in (MEDIA_ROOT, STATIC_ROOT):
+    try:
+        _opal_runtime_dir.mkdir(parents=True, exist_ok=True)
+    except OSError as _opal_dir_error:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured(
+            f"OPAL runtime directory is not accessible: {_opal_runtime_dir}"
+        ) from _opal_dir_error
 
 
 # -------------------------

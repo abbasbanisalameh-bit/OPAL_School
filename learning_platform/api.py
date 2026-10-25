@@ -59,11 +59,11 @@ from .services import (
 from .models import LearningAccount
 from .forms import LearningSubscriptionBatchForm
 from .production import collect_learning_readiness_checks
+from core.client_ip import get_client_ip
 
 
 def _client_ip(request):
-    forwarded = (request.META.get("HTTP_X_FORWARDED_FOR") or "").split(",")[0].strip()
-    return forwarded or request.META.get("REMOTE_ADDR") or "unknown"
+    return get_client_ip(request) or "unknown"
 
 
 def _json_body(request):

@@ -21,6 +21,8 @@ from django.views.decorators.http import require_http_methods, require_POST
 
 from accounts.workflow import is_management_user
 
+from core.client_ip import get_client_ip
+
 from .forms import (
     LearningAIQuestionForm,
     LearningAISettingsForm,
@@ -197,7 +199,7 @@ def _lesson_video_player(video_url):
 
 
 def _client_ip(request):
-    return request.META.get("REMOTE_ADDR") or None
+    return get_client_ip(request)
 
 
 def _safe_learning_next(request, default_name="learning_platform:dashboard"):

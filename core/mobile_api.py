@@ -20,6 +20,7 @@ from django.views.decorators.http import require_http_methods
 from accounts.workflow import get_user_profile, role_code
 from learning_platform.security_services import consume_rate_limit
 
+from .client_ip import get_client_ip
 from .models import AuditLog, SystemMobileAPIToken
 
 
@@ -46,8 +47,7 @@ ROLE_MODULES = {
 
 
 def _client_ip(request):
-    forwarded = (request.META.get("HTTP_X_FORWARDED_FOR") or "").split(",")[0].strip()
-    return forwarded or request.META.get("REMOTE_ADDR") or "unknown"
+    return get_client_ip(request) or "unknown"
 
 
 def _json_body(request):

@@ -17511,23 +17511,15 @@ table {
 /* === END OPAL SCROLL FIX === */
 
 
-/* ===== OPAL Update 131.7 R154 — mobile Update Center containment =====
-   Scoped to the Update Center; preserves shared table, form, print and business rules. */
+/* ===== OPAL Update 131.7 R155 — update-center mobile containment =====
+   Scoped to the update center; preserve the single shared stylesheet authority. */
 @media screen {
-  .opal-update-current-card,
   #opal-update-workspace,
-  .opal-update-current-card *,
-  #opal-update-workspace * {
-    box-sizing: border-box;
-  }
-
+  #opal-update-workspace *,
   .opal-update-current-card,
-  #opal-update-workspace {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
-
+  .opal-update-current-card * { box-sizing: border-box; }
+  #opal-update-workspace,
+  .opal-update-current-card { width: 100%; max-width: 100%; min-width: 0; }
   .opal-update-current-main,
   .opal-update-current-main > div,
   .opal-update-current-state,
@@ -17536,28 +17528,22 @@ table {
   .opal-update-server-status > *,
   .opal-update-server-status-grid > div,
   .opal-update-action-card,
-  .opal-update-saved-card {
-    min-width: 0;
-    max-width: 100%;
-  }
-
+  .opal-update-saved-card { min-width: 0; max-width: 100%; }
   .opal-update-current-main h2,
   .opal-update-meta-grid span,
   .opal-update-meta-grid strong,
   .opal-update-meta-grid code,
   .opal-update-server-status-grid strong,
-  .opal-update-saved-card th,
-  .opal-update-saved-card td {
+  .opal-update-saved-card td,
+  .opal-update-saved-card th {
     overflow-wrap: anywhere;
     word-break: normal;
   }
-
   .opal-update-current-state .badge {
     max-width: 100%;
     white-space: normal;
     text-align: start;
   }
-
   .opal-update-source-switch > form,
   .opal-update-source-btn,
   .opal-update-action-card form,
@@ -17568,7 +17554,6 @@ table {
     min-width: 0;
     max-width: 100%;
   }
-
   .opal-update-source-btn,
   .opal-update-action-card .btn,
   .opal-update-github-actions .btn {
@@ -17576,11 +17561,7 @@ table {
     overflow-wrap: anywhere;
     line-height: 1.45;
   }
-
-  .opal-update-action-card .form-control {
-    width: 100%;
-  }
-
+  .opal-update-action-card .form-control { width: 100%; }
   .opal-update-saved-card .opal-table-viewport,
   .opal-update-saved-card .table-responsive {
     display: block;
@@ -17592,7 +17573,6 @@ table {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-inline: contain;
   }
-
   .opal-update-saved-card .opal-table-viewport > table,
   .opal-update-saved-card .table-responsive > table {
     min-width: 760px;
@@ -17600,70 +17580,41 @@ table {
     max-width: none;
   }
 }
-
 @media screen and (max-width: 767.98px) {
   .opal-update-current-card,
-  #opal-update-workspace {
-    padding: 12px !important;
-  }
-
-  .opal-update-current-main {
-    align-items: flex-start;
-    gap: 10px;
-  }
-
+  #opal-update-workspace { padding: 12px !important; }
+  .opal-update-current-main { align-items: flex-start; gap: 10px; }
   .opal-update-current-icon {
     flex: 0 0 38px;
     width: 38px;
     height: 38px;
   }
-
   .opal-update-current-main h2 {
     font-size: clamp(1rem, 4.2vw, 1.35rem);
     line-height: 1.4;
   }
-
-  .opal-update-current-state {
-    min-width: 0;
-    align-items: flex-start;
-  }
-
   .opal-update-workspace-head,
-  .opal-update-section-head {
-    gap: 12px;
-  }
-
+  .opal-update-section-head { gap: 12px; }
   .opal-update-source-switch,
   .opal-update-action-grid {
     grid-template-columns: minmax(0, 1fr);
     width: 100%;
   }
-
   .opal-update-source-switch > form,
   .opal-update-source-switch > form button,
   .opal-update-source-switch > button,
   .opal-update-action-card form > .btn,
   .opal-update-github-actions form,
-  .opal-update-github-actions form .btn {
-    width: 100%;
-  }
-
-  .opal-update-action-title {
-    gap: 9px;
-  }
-
+  .opal-update-github-actions form .btn { width: 100%; }
+  .opal-update-action-title { gap: 9px; }
   .opal-update-action-title > i {
     flex-basis: 38px;
     width: 38px;
     height: 38px;
   }
-
   .opal-update-github-actions {
     flex-direction: column;
     align-items: stretch;
   }
-
-  .opal-update-saved-card {
-    padding: 12px;
-  }
+  .opal-update-saved-card { padding: 12px; }
 }

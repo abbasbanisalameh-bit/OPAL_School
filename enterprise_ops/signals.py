@@ -2,14 +2,11 @@ from django.apps import apps
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
 
+from core.client_ip import get_client_ip
+
 
 def _ip(request):
-    forwarded = request.META.get("HTTP_X_FORWARDED_FOR", "") if request else ""
-    return (
-        forwarded.split(",")[0].strip()
-        if forwarded
-        else (request.META.get("REMOTE_ADDR") if request else None)
-    ) or None
+    return get_client_ip(request)
 
 
 def _audit_log_model():

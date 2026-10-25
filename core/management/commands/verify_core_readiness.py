@@ -73,8 +73,21 @@ class Command(BaseCommand):
         if settings.DEBUG:
             required("SEC_DEBUG", "وضع DEBUG مفعّل ويجب إيقافه في التشغيل الفعلي.")
         secret = str(settings.SECRET_KEY or "")
-        if not secret or secret.startswith("django-insecure-") or secret == "django-insecure-change-this-key-before-production":
-            required("SEC_SECRET_KEY", "مفتاح OPAL_SECRET_KEY غير مضبوط بمفتاح إنتاجي آمن.")
+        if (
+            not secret
+            or len(secret) < 50
+            or secret.startswith("django-insecure-")
+            or secret == "django-insecure-change-this-key-before-production"
+        ):
+            required("SEC_SECRET_KEY", "مفتاح OPAL_SECRET_KEY غير مضبوط بمفتاح إنتاجي آمن بطول كافٍ.")
+        for code, label, path in (
+            ("FS_MEDIA", "مجلد الوسائط", Path(settings.MEDIA_ROOT)),
+            ("FS_STATIC_ROOT", "مجلد staticfiles", Path(settings.STATIC_ROOT)),
+        ):
+            if not path.is_dir():
+                required(code, f"{label} غير موجود: {path}")
+            elif not os.access(path, os.W_OK):
+                required(code, f"{label} غير قابل للكتابة: {path}")
         allowed_hosts = list(getattr(settings, "ALLOWED_HOSTS", []) or [])
         if not allowed_hosts or "*" in allowed_hosts:
             required("SEC_ALLOWED_HOSTS", "ALLOWED_HOSTS فارغ أو يسمح لجميع النطاقات؛ يجب حصر نطاقات الموقع الفعلية.")

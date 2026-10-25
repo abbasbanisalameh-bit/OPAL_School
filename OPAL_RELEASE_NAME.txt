@@ -1,1 +1,1 @@
-OPAL Update 131.7 R154 - Mobile Update Center Repair
+OPAL Update 131.7 R155 - Security Audit Hardening & Mobile Update Center

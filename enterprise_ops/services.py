@@ -7,6 +7,7 @@ from django.db import DatabaseError, transaction
 from django.db.models import Avg, Count, Q
 from django.utils import timezone
 
+from core.client_ip import get_client_ip
 from core.models import AuditLog
 
 from .models import ApprovalAction, FeedbackTicket, MonthlyServiceEvaluation, Notification
@@ -176,8 +177,7 @@ def feedback_satisfaction_snapshot(queryset=None, today=None, school=None):
 
 
 def client_ip(request):
-    forwarded = request.META.get("HTTP_X_FORWARDED_FOR", "")
-    return (forwarded.split(",")[0].strip() if forwarded else request.META.get("REMOTE_ADDR")) or None
+    return get_client_ip(request)
 
 
 def _user_scope(user):
