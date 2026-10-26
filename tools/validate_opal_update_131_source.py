@@ -517,7 +517,29 @@ def main() -> int:
     # 5) Consolidated timetable and one-release redirect only.
     timetable_views = require_file("timetable/views.py")
     timetable_dashboard = require_file("templates/timetable/dashboard.html")
-    timetable_overview = require_file("templates/timetable/overview.html")
+    add_check(
+        "unified_timetable_workspace",
+        all(token in timetable_dashboard for token in (
+            "opal-live-events-matrix", "opal-print-timetable", 'id="smart-builder"', "data-live-seconds"
+        )),
+        "The canonical timetable screen must contain the official matrix, live events, and the existing smart builder.",
+        path="templates/timetable/dashboard.html",
+    )
+    add_check(
+        "parallel_timetable_template_removed",
+        not (root / "templates/timetable/overview.html").exists(),
+        "The separate timetable overview template must be removed after consolidation.",
+        path="templates/timetable/overview.html",
+    )
+    add_check(
+        "legacy_overview_redirects_to_dashboard",
+        'def overview(request):' in timetable_views
+        and 'reverse("timetable:dashboard")' in timetable_views
+        and "HttpResponseRedirect" in timetable_views
+        and 'render(request, "timetable/overview.html"' not in timetable_views,
+        "The prior overview URL must redirect to the canonical timetable dashboard, not render a second template.",
+        path="timetable/views.py",
+    )
     add_check(
         "smart_builder_embedded",
         'id="smart-builder"' in timetable_dashboard and 'value="builder_apply"' in timetable_dashboard,
@@ -726,7 +748,7 @@ def main() -> int:
         path="static/js/opal_erp.js",
     )
     add_check("search_threshold", "bodyRows.length < 30" in js, "General table instant search threshold is not 30 rows.", path="static/js/opal_erp.js")
-    add_check("timetable_search_off", 'data-opal-instant-table="off"' in timetable_overview, "Timetable overview's instant search is not disabled.", path="templates/timetable/overview.html")
+    add_check("timetable_search_off", 'data-opal-instant-table="off"' in timetable_dashboard, "The official matrix instant search must remain disabled in the unified timetable screen.", path="templates/timetable/dashboard.html")
     grade_names = require_file("academics/grade_names.py")
     add_check(
         "section_name_contract",

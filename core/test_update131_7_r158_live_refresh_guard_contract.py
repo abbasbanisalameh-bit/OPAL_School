@@ -15,8 +15,8 @@ class R158LiveRefreshGuardContractTests(unittest.TestCase):
         self.assertIn("opal-event-countdown", js)
         self.assertIn("if (!futureBoundaries.length) return;", js)
 
-    def test_timetable_overview_has_no_duplicate_refresh_timer(self):
-        page = self.source("templates/timetable/overview.html")
+    def test_unified_timetable_screen_has_no_duplicate_refresh_timer(self):
+        page = self.source("templates/timetable/dashboard.html")
         self.assertIn("Live-boundary refresh is handled once", page)
         self.assertNotIn("window.location.reload()", page)
 
@@ -30,7 +30,7 @@ class R158LiveRefreshGuardContractTests(unittest.TestCase):
         import json
         manifest = json.loads(self.source("OPAL_UPDATE_MANIFEST.json"))
         self.assertEqual(manifest["version"], "131.7")
-        self.assertEqual(manifest["package_revision"], 158)
+        self.assertGreaterEqual(manifest["package_revision"], 158)
         self.assertEqual(self.source("OPAL_VERSION.txt").strip(), "131.7")
         self.assertEqual(self.source("OPAL_RELEASE_NAME.txt").strip(), manifest["version_name"])
 

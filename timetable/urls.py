@@ -6,6 +6,7 @@ app_name = "timetable"
 
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
+    # Legacy bookmark compatibility: redirects to the single timetable workspace.
     path("overview/", views.overview, name="overview"),
     path("smart-builder/", views.smart_builder, name="smart_builder"),
     path("schedule-settings/", views.schedule_settings, name="schedule_settings"),

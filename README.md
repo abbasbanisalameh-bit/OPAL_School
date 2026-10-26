@@ -27,3 +27,9 @@
 
 ## OPAL Update 131.7 R157
 Restores the existing login/account UI, removes duplicated profile logout markup, and relocates the existing timetable matrix/live-events display to a canonical overview route linked from timetable navigation and quick access. See `INSTALL_OPAL_UPDATE_131_7_R157_AR.md`.
+
+## OPAL Update 131.7 R159 — شاشة الجدول الموحدة
+
+يدمج R159 الجدول الأسبوعي ومصفوفة الجدول الرسمية والأحداث الجارية والمنشئ الذكي في `templates/timetable/dashboard.html` الموجود، ويزيل قالب العرض المنفصل. يبقى اسم المسار القديم `timetable:overview` للتوافق فقط، ويعيد التوجيه إلى شاشة الجدول الموحدة. أزيل المدخل المكرر من قائمة الإدارة والوصول السريع؛ لا توجد نماذج بيانات أو ترحيلات جديدة.
+
+راجع `INSTALL_OPAL_UPDATE_131_7_R159_AR.md` قبل التثبيت، و`OPAL_UPDATE_131_7_R159_VALIDATION_REPORT_AR.md` لنتائج الفحوص وحدودها.

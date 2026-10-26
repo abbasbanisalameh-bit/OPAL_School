@@ -63,12 +63,10 @@ def dashboard(request):
 
 @management_required
 def overview(request):
-    """Display the canonical timetable matrix and live school status outside the editor."""
-    return render(
-        request,
-        "timetable/overview.html",
-        build_timetable_dashboard_context(request),
-    )
+    """Backward-compatible alias; the timetable and live overview now share one screen."""
+    target = reverse("timetable:dashboard")
+    query = request.GET.urlencode()
+    return HttpResponseRedirect(f"{target}?{query}" if query else target)
 
 
 @management_required

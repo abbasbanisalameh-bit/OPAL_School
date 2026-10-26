@@ -22,7 +22,7 @@ from .dashboard_truth_contracts import run_dashboard_truth_audit
 def _horizontal_timetable_matrix_issues():
     """Verify that the production matrix and mobile containment were deployed."""
     required_templates = (
-        "templates/timetable/overview.html",
+        "templates/timetable/dashboard.html",
         "templates/timetable/print.html",
         "templates/teachers/portal_timetable.html",
         "templates/teachers/portal_dashboard.html",
@@ -33,26 +33,29 @@ def _horizontal_timetable_matrix_issues():
     root = Path(settings.BASE_DIR)
     issues = []
 
-    # R157 separates the timetable editor from the read-only matrix/live-events view.
-    # The runtime gate follows that canonical overview instead of requiring the matrix
-    # to remain embedded in the editor, which would make every valid R157+ release fail.
+    # R159 has one canonical timetable workspace: status, live events, official
+    # matrix, editing actions, and smart builder all use the existing dashboard route.
     dashboard_path = root / "templates/timetable/dashboard.html"
     if dashboard_path.is_file():
         dashboard_source = dashboard_path.read_text(encoding="utf-8")
-        # The smart-builder may legitimately render its *proposed* plan matrix;
-        # only the official timetable matrix and live-events display must live in overview.
-        if "opal-live-events-matrix" in dashboard_source or "opal-print-timetable" in dashboard_source:
+        missing_unified_parts = [
+            marker for marker in ("opal-live-events-matrix", "opal-print-timetable", 'id="smart-builder"', "data-live-seconds")
+            if marker not in dashboard_source
+        ]
+        if missing_unified_parts:
             issues.append({
-                "code": "TIMETABLE_MATRIX_NOT_SEPARATED",
-                "message": "يجب عرض مصفوفة الجدول والأحداث الجارية في صفحة النظرة العامة المستقلة، لا داخل محرر الجدول.",
+                "code": "TIMETABLE_UNIFIED_VIEW_INCOMPLETE",
+                "message": "شاشة الجدول الموحدة لا تحتوي جميع الأجزاء المطلوبة: " + "، ".join(missing_unified_parts),
                 "path": "templates/timetable/dashboard.html",
             })
 
+    # The previous template must be absent from a full-code package. The named
+    # overview URL remains only as a redirect alias for existing bookmarks.
     overview_path = root / "templates/timetable/overview.html"
-    if not overview_path.is_file():
+    if overview_path.exists():
         issues.append({
-            "code": "TIMETABLE_OVERVIEW_TEMPLATE_MISSING",
-            "message": "قالب عرض مصفوفة الجدول والأحداث الجارية غير موجود.",
+            "code": "TIMETABLE_PARALLEL_TEMPLATE_PRESENT",
+            "message": "قالب المصفوفة المنفصل ما زال موجودًا؛ يجب أن تكون شاشة الجدول الموحدة هي القالب الوحيد.",
             "path": "templates/timetable/overview.html",
         })
     for relative in required_templates:
@@ -78,7 +81,7 @@ def _horizontal_timetable_matrix_issues():
             })
 
     current_lesson_templates = (
-        "templates/timetable/overview.html",
+        "templates/timetable/dashboard.html",
         "templates/teachers/portal_timetable.html",
         "templates/teachers/portal_dashboard.html",
         "templates/teachers/teacher_detail.html",

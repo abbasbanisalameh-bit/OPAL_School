@@ -2,7 +2,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CSS = (ROOT / 'static/css/opal_theme_system.css').read_text(encoding='utf-8')
-TEMPLATE = (ROOT / 'templates/timetable/overview.html').read_text(encoding='utf-8')
+TEMPLATE = (ROOT / 'templates/timetable/dashboard.html').read_text(encoding='utf-8')
 
 
 def test_r147_two_axis_scroll_authority():

@@ -19,7 +19,7 @@ class R157UnifiedUIContractTests(SimpleTestCase):
         ):
             source = self.source(relative)
             self.assertNotIn("static 'css/opal_theme_system.css?", source)
-            self.assertIn("{% static 'css/opal_theme_system.css' %}?v=opal-131.7-r157-unified-ui-restoration", source)
+            self.assertRegex(source, r"\{% static 'css/opal_theme_system\.css' %\}\?v=opal-131\.7-r\d+-[a-z0-9-]+")
 
     def test_registration_receipt_retains_two_copy_print_contract(self):
         source = self.source("templates/admissions/registration_receipt.html")
@@ -47,17 +47,17 @@ class R157UnifiedUIContractTests(SimpleTestCase):
             self.assertIn("{% csrf_token %}", source)
             self.assertIn('method="post"', source)
 
-    def test_schedule_matrix_and_live_events_are_moved_to_overview(self):
+    def test_schedule_matrix_live_events_and_builder_share_one_canonical_screen(self):
         dashboard = self.source("templates/timetable/dashboard.html")
-        overview = self.source("templates/timetable/overview.html")
         catalog = self.source("core/workflow_catalog.py")
         urls = self.source("timetable/urls.py")
-        self.assertNotIn("opal-live-events-matrix", dashboard)
-        self.assertNotIn("opal-print-timetable", dashboard)
-        self.assertIn("opal-live-events-matrix", overview)
-        self.assertIn("opal-print-timetable", overview)
-        self.assertIn('"timetable:overview"', catalog)
-        self.assertIn('name="overview"', urls)
+        self.assertIn("opal-live-events-matrix", dashboard)
+        self.assertIn("opal-print-timetable", dashboard)
+        self.assertIn('id="smart-builder"', dashboard)
+        self.assertNotIn('"timetable:overview"', catalog)
+        self.assertNotIn('"timetable-overview"', catalog)
+        self.assertIn('name="overview"', urls)  # Legacy URL must redirect, not render a second page.
+        self.assertFalse((ROOT / "templates/timetable/overview.html").exists())
 
     def test_auth_labels_are_readable_and_share_single_auth_template(self):
         auth = self.source("templates/registration/auth_base.html")
@@ -85,14 +85,14 @@ class R157UnifiedUIContractTests(SimpleTestCase):
         self.assertEqual(version, "131.7")
         self.assertEqual(manifest["version"], version)
         self.assertEqual(manifest["version_name"], release_name)
-        self.assertEqual(manifest["package_revision"], 157)
-        self.assertTrue(release_name.startswith("OPAL Update 131.7 R157 - "))
+        self.assertEqual(manifest["package_revision"], 159)
+        self.assertTrue(release_name.startswith("OPAL Update 131.7 R159 - "))
 
-    def test_runtime_gate_accepts_canonical_timetable_overview(self):
+    def test_runtime_gate_requires_one_unified_timetable_screen(self):
         checks = self.source("core/checks.py")
-        self.assertIn('"templates/timetable/overview.html"', checks)
-        self.assertIn("TIMETABLE_MATRIX_NOT_SEPARATED", checks)
-        self.assertIn("TIMETABLE_OVERVIEW_TEMPLATE_MISSING", checks)
+        self.assertIn('"templates/timetable/dashboard.html"', checks)
+        self.assertIn("TIMETABLE_UNIFIED_VIEW_INCOMPLETE", checks)
+        self.assertIn("TIMETABLE_PARALLEL_TEMPLATE_PRESENT", checks)
     def test_single_entry_audit_matches_the_r157_navigation_contract(self):
         from core.single_entry_contracts import audit_role_gateways, audit_canonical_visible_entries
         self.assertEqual(audit_role_gateways(), [])

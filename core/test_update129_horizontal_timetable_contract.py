@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class Update129HorizontalTimetableContractTests(unittest.TestCase):
     def test_every_timetable_display_uses_one_day_row_matrix(self):
         templates = (
-            "templates/timetable/overview.html",
+            "templates/timetable/dashboard.html",
             "templates/timetable/print.html",
             "templates/teachers/portal_timetable.html",
             "templates/teachers/portal_dashboard.html",

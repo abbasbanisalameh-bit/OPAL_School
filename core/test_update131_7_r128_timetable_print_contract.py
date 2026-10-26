@@ -30,7 +30,7 @@ class R128TimetablePrintContractTests(SimpleTestCase):
 
     def test_timetable_display_contracts_remain_canonical(self):
         templates = (
-            "templates/timetable/overview.html",
+            "templates/timetable/dashboard.html",
             "templates/teachers/portal_timetable.html",
             "templates/teachers/portal_dashboard.html",
             "templates/teachers/teacher_detail.html",

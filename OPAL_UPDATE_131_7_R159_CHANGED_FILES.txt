@@ -1,0 +1,38 @@
+OPAL ERP — OPAL Update 131.7 R159 - Unified Timetable Workspace
+Baseline: OPAL Update 131.7 R158 - Timetable Refresh Loop Fix
+Scope: one unified weekly timetable screen; no database migrations.
+
+Changed files (compared with the R158 code package):
+ADDED	INSTALL_OPAL_UPDATE_131_7_R159_AR.md
+MODIFIED	OPAL_RELEASE_NAME.txt
+ADDED	OPAL_UPDATE_131_7_R159_RELEASE_NOTES_AR.md
+ADDED	OPAL_UPDATE_131_7_R159_VALIDATION_REPORT_AR.md
+MODIFIED	OPAL_UPDATE_MANIFEST.json
+MODIFIED	README.md
+MODIFIED	core/checks.py
+MODIFIED	core/single_entry_contracts.py
+MODIFIED	core/test_update129_horizontal_timetable_contract.py
+MODIFIED	core/test_update131_7_r128_timetable_print_contract.py
+MODIFIED	core/test_update131_7_r147_scroll_layout_contract.py
+MODIFIED	core/test_update131_7_r157_unified_ui_contract.py
+MODIFIED	core/test_update131_7_r158_live_refresh_guard_contract.py
+ADDED	core/test_update131_7_r159_unified_timetable_contract.py
+MODIFIED	core/workflow_catalog.py
+MODIFIED	templates/403_csrf.html
+MODIFIED	templates/admissions/fee_payment_receipt.html
+MODIFIED	templates/admissions/registration_receipt.html
+MODIFIED	templates/base/base.html
+MODIFIED	templates/errors/error.html
+MODIFIED	templates/exams/student_record_print.html
+MODIFIED	templates/learning_platform/base.html
+MODIFIED	templates/parent_portal/family_statement_print.html
+MODIFIED	templates/parent_portal/guardian_receipt_print.html
+MODIFIED	templates/registration/auth_base.html
+MODIFIED	templates/students/student_360_print.html
+MODIFIED	templates/timetable/dashboard.html
+DELETED	templates/timetable/overview.html
+MODIFIED	timetable/urls.py
+MODIFIED	timetable/views.py
+MODIFIED	tools/validate_opal_update_131_source.py
+
+ADDED	OPAL_UPDATE_131_7_R159_CHANGED_FILES.txt (this list)
