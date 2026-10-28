@@ -5,7 +5,7 @@ from core.system_data import reset_all_operational_data
 
 
 class Command(BaseCommand):
-    help = "تصفير جميع البيانات التشغيلية مع إبقاء حساب المدير الأعلى المحدد وبنية الصلاحيات."
+    help = "تصفير بيانات اختبار قابلة للمسح فقط؛ يتطلب --yes وOPAL_ENABLE_DEMO_DATA_RESET=True."
 
     def add_arguments(self, parser):
         parser.add_argument("--yes", action="store_true", help="تأكيد تصفير جميع البيانات التشغيلية.")
@@ -26,7 +26,10 @@ class Command(BaseCommand):
         if not options["yes"]:
             raise CommandError("أضف --yes للتأكيد. لن تُحذف أي بيانات دون التأكيد.")
         user = self._resolve_superuser(options["user"])
-        result = reset_all_operational_data(keep_user=user)
+        try:
+            result = reset_all_operational_data(keep_user=user)
+        except ValueError as exc:
+            raise CommandError(str(exc)) from exc
         self.stdout.write(self.style.SUCCESS(
             f"تم تصفير البيانات التشغيلية: {result['students']} طالب، "
             f"{result['families']} ملف ولي أمر، {result['teachers']} معلم."

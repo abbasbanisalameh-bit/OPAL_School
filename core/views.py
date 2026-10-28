@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.contrib import messages
+from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -92,6 +93,13 @@ def system_settings(request):
             if not request.user.is_superuser:
                 messages.error(request, "إدخال البيانات التجريبية المترابطة متاح لمدير النظام الأعلى فقط.")
                 return redirect("core:system_settings")
+            if not getattr(settings, "OPAL_ENABLE_DEMO_DATA_RESET", False):
+                messages.error(
+                    request,
+                    "أداة البيانات التجريبية معطلة افتراضياً لحماية البيانات الحقيقية. "
+                    "لا تُفعّل إلا لقاعدة بيانات اختبار/تجهيز قابلة لإعادة البناء عبر OPAL_ENABLE_DEMO_DATA_RESET=True.",
+                )
+                return redirect(f"{reverse('core:system_settings')}?section=operations#operations-settings")
             try:
                 from .system_data import seed_system_data
                 result = seed_system_data(user=request.user)

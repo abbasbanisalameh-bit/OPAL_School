@@ -41,6 +41,10 @@ _FEATURE_FLAGS = build_feature_flags()
 OPAL_ENABLE_OPENEMIS = _FEATURE_FLAGS["openemis"]
 OPAL_ENABLE_DEVELOPMENT_CENTER = _FEATURE_FLAGS["development_center"]
 
+# Destructive demo-data seeding/reset deletes operational rows and must be
+# enabled explicitly only in a disposable test/staging database. Default: off.
+OPAL_ENABLE_DEMO_DATA_RESET = env_bool("OPAL_ENABLE_DEMO_DATA_RESET", False)
+
 ALLOWED_HOSTS = build_allowed_hosts()
 
 

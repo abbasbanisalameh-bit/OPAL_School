@@ -140,7 +140,6 @@ DELETE_MODEL_LABELS = (
     "openemis_integration.OpenEMISSyncLog",
     "core.DataIntegrityIssue",
     "core.DataIntegrityRun",
-    "core.AuditLog",
     "core.Sequence",
 )
 
@@ -162,7 +161,7 @@ CATEGORY_MODEL_LABELS = OrderedDict(
         ("learning_platform", tuple(label for label in DELETE_MODEL_LABELS if label.startswith("learning_platform."))),
         ("enterprise_operations", tuple(label for label in DELETE_MODEL_LABELS if label.startswith("enterprise_ops."))),
         ("integration_logs", ("openemis_integration.OpenEMISSyncLog",)),
-        ("audit_and_sequences", ("core.DataIntegrityIssue", "core.DataIntegrityRun", "core.AuditLog", "core.Sequence")),
+        ("audit_and_sequences", ("core.DataIntegrityIssue", "core.DataIntegrityRun", "core.Sequence")),
     ]
 )
 
@@ -170,6 +169,7 @@ CATEGORY_MODEL_LABELS = OrderedDict(
 PRESERVED_MODEL_LABELS = (
     "core.School",
     "core.Branch",
+    "core.AuditLog",
     "accounts.Role",
     "enterprise_ops.RolePermissionRule",
     "admissions.RegistrationSettings",
@@ -185,6 +185,7 @@ PRESERVED_MODEL_LABELS = (
 PRESERVED_LABELS_AR = {
     "core.School": "بيانات المدرسة وهويتها",
     "core.Branch": "الفروع",
+    "core.AuditLog": "سجل التدقيق الأمني والتشغيلي (محفوظ)",
     "accounts.Role": "الأدوار",
     "enterprise_ops.RolePermissionRule": "مصفوفة الصلاحيات",
     "admissions.RegistrationSettings": "إعدادات التسجيل والخصومات",
@@ -215,7 +216,7 @@ CATEGORY_LABELS_AR = {
     "learning_platform": "بيانات منصة التعلم",
     "enterprise_operations": "الطلبات والإشعارات والتقارير التشغيلية",
     "integration_logs": "سجلات OpenEMIS",
-    "audit_and_sequences": "سجلات التدقيق والعدادات",
+    "audit_and_sequences": "فحوص سلامة البيانات والعدادات",
     "users": "حسابات المستخدمين غير حساب المدير",
     "sessions": "جلسات المستخدمين القديمة",
 }

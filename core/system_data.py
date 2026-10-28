@@ -4,6 +4,7 @@ from collections import Counter
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group, User
 from django.db import transaction
@@ -17,6 +18,15 @@ DEMO_GUARDIAN_COUNT = 200
 DEMO_TEACHER_COUNT = 30
 DEMO_TEACHER_WEEKLY_LOAD = 30
 DEMO_TEACHER_DAILY_TARGET = 6
+
+
+def _require_demo_data_reset_enabled():
+    """Fail closed unless the operator explicitly enables destructive demo operations."""
+    if not getattr(settings, "OPAL_ENABLE_DEMO_DATA_RESET", False):
+        raise ValueError(
+            "عمليات إدخال/تصفير البيانات التجريبية معطلة افتراضياً لحماية بيانات المدرسة. "
+            "لا تُفعّل OPAL_ENABLE_DEMO_DATA_RESET=True إلا في قاعدة بيانات اختبار/تجهيز قابلة لإعادة البناء."
+        )
 
 
 def _subject_plan_for_grade(grade_order):
@@ -50,7 +60,8 @@ def _delete_all(model):
 
 @transaction.atomic
 def reset_all_operational_data(*, keep_user=None):
-    """Delete operational records while preserving the current superuser and permission structure."""
+    """Reset a disposable demo dataset; requires an explicit environment opt-in."""
+    _require_demo_data_reset_enabled()
     if keep_user is None or not keep_user.pk or not keep_user.is_superuser:
         raise ValueError("يجب تحديد حساب المدير الأعلى الحالي قبل تنفيذ التصفير الشامل.")
     from academics.models import Enrollment, Grade, Section, StudentDocument, StudentLifecycleEvent, Subject
@@ -67,7 +78,7 @@ def reset_all_operational_data(*, keep_user=None):
     from announcements.models import Announcement
     from attendance_v2.models import Attendance, AttendanceRegister
     from core.models import (
-        AcademicYear, AuditLog, Branch, DataIntegrityIssue, DataIntegrityRun, School,
+        AcademicYear, Branch, DataIntegrityIssue, DataIntegrityRun, School,
         SemesterStructureSnapshot, Sequence,
     )
     from development_center.models import (
@@ -223,7 +234,7 @@ def reset_all_operational_data(*, keep_user=None):
     _delete_all(Bug)
     _delete_all(DataIntegrityIssue)
     _delete_all(DataIntegrityRun)
-    _delete_all(AuditLog)
+    # AuditLog is a durable security/operations history and must survive resets.
     _delete_all(Sequence)
 
     # Preserve only the manager account that explicitly launched the reset.
@@ -800,6 +811,24 @@ def _seed_transport_demo(*, school, students, families, family_by_index, student
 
 @transaction.atomic
 def seed_system_data(*, student_count=DEMO_STUDENT_COUNT, teacher_count=DEMO_TEACHER_COUNT, guardian_count=DEMO_GUARDIAN_COUNT, user=None):
+    _require_demo_data_reset_enabled()
+    expected_counts = {
+        "student_count": DEMO_STUDENT_COUNT,
+        "teacher_count": DEMO_TEACHER_COUNT,
+        "guardian_count": DEMO_GUARDIAN_COUNT,
+    }
+    supplied_counts = {
+        "student_count": student_count,
+        "teacher_count": teacher_count,
+        "guardian_count": guardian_count,
+    }
+    if supplied_counts != expected_counts:
+        raise ValueError(
+            "بيانات القبول المترابطة تستخدم مجموعة ثابتة: "
+            f"{DEMO_STUDENT_COUNT} طالبًا و{DEMO_TEACHER_COUNT} معلمًا و{DEMO_GUARDIAN_COUNT} ولي أمر. "
+            "لم يُجرَ أي تصفير؛ احذف خيارات الأعداد المخصصة أو استخدم الأعداد الافتراضية."
+        )
+
     from accounts.models import Role, UserProfile
     from academics.models import Enrollment, StudentDocument
     from accounting.models import (
@@ -832,7 +861,6 @@ def seed_system_data(*, student_count=DEMO_STUDENT_COUNT, teacher_count=DEMO_TEA
     # The button intentionally produces one stable, complete acceptance dataset.
     if user is None or not user.pk or not user.is_superuser:
         raise ValueError("يجب تحديد حساب المدير الأعلى الحالي قبل إدخال البيانات التجريبية.")
-    student_count, teacher_count, guardian_count = DEMO_STUDENT_COUNT, DEMO_TEACHER_COUNT, DEMO_GUARDIAN_COUNT
     School.objects.select_for_update().filter(is_active=True).first()
     reset_all_operational_data(keep_user=user)
     school = School.objects.filter(is_active=True).first()
@@ -897,7 +925,7 @@ def seed_system_data(*, student_count=DEMO_STUDENT_COUNT, teacher_count=DEMO_TEA
             school=school, branch=branch, monthly_salary=Decimal("550") + index * Decimal("8"),
             weekly_teaching_load=DEMO_TEACHER_WEEKLY_LOAD, free_period_policy="daily",
             daily_free_periods=1, weekly_free_periods=0,
-            is_active=True, is_demo=False,
+            is_active=True, is_demo=True,
         ))
     Teacher.objects.bulk_create(teacher_rows)
     teachers = list(Teacher.objects.filter(school=school).select_related("user").order_by("employee_number"))
@@ -1025,7 +1053,7 @@ def seed_system_data(*, student_count=DEMO_STUDENT_COUNT, teacher_count=DEMO_TEA
             gender="male" if index % 2 else "female", blood_type=("A+", "B+", "O+", "AB+")[index % 4],
             grade=section.grade.name, section=section.name, phone=family.phone,
             address=family.address, status="active", enrollment_date=year.start_date,
-            is_active=True, is_demo=False,
+            is_active=True, is_demo=True,
         ))
         student_meta[number] = {
             "index": index, "family": family, "section": section, "position": position,

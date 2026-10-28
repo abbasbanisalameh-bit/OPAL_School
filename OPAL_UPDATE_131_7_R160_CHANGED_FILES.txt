@@ -1,0 +1,22 @@
+OPAL ERP — OPAL Update 131.7 R160 - Demo Data Reset Safety and Audit Log Preservation
+Baseline: OPAL Update 131.7 R159 - Unified Timetable Workspace
+Scope: demo seed/reset safeguards, durable AuditLog preservation, fixed-dataset validation; no DB schema changes.
+
+Changed files (compared with the R159 code package):
+ADDED	INSTALL_OPAL_UPDATE_131_7_R160_AR.md
+ADDED	OPAL_UPDATE_131_7_R160_RELEASE_NOTES_AR.md
+ADDED	OPAL_UPDATE_131_7_R160_VALIDATION_REPORT_AR.md
+ADDED	core/test_update131_7_r160_demo_reset_safety_contract.py
+MODIFIED	OPAL_RELEASE_NAME.txt
+MODIFIED	OPAL_UPDATE_MANIFEST.json
+MODIFIED	README.md
+MODIFIED	config/settings.py
+MODIFIED	core/management/commands/reset_demo_school.py
+MODIFIED	core/management/commands/seed_demo_school.py
+MODIFIED	core/production_reset.py
+MODIFIED	core/system_data.py
+MODIFIED	core/test_update131_7_r28_production_data_reset.py
+MODIFIED	core/tests.py
+MODIFIED	core/views.py
+MODIFIED	templates/core/system_settings.html
+ADDED	OPAL_UPDATE_131_7_R160_CHANGED_FILES.txt

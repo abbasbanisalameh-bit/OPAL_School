@@ -1,7 +1,7 @@
 from datetime import date
 
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.conf import settings
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -99,9 +99,11 @@ class SystemDataCenterTests(TestCase):
         self.assertNotContains(response, 'name="action" value="reset_all"')
         self.assertContains(response, "إدخال البيانات التجريبية")
 
+    @override_settings(OPAL_ENABLE_DEMO_DATA_RESET=True)
     def test_seed_is_comprehensive_and_reset_removes_all_operational_data(self):
         from collections import Counter
         from core.system_data import reset_all_operational_data, seed_system_data
+        from core.models import AuditLog
         from students.models import Student
         from teachers.models import Teacher, TeacherDocument, TeacherPerformanceSnapshot
         from accounting.models import Receipt
@@ -118,6 +120,10 @@ class SystemDataCenterTests(TestCase):
         )
 
         Student.objects.create(student_number="OLD-WITNESS", full_name="سجل قديم", grade="الأول")
+        historic_audit = AuditLog.objects.create(
+            action="delete", model_name="students.Student", object_id="OLD-WITNESS",
+            description="سجل تدقيق يجب أن يبقى بعد إعادة بناء بيانات الاختبار",
+        )
         result = seed_system_data(user=self.user)
         self.assertEqual(result["students"], 500)
         self.assertEqual(result["teachers"], 30)
@@ -131,7 +137,12 @@ class SystemDataCenterTests(TestCase):
         self.assertEqual(result["learning_lessons"], 660)
 
         self.assertEqual(Student.objects.count(), 500)
+        self.assertTrue(Student.objects.filter(is_demo=True).count() == 500)
+        self.assertFalse(Student.objects.filter(is_demo=False).exists())
         self.assertEqual(Teacher.objects.count(), 30)
+        self.assertTrue(Teacher.objects.filter(is_demo=True).count() == 30)
+        self.assertFalse(Teacher.objects.filter(is_demo=False).exists())
+        self.assertTrue(AuditLog.objects.filter(pk=historic_audit.pk).exists())
         self.assertEqual(TeacherDocument.objects.count(), 60)
         self.assertEqual(Family.objects.count(), 200)
         self.assertEqual(Grade.objects.count(), 12)
@@ -211,6 +222,7 @@ class SystemDataCenterTests(TestCase):
         )
 
         reset_all_operational_data(keep_user=self.user)
+        self.assertTrue(AuditLog.objects.filter(pk=historic_audit.pk).exists())
         self.assertFalse(Student.objects.exists())
         self.assertFalse(Teacher.objects.exists())
         self.assertFalse(Family.objects.exists())
@@ -223,6 +235,36 @@ class SystemDataCenterTests(TestCase):
         self.assertFalse(AttendanceRegister.objects.exists())
         self.assertFalse(MonthlyServiceEvaluation.objects.exists())
 
+    @override_settings(OPAL_ENABLE_DEMO_DATA_RESET=False)
+    def test_demo_reset_and_seed_fail_closed_without_explicit_opt_in(self):
+        from core.models import AuditLog
+        from core.system_data import reset_all_operational_data, seed_system_data
+        from students.models import Student
+
+        witness = Student.objects.create(student_number="REAL-WITNESS", full_name="سجل حقيقي", grade="الأول")
+        audit = AuditLog.objects.create(
+            action="delete", model_name="students.Student", object_id="REAL-WITNESS",
+            description="يجب ألا يمحى عند تعطيل التصفير التجريبي",
+        )
+        with self.assertRaisesMessage(ValueError, "معطلة افتراضياً"):
+            reset_all_operational_data(keep_user=self.user)
+        with self.assertRaisesMessage(ValueError, "معطلة افتراضياً"):
+            seed_system_data(user=self.user)
+
+        self.assertTrue(Student.objects.filter(pk=witness.pk).exists())
+        self.assertTrue(AuditLog.objects.filter(pk=audit.pk).exists())
+        self.assertTrue(School.objects.filter(pk=self.school.pk).exists())
+
+    @override_settings(OPAL_ENABLE_DEMO_DATA_RESET=True)
+    def test_custom_demo_counts_are_rejected_before_any_reset(self):
+        from core.system_data import seed_system_data
+        from students.models import Student
+
+        witness = Student.objects.create(student_number="COUNT-WITNESS", full_name="سجل ثابت", grade="الأول")
+        with self.assertRaisesMessage(ValueError, "مجموعة ثابتة"):
+            seed_system_data(user=self.user, student_count=499)
+        self.assertTrue(Student.objects.filter(pk=witness.pk).exists())
+
 
 class SystemDataCenterActionTests(TestCase):
     def setUp(self):
@@ -230,6 +272,7 @@ class SystemDataCenterActionTests(TestCase):
         School.objects.create(name="مدرسة إجراءات البيانات", is_active=True)
         self.client.force_login(self.user)
 
+    @override_settings(OPAL_ENABLE_DEMO_DATA_RESET=True)
     def test_superuser_can_launch_integrated_seed_from_system_settings(self):
         from unittest.mock import patch
 
@@ -245,6 +288,21 @@ class SystemDataCenterActionTests(TestCase):
         self.assertContains(response, "200 ولي أمر")
         self.assertContains(response, "30 معلم")
         seed_service.assert_called_once_with(user=self.user)
+
+    @override_settings(OPAL_ENABLE_DEMO_DATA_RESET=False)
+    def test_seed_action_is_blocked_by_default_without_calling_service(self):
+        from unittest.mock import patch
+
+        with patch("core.system_data.seed_system_data") as seed_service:
+            response = self.client.post(
+                reverse("core:system_settings"),
+                {"action": "seed_system"},
+                follow=True,
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "معطلة افتراضياً")
+        seed_service.assert_not_called()
+        self.assertTrue(School.objects.filter(name="مدرسة إجراءات البيانات").exists())
 
     def test_legacy_reset_action_is_blocked_without_calling_service(self):
         from unittest.mock import patch

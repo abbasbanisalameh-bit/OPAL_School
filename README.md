@@ -33,3 +33,6 @@ Restores the existing login/account UI, removes duplicated profile logout markup
 يدمج R159 الجدول الأسبوعي ومصفوفة الجدول الرسمية والأحداث الجارية والمنشئ الذكي في `templates/timetable/dashboard.html` الموجود، ويزيل قالب العرض المنفصل. يبقى اسم المسار القديم `timetable:overview` للتوافق فقط، ويعيد التوجيه إلى شاشة الجدول الموحدة. أزيل المدخل المكرر من قائمة الإدارة والوصول السريع؛ لا توجد نماذج بيانات أو ترحيلات جديدة.
 
 راجع `INSTALL_OPAL_UPDATE_131_7_R159_AR.md` قبل التثبيت، و`OPAL_UPDATE_131_7_R159_VALIDATION_REPORT_AR.md` لنتائج الفحوص وحدودها.
+
+## آخر تحديث
+OPAL Update 131.7 R160 — Demo Data Reset Safety and Audit Log Preservation. راجع `OPAL_UPDATE_131_7_R160_RELEASE_NOTES_AR.md` وتعليمات التثبيت.

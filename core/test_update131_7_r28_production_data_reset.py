@@ -5,7 +5,7 @@ from django.urls import reverse
 from accounts.models import Role
 from admissions.models import RegistrationSettings
 from announcements.models import Announcement
-from core.models import Branch, ProductionDataResetRun, School
+from core.models import AuditLog, Branch, ProductionDataResetRun, School
 from core.production_reset import (
     PRODUCTION_RESET_CONFIRMATION,
     collect_production_reset_preview,
@@ -50,6 +50,11 @@ class ProductionDataResetServiceTests(TestCase):
         )
         self.learning_subject = LearningSubject.objects.create(name="مادة تجريبية", slug="مادة-تجريبية")
         self.announcement = Announcement.objects.create(title="إعلان تجريبي", message="اختبار")
+        self.audit_log = AuditLog.objects.create(
+            user=self.other_user, school=self.school, branch=self.branch,
+            action="delete", model_name="students.Student", object_id="TRIAL-1",
+            description="سجل تدقيق تاريخي يجب أن يبقى بعد التهيئة",
+        )
 
     def test_preview_does_not_delete_and_returns_signed_snapshot(self):
         preview = collect_production_reset_preview(keep_user=self.manager)
@@ -58,6 +63,9 @@ class ProductionDataResetServiceTests(TestCase):
         self.assertEqual(Student.objects.count(), 1)
         self.assertEqual(LearningAccount.objects.count(), 1)
         self.assertEqual(School.objects.count(), 1)
+        self.assertNotIn("core.AuditLog", preview["model_counts"])
+        self.assertEqual(preview["preserved"]["core.AuditLog"], 1)
+        self.assertTrue(AuditLog.objects.filter(pk=self.audit_log.pk).exists())
 
     def test_execute_deletes_operations_and_preserves_manager_and_settings(self):
         preview = collect_production_reset_preview(keep_user=self.manager)
@@ -73,6 +81,9 @@ class ProductionDataResetServiceTests(TestCase):
         self.assertFalse(LearningSubject.objects.exists())
         self.assertFalse(Announcement.objects.exists())
         self.assertFalse(User.objects.exclude(pk=self.manager.pk).exists())
+        self.assertTrue(AuditLog.objects.filter(pk=self.audit_log.pk).exists())
+        self.audit_log.refresh_from_db()
+        self.assertIn("تاريخي", self.audit_log.description)
 
         self.assertTrue(User.objects.filter(pk=self.manager.pk, is_superuser=True).exists())
         self.assertTrue(School.objects.filter(pk=self.school.pk).exists())

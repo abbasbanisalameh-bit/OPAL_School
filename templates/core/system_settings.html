@@ -211,7 +211,7 @@
       <a href="{% url 'core:production_launch_preparation' %}" class="opal-settings-action warning"><i class="bi bi-rocket-takeoff-fill"></i><strong>تهيئة التشغيل الفعلي</strong><small>معاينة ثم تأكيد قبل التنظيف</small></a>
       <form method="post" class="opal-system-data-form opal-settings-action-form" data-confirm="سيتم إدخال بيانات اختبار مترابطة وقد تؤثر على البيانات التشغيلية الحالية. هل تريد المتابعة؟">
         {% csrf_token %}<input type="hidden" name="action" value="seed_system">
-        <button type="submit" class="opal-settings-action warning w-100 text-start border-0"><i class="bi bi-database-add"></i><strong>بيانات اختبار مترابطة</strong><small>أداة اختبار لمدير النظام الأعلى</small></button>
+        <button type="submit" class="opal-settings-action warning w-100 text-start border-0"><i class="bi bi-database-add"></i><strong>بيانات اختبار مترابطة</strong><small>اختبار فقط؛ معطلة افتراضياً لحماية البيانات الفعلية</small></button>
       </form>
       {% endif %}
     </div>
